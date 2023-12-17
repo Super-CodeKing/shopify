@@ -1,94 +1,52 @@
 import {
-  Card,
-  Page,
-  Layout,
-  TextContainer,
-  Image,
-  Stack,
-  Link,
-  Text,
+    Card,
+    Page,
+    Layout,
+    Image,
+    Link,
+    AccountConnection,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useTranslation, Trans } from "react-i18next";
 
 import { trophyImage } from "../assets";
 
-import { ProductsCard } from "../components";
+import Analytics from "./Dashboard/Analytics.jsx";
+import QuickSetup from "./Dashboard/QuickSetup";
+import { useCallback, useState } from "react";
 
 export default function HomePage() {
-  const { t } = useTranslation();
-  const helpAction = {content: 'Help', url: '/help'};
-  return (
-    <Page narrowWidth>
-      <TitleBar title={t("HomePage.title")} primaryAction={helpAction} />
-      <Layout>
-        <Layout.Section>
-          <Card sectioned>
-            <Stack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <Stack.Item fill>
-                <TextContainer spacing="loose">
-                  <Text as="h2" variant="headingMd">
-                    {t("HomePage.heading")}
-                  </Text>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.yourAppIsReadyToExplore"
-                      components={{
-                        PolarisLink: (
-                          <Link url="https://polaris.shopify.com/" external />
-                        ),
-                        AdminApiLink: (
-                          <Link
-                            url="https://shopify.dev/api/admin-graphql"
-                            external
-                          />
-                        ),
-                        AppBridgeLink: (
-                          <Link
-                            url="https://shopify.dev/apps/tools/app-bridge"
-                            external
-                          />
-                        ),
-                      }}
+    const { t } = useTranslation();
+    const helpAction = { content: "Help", url: "/help" };
+    const [appEmbededActivated, setAppEmbededActivated] = useState(false);
+    const accountName = appEmbededActivated ? 'Jane Appleseed' : '';
+
+    const handleAction = useCallback(() => {
+      setConnected((appEmbededActivated) => !appEmbededActivated);
+    }, []);
+
+    const buttonText = appEmbededActivated ? 'Disconnect' : 'Connect';
+    const details = appEmbededActivated ? 'Account connected' : 'No account connected';
+
+    return (
+        <Page fullWidth>
+            <TitleBar title={t("HomePage.title")} primaryAction={helpAction} />
+            <Layout>
+                <Layout.Section>
+                    <AccountConnection
+                        accountName={accountName}
+                        connected={appEmbededActivated}
+                        title="Embed Modern Pre Order into your Theme"
+                        action={{
+                            content: buttonText,
+                            onAction: handleAction,
+                        }}
+                        details={details}
                     />
-                  </p>
-                  <p>{t("HomePage.startPopulatingYourApp")}</p>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.learnMore"
-                      components={{
-                        ShopifyTutorialLink: (
-                          <Link
-                            url="https://shopify.dev/apps/getting-started/add-functionality"
-                            external
-                          />
-                        ),
-                      }}
-                    />
-                  </p>
-                </TextContainer>
-              </Stack.Item>
-              <Stack.Item>
-                <div style={{ padding: "0 20px" }}>
-                  <Image
-                    source={trophyImage}
-                    alt={t("HomePage.trophyAltText")}
-                    width={120}
-                  />
-                </div>
-              </Stack.Item>
-            </Stack>
-          </Card>
-        </Layout.Section>
-        <Layout.Section>
-          <ProductsCard />
-        </Layout.Section>
-      </Layout>
-    </Page>
-  );
+                </Layout.Section>
+            </Layout>
+            <Analytics />
+            <QuickSetup />
+        </Page>
+    );
 }
