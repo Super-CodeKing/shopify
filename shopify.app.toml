@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "e2f917273995ea9e32bafc0a847352c1"
-application_url = "https://baseball-geological-antivirus-recent.trycloudflare.com"
+application_url = "https://galleries-blink-varied-freeze.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://baseball-geological-antivirus-recent.trycloudflare.com/auth/callback",
-  "https://baseball-geological-antivirus-recent.trycloudflare.com/auth/shopify/callback",
-  "https://baseball-geological-antivirus-recent.trycloudflare.com/api/auth/callback"
+  "https://galleries-blink-varied-freeze.trycloudflare.com/auth/callback",
+  "https://galleries-blink-varied-freeze.trycloudflare.com/auth/shopify/callback",
+  "https://galleries-blink-varied-freeze.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

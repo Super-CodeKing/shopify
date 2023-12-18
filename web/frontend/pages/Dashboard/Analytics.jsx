@@ -3,14 +3,10 @@ import { Card, Grid, Text } from "@shopify/polaris";
 export default function Analytics() {
     return (
         <>
-            <div className="pb-5 pt-7">
-                <Text variant="headingMd" as="h2">
+            <div className="mb-3 pt-7">
+                <Text variant="headingLg" as="h5">
                     Analytics
                 </Text>
-                <p>
-                    Track customer demand, inventory needs, sales opportunities,
-                    and customer interest.
-                </p>
             </div>
             <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>

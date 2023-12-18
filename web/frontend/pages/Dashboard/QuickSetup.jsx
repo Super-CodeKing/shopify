@@ -4,19 +4,10 @@ import { Card, Button, Grid, Page, LegacyCard, Text } from "@shopify/polaris";
 export default function QuickSetup() {
     return (
         <>
-            <div className="pb-5 pt-7">
-                <Text variant="headingMd" as="h2">
+            <div className="mb-3 pt-7">
+                <Text variant="headingLg" as="h5">
                     Quick Start
                 </Text>
-                <p>
-                    This extension will enable Pre Order, Coming Soon, Request
-                    Stock, and Get a Quote features for all products. Upon
-                    placing orders, store owners will receive notifications, and
-                    customers will be notified when products are restocked. Our
-                    default stock counter will be activated for these features.
-                    Each feature comes with detailed settings that can be
-                    accessed by clicking 'Details Settings.
-                </p>
             </div>
             <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
