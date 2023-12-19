@@ -1,4 +1,4 @@
-import { Layout, Text, AccountConnection } from "@shopify/polaris";
+import { Layout, MediaCard, VideoThumbnail, Text } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 export default function Plan() {
     const [appEmbededActivated, setAppEmbededActivated] = useState(false);
@@ -16,18 +16,24 @@ export default function Plan() {
         <Layout.Section variant="oneHalf">
             <div className="mb-3">
                 <Text variant="headingLg" as="h5">
-                    Existing Plan
+                    Video Guideline
                 </Text>
             </div>
-            <AccountConnection
-                accountName={accountName}
-                connected={appEmbededActivated}
-                title="Free"
-                action={{
-                    content: buttonText,
-                    onAction: handleAction,
+            <MediaCard
+                title="How to setup Modern Pre Order"
+                primaryAction={{
+                    content: "Learn more",
+                    onAction: () => {},
                 }}
-            />
+                description={`Thank you for installing our app. If you'd like to get familiar with the app and setup, watch our demo video here.`}
+                popoverActions={[{ content: "Dismiss", onAction: () => {} }]}
+            >
+                <VideoThumbnail
+                    videoLength={80}
+                    thumbnailUrl="https://burst.shopifycdn.com/photos/blank-notebook-on-creative-workspace.jpg?width=1850"
+                    onClick={() => console.log("clicked")}
+                />
+            </MediaCard>
         </Layout.Section>
     );
 }
