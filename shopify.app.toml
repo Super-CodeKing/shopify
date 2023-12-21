@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "e2f917273995ea9e32bafc0a847352c1"
-application_url = "https://promote-thanksgiving-county-powers.trycloudflare.com"
+application_url = "https://tournaments-desk-dream-estonia.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://promote-thanksgiving-county-powers.trycloudflare.com/auth/callback",
-  "https://promote-thanksgiving-county-powers.trycloudflare.com/auth/shopify/callback",
-  "https://promote-thanksgiving-county-powers.trycloudflare.com/api/auth/callback"
+  "https://tournaments-desk-dream-estonia.trycloudflare.com/auth/callback",
+  "https://tournaments-desk-dream-estonia.trycloudflare.com/auth/shopify/callback",
+  "https://tournaments-desk-dream-estonia.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
