@@ -3,13 +3,12 @@ import {
     Page,
     Layout,
     TextContainer,
-    RadioButton,
+    EmptyState,
     TextField,
     Modal,
     Button,
     PageActions,
     DatePicker,
-    Checkbox,
     Text,
     AccountConnection,
     Link,
@@ -21,10 +20,15 @@ import {
 import { TitleBar } from "@shopify/app-bridge-react";
 import { useCallback, useState } from "react";
 import "../../assets/preorder.css";
-import { StatusActiveMajor } from "@shopify/polaris-icons";
+import { StatusActiveMajor, ProductsMajor } from "@shopify/polaris-icons";
 
 export default function PreOrder() {
     const primaryAction = { content: "Help", url: "/help" };
+    const [isPreOrderActive, setIsPreOrderStatus] = useState(true);
+
+    const [flagActivation, setFlagActivation] = useState(true);
+    const [flagProductSetup, setFlagProductSetup] = useState(false);
+
     const [preOrderLimit, setPreOrderLimit] = useState(
         "preOrder-has-daily-limit"
     );
@@ -123,6 +127,10 @@ export default function PreOrder() {
         []
     );
 
+    const changePreOrderStatus = useCallback(() => {
+        setIsPreOrderStatus(!isPreOrderActive);
+    });
+
     const GetPreviewModal = ({ imgSrc }) => {
         return (
             <div style={{ height: "500px" }}>
@@ -151,6 +159,16 @@ export default function PreOrder() {
         );
     };
 
+    function activeActivation() {
+        setFlagActivation(!flagActivation);
+        setFlagProductSetup(!!flagActivation);
+    }
+
+    function activeProductSetup() {
+        setFlagActivation(!!flagProductSetup);
+        setFlagProductSetup(!flagProductSetup);
+    }
+
     return (
         <Page fullWidth>
             <TitleBar
@@ -168,12 +186,17 @@ export default function PreOrder() {
                         data-hs-accordion-always-open
                     >
                         <ul class="space-y-1.5">
-                            <li>
+                            <li
+                                className="cursor-pointer"
+                                onClick={activeActivation}
+                            >
                                 <div
-                                    padding="200"
-                                    background="bg"
-                                    roundedAbove="xs"
-                                    className="bg-slate-200 rounded-lg py-2 px-2"
+                                    className={
+                                        "rounded-lg py-2 px-2 " +
+                                        (flagActivation
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
                                 >
                                     <div className="flex justify-start">
                                         <Icon source={StatusActiveMajor} />
@@ -184,487 +207,135 @@ export default function PreOrder() {
                                 </div>
                             </li>
 
-                            <li class="hs-accordion" id="users-accordion">
-                                <button
-                                    type="button"
-                                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
-                                    Users
-                                    <svg
-                                        class="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="m18 15-6-6-6 6" />
-                                    </svg>
-                                    <svg
-                                        class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                        ></path>
-                                    </svg>
-                                </button>
-
+                            <li
+                                className="cursor-pointer"
+                                onClick={activeProductSetup}
+                            >
                                 <div
-                                    id="users-accordion"
-                                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"
+                                    className={
+                                        "rounded-lg py-2 px-2 " +
+                                        (flagProductSetup
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
                                 >
-                                    <ul
-                                        class="hs-accordion-group ps-3 pt-2"
-                                        data-hs-accordion-always-open
-                                    >
-                                        <li
-                                            class="hs-accordion"
-                                            id="users-accordion-sub-1"
-                                        >
-                                            <button
-                                                type="button"
-                                                class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                            >
-                                                Sub Menu 1
-                                                <svg
-                                                    class="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                >
-                                                    <path d="m18 15-6-6-6 6" />
-                                                </svg>
-                                                <svg
-                                                    class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                >
-                                                    <path d="m6 9 6 6 6-6" />
-                                                </svg>
-                                            </button>
-
-                                            <div
-                                                id="users-accordion-sub-1"
-                                                class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"
-                                            >
-                                                <ul class="pt-2 ps-2">
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 1
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 3
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li
-                                            class="hs-accordion"
-                                            id="users-accordion-sub-2"
-                                        >
-                                            <button
-                                                type="button"
-                                                class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                            >
-                                                Sub Menu 2
-                                                <svg
-                                                    class="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                >
-                                                    <path d="m18 15-6-6-6 6" />
-                                                </svg>
-                                                <svg
-                                                    class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                >
-                                                    <path d="m6 9 6 6 6-6" />
-                                                </svg>
-                                            </button>
-
-                                            <div
-                                                id="users-accordion-sub-2"
-                                                class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden ps-2"
-                                            >
-                                                <ul class="pt-2 ps-2">
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 1
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 2
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                            href="#"
-                                                        >
-                                                            Link 3
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                    <div className="flex justify-start">
+                                        <Icon source={ProductsMajor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Product Setup</Text>
+                                        </div>
+                                    </div>
                                 </div>
-                            </li>
-
-                            <li class="hs-accordion" id="account-accordion">
-                                <button
-                                    type="button"
-                                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <circle cx="18" cy="15" r="3" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M10 15H6a4 4 0 0 0-4 4v2" />
-                                        <path d="m21.7 16.4-.9-.3" />
-                                        <path d="m15.2 13.9-.9-.3" />
-                                        <path d="m16.6 18.7.3-.9" />
-                                        <path d="m19.1 12.2.3-.9" />
-                                        <path d="m19.6 18.7-.4-1" />
-                                        <path d="m16.8 12.3-.4-1" />
-                                        <path d="m14.3 16.6 1-.4" />
-                                        <path d="m20.7 13.8 1-.4" />
-                                    </svg>
-                                    Account
-                                    <svg
-                                        class="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="m18 15-6-6-6 6" />
-                                    </svg>
-                                    <svg
-                                        class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                        ></path>
-                                    </svg>
-                                </button>
-
-                                <div
-                                    id="account-accordion"
-                                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"
-                                >
-                                    <ul class="pt-2 ps-2">
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 1
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 2
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 3
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="hs-accordion" id="projects-accordion">
-                                <button
-                                    type="button"
-                                    class="hs-accordion-toggle hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        xmlns="ƒhttp://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z" />
-                                        <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8" />
-                                        <path d="M15 2v5h5" />
-                                    </svg>
-                                    Projects
-                                    <svg
-                                        class="hs-accordion-active:block ms-auto hidden w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="m18 15-6-6-6 6" />
-                                    </svg>
-                                    <svg
-                                        class="hs-accordion-active:hidden ms-auto block w-4 h-4 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                        ></path>
-                                    </svg>
-                                </button>
-
-                                <div
-                                    id="projects-accordion"
-                                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"
-                                >
-                                    <ul class="pt-2 ps-2">
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 1
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 2
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                                href="#"
-                                            >
-                                                Link 3
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li>
-                                <a
-                                    class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                    href="#"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <rect
-                                            width="18"
-                                            height="18"
-                                            x="3"
-                                            y="4"
-                                            rx="2"
-                                            ry="2"
-                                        />
-                                        <line x1="16" x2="16" y1="2" y2="6" />
-                                        <line x1="8" x2="8" y1="2" y2="6" />
-                                        <line x1="3" x2="21" y1="10" y2="10" />
-                                        <path d="M8 14h.01" />
-                                        <path d="M12 14h.01" />
-                                        <path d="M16 14h.01" />
-                                        <path d="M8 18h.01" />
-                                        <path d="M12 18h.01" />
-                                        <path d="M16 18h.01" />
-                                    </svg>
-                                    Calendar
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                                    href="#"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                                    </svg>
-                                    Documentation
-                                </a>
                             </li>
                         </ul>
                     </nav>
                 </div>
                 <div className="flex-1">
-                    <BlockStack gap="500">
-                        <Text variant="headingXl" as="h4">
-                            Activation Area
-                        </Text>
-                        <Divider borderColor="border" />
-                        <Card>
-                            <div className="flex items-center">
-                                <div className="flex flex-col">
-                                    <OptionList
-                                        title="Where you want to active Pre Order?"
-                                        onChange={setSelected}
-                                        options={[
-                                            {
-                                                value: "online_store",
-                                                label: "Product Page",
-                                            },
-                                            {
-                                                value: "messenger",
-                                                label: "Collection Page",
-                                            },
-                                        ]}
-                                        selected={selected}
-                                        allowMultiple
-                                    />
+                    {flagActivation && (
+                        <BlockStack gap="500">
+                            <Text variant="headingXl" as="h4">
+                                Activation Area
+                            </Text>
+                            <Divider borderColor="border" />
+                            <Card>
+                                <div className="flex items-center">
+                                    <div className="flex flex-col">
+                                        <Text variant="headingMd" as="h5">
+                                            Activation Status
+                                        </Text>
+                                        <p>
+                                            Current Status:{" "}
+                                            {isPreOrderActive && (
+                                                <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 ml-1">
+                                                    On
+                                                </span>
+                                            )}
+                                            {!isPreOrderActive && (
+                                                <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ml-1">
+                                                    Off
+                                                </span>
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div className="ml-auto">
+                                        {isPreOrderActive && (
+                                            <Button
+                                                variant="primary"
+                                                tone="critical"
+                                                onClick={changePreOrderStatus}
+                                            >
+                                                Deactive
+                                            </Button>
+                                        )}
+                                        {!isPreOrderActive && (
+                                            <Button
+                                                variant="primary"
+                                                onClick={changePreOrderStatus}
+                                            >
+                                                Active
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </Card>
-                    </BlockStack>
+                            </Card>
+                            <Card>
+                                <div className="flex items-center">
+                                    <div className="flex flex-col w-full">
+                                        <div>
+                                            <Text variant="headingMd" as="h6">
+                                                Where to show
+                                            </Text>
+                                            <Text>
+                                                You will be able to active this
+                                                on Product page and Collection
+                                                page.{" "}
+                                            </Text>
+                                            <div className="mt-3 mb-2">
+                                                <Divider borderColor="border" />
+                                            </div>
+                                        </div>
+                                        <OptionList
+                                            onChange={setSelected}
+                                            options={[
+                                                {
+                                                    value: "online_store",
+                                                    label: "Product Page",
+                                                },
+                                                {
+                                                    value: "messenger",
+                                                    label: "Collection Page",
+                                                },
+                                            ]}
+                                            selected={selected}
+                                            allowMultiple
+                                        />
+                                    </div>
+                                </div>
+                            </Card>
+                        </BlockStack>
+                    )}
+
+                    {flagProductSetup && (
+                        <BlockStack gap="500">
+                            <Text variant="headingXl" as="h4">
+                                Product List
+                            </Text>
+                            <Divider borderColor="border" />
+                            <Card>
+                                <EmptyState
+                                    heading="Products for Pre Order"
+                                    action={{ content: "Add Product" }}
+                                    secondaryAction={{
+                                        content: "Learn more",
+                                        url: "https://help.shopify.com",
+                                    }}
+                                    image="https://cdn.shopify.com/shopifycloud/web/assets/v1/67d1bd2ad29c4adc.svg"
+                                >
+                                    <p>Select Products on which you want set up Pre Order.</p>
+                                </EmptyState>
+                            </Card>
+                        </BlockStack>
+                    )}
                 </div>
             </div>
         </Page>
