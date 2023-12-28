@@ -310,140 +310,134 @@ export default function PreOrder() {
     const [flagActivation, setFlagActivation] = useState(true);
     const [flagProductSetup, setFlagProductSetup] = useState(false);
 
-    const [productList, setProductList] = useState([]);
-
     const [preOrderLimit, setPreOrderLimit] = useState(
         "preOrder-has-daily-limit"
     );
     
-    const [preOrderButtonText, setPreOrderButtonText] = useState("Pre Order");
-    const [preOrderUnderButtonText, setPreOrderUnderButtonText] = useState(
-        "We will deliver your product as soon as possible."
-    );
-    const [preOrderTotalLimit, setPreOrderTotalLimit] = useState(0);
-    const [preOrderDailyTotalLimit, setPreOrderDailyTotalLimit] = useState(0);
+    // const [preOrderButtonText, setPreOrderButtonText] = useState("Pre Order");
+    // const [preOrderUnderButtonText, setPreOrderUnderButtonText] = useState(
+    //     "We will deliver your product as soon as possible."
+    // );
+    // const [preOrderTotalLimit, setPreOrderTotalLimit] = useState(0);
+    // const [preOrderDailyTotalLimit, setPreOrderDailyTotalLimit] = useState(0);
 
-    const [{ month, year }, setDate] = useState({ month: 1, year: 2018 });
-    const [selectedDates, setSelectedDates] = useState({
-        start: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
-        end: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
-    });
+    // const [{ month, year }, setDate] = useState({ month: 1, year: 2018 });
+    // const [selectedDates, setSelectedDates] = useState({
+    //     start: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
+    //     end: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
+    // });
 
-    const [connected, setConnected] = useState(false);
-    const accountName = connected ? "Jane Appleseed" : "";
+    // const [connected, setConnected] = useState(false);
 
-    const handleAction = useCallback(() => {
-        setConnected((connected) => !connected);
-    }, []);
-
-    const buttonText = connected ? "Disconnect" : "Connect";
-    const details = connected ? "Status: On" : "Status: Off";
+    // const handleAction = useCallback(() => {
+    //     setConnected((connected) => !connected);
+    // }, []);
 
     const [
         activePreOrderButtonTextPreviewModal,
         setActivePreOrderButtonTextPreviewModal,
     ] = useState(false);
 
-    const [preOrderTimeRemaining, setPreOrderTimeRemaining] = useState(false);
-    const [preOrderTimeRemainingMessage, setPreOrderTimeRemainingMessage] =
-        useState("Only D days are remaining.");
+    // const [preOrderTimeRemaining, setPreOrderTimeRemaining] = useState(false);
+    // const [preOrderTimeRemainingMessage, setPreOrderTimeRemainingMessage] =
+    //     useState("Only D days are remaining.");
 
     const [preOrderEndDateShowing, setPreOrderEndDateShowing] = useState(false);
     preOrderEndDateShowing;
-    const [preOrderEndDateMessage, setPreOrderEndDateMessage] = useState(
-        "Pre Order ends on MM/DD/YYYY"
-    );
+    // const [preOrderEndDateMessage, setPreOrderEndDateMessage] = useState(
+    //     "Pre Order ends on MM/DD/YYYY"
+    // );
 
-    const [preOrderEstimatedDateMessage, setPreOrderEstimatedDateMessage] =
-        useState("Pre Order Product will be available on MM/DD/YYYY");
+    // const [preOrderEstimatedDateMessage, setPreOrderEstimatedDateMessage] =
+    //     useState("Pre Order Product will be available on MM/DD/YYYY");
 
-    const [productResourcePicker, setProductResourcePicker] = useState(false);
+    // const [productResourcePicker, setProductResourcePicker] = useState(false);
 
-    const handleChangePreOrderEndDateShowing = useCallback(
-        (newChecked) => setPreOrderEndDateShowing(newChecked),
-        []
-    );
+    // const handleChangePreOrderEndDateShowing = useCallback(
+    //     (newChecked) => setPreOrderEndDateShowing(newChecked),
+    //     []
+    // );
 
-    const handleChangePreOrderTotalLimit = useCallback(
-        (newValue) => setPreOrderTotalLimit(newValue),
-        []
-    );
+    // const handleChangePreOrderTotalLimit = useCallback(
+    //     (newValue) => setPreOrderTotalLimit(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderDailyTotalLimit = useCallback(
-        (newValue) => setPreOrderDailyTotalLimit(newValue),
-        []
-    );
+    // const handleChangePreOrderDailyTotalLimit = useCallback(
+    //     (newValue) => setPreOrderDailyTotalLimit(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderButtonText = useCallback(
-        (newValue) => setPreOrderButtonText(newValue),
-        []
-    );
+    // const handleChangePreOrderButtonText = useCallback(
+    //     (newValue) => setPreOrderButtonText(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderUnderButtonText = useCallback(
-        (newValue) => setPreOrderUnderButtonText(newValue),
-        []
-    );
+    // const handleChangePreOrderUnderButtonText = useCallback(
+    //     (newValue) => setPreOrderUnderButtonText(newValue),
+    //     []
+    // );
 
-    const handleChangeOpenPreOrderButtonTextPreview = useCallback(
-        () =>
-            setActivePreOrderButtonTextPreviewModal(
-                !activePreOrderButtonTextPreviewModal
-            ),
-        [activePreOrderButtonTextPreviewModal]
-    );
+    // const handleChangeOpenPreOrderButtonTextPreview = useCallback(
+    //     () =>
+    //         setActivePreOrderButtonTextPreviewModal(
+    //             !activePreOrderButtonTextPreviewModal
+    //         ),
+    //     [activePreOrderButtonTextPreviewModal]
+    // );
 
-    const handleChangePreOrderEndDateMessage = useCallback(
-        (newValue) => setPreOrderEndDateMessage(newValue),
-        []
-    );
+    // const handleChangePreOrderEndDateMessage = useCallback(
+    //     (newValue) => setPreOrderEndDateMessage(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderTimeRemainingMessage = useCallback(
-        (newValue) => setPreOrderTimeRemainingMessage(newValue),
-        []
-    );
+    // const handleChangePreOrderTimeRemainingMessage = useCallback(
+    //     (newValue) => setPreOrderTimeRemainingMessage(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderTimeRemaining = useCallback(
-        (newValue) => setPreOrderTimeRemaining(newValue),
-        []
-    );
+    // const handleChangePreOrderTimeRemaining = useCallback(
+    //     (newValue) => setPreOrderTimeRemaining(newValue),
+    //     []
+    // );
 
-    const handleChangePreOrderEstimatedDateMessage = useCallback(
-        (newValue) => setPreOrderEstimatedDateMessage(newValue),
-        []
-    );
+    // const handleChangePreOrderEstimatedDateMessage = useCallback(
+    //     (newValue) => setPreOrderEstimatedDateMessage(newValue),
+    //     []
+    // );
 
-    const GetPreviewModal = ({ imgSrc }) => {
-        return (
-            <div style={{ height: "500px" }}>
-                <Modal
-                    open={activePreOrderButtonTextPreviewModal}
-                    onClose={handleChangeOpenPreOrderButtonTextPreview}
-                    title="Reach more shoppers with Instagram product tags"
-                    secondaryActions={[
-                        {
-                            content: "Close",
-                            onAction: handleChangeOpenPreOrderButtonTextPreview,
-                        },
-                    ]}
-                >
-                    <Modal.Section>
-                        <TextContainer>
-                            <img
-                                src={imgSrc}
-                                alt="Preview of Pre Order Button and Under button Text"
-                                className="mx-auto"
-                            />
-                        </TextContainer>
-                    </Modal.Section>
-                </Modal>
-            </div>
-        );
-    };
+    // const GetPreviewModal = ({ imgSrc }) => {
+    //     return (
+    //         <div style={{ height: "500px" }}>
+    //             <Modal
+    //                 open={activePreOrderButtonTextPreviewModal}
+    //                 onClose={handleChangeOpenPreOrderButtonTextPreview}
+    //                 title="Reach more shoppers with Instagram product tags"
+    //                 secondaryActions={[
+    //                     {
+    //                         content: "Close",
+    //                         onAction: handleChangeOpenPreOrderButtonTextPreview,
+    //                     },
+    //                 ]}
+    //             >
+    //                 <Modal.Section>
+    //                     <TextContainer>
+    //                         <img
+    //                             src={imgSrc}
+    //                             alt="Preview of Pre Order Button and Under button Text"
+    //                             className="mx-auto"
+    //                         />
+    //                     </TextContainer>
+    //                 </Modal.Section>
+    //             </Modal>
+    //         </div>
+    //     );
+    // };
 
-    const preOrderProductList = {
-        singular: "Product List",
-        plural: "Product List",
-    };
+    // const preOrderProductList = {
+    //     singular: "Product List",
+    //     plural: "Product List",
+    // };
 
     function activeActivation() {
         setFlagActivation(!flagActivation);
@@ -474,7 +468,7 @@ export default function PreOrder() {
             <div className="flex">
                 <div
                     id="docs-sidebar"
-                    class="preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
+                    class="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
                 >
                     <nav
                         class="hs-accordion-group px-2 py-3 w-full flex flex-col flex-wrap"
@@ -526,8 +520,8 @@ export default function PreOrder() {
                     </nav>
                 </div>
                 <div className="flex-1">
-                    <Activation flagActivation={flagActivation} />
-                    <ProductTable flagProductSetup={flagProductSetup}/>
+                    {flagActivation && <Activation /> }
+                    {flagProductSetup && <ProductTable />}
                 </div>
             </div>
         </Page>

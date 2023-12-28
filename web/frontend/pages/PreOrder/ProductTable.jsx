@@ -1,13 +1,15 @@
 import {
     Badge,
+    BlockStack,
     Card,
     IndexTable,
     Text,
     useBreakpoints,
     useIndexResourceState,
+    Divider
 } from "@shopify/polaris";
 
-export default function ProductTable({ flagProductSetup }) {
+export default function ProductTable() {
     const orders = [
         {
             id: "1020",
@@ -40,13 +42,13 @@ export default function ProductTable({ flagProductSetup }) {
         },
     ];
 
+    const { selectedResources, allResourcesSelected, handleSelectionChange } =
+        useIndexResourceState(orders);
+
     const resourceName = {
         singular: "order",
         plural: "orders",
     };
-
-    const { selectedResources, allResourcesSelected, handleSelectionChange } =
-        useIndexResourceState(orders);
 
     const rowMarkup = orders.map(
         (
@@ -86,7 +88,11 @@ export default function ProductTable({ flagProductSetup }) {
     );
     return (
         <>
-            {flagProductSetup && (
+            <BlockStack gap="500">
+                <Text variant="headingXl" as="h4">
+                    Product List
+                </Text>
+                <Divider borderColor="border" />
                 <Card>
                     <IndexTable
                         condensed={useBreakpoints().smDown}
@@ -113,7 +119,7 @@ export default function ProductTable({ flagProductSetup }) {
                         {rowMarkup}
                     </IndexTable>
                 </Card>
-            )}
+            </BlockStack>
         </>
     );
 }
