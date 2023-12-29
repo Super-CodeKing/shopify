@@ -16,7 +16,7 @@ import {
     Divider,
     OptionList,
     Icon,
-    IndexTable,
+    Avatar,
     useBreakpoints,
     Badge,
     useIndexResourceState,
@@ -24,9 +24,22 @@ import {
 import { TitleBar, ResourcePicker } from "@shopify/app-bridge-react";
 import { useCallback, useState } from "react";
 import "../../assets/preorder.css";
-import { StatusActiveMajor, ProductsMajor } from "@shopify/polaris-icons";
+import {
+    ChatMajor,
+    StatusActiveMajor,
+    ProductsMajor,
+    OrdersFilledMinor,
+    CalendarTimeMinor,
+    DiscountsMajor,
+    ColorsMajor,
+    CodeMajor,
+    OrdersMinor
+} from "@shopify/polaris-icons";
 import Activation from "./Activation";
 import ProductTable from "./ProductTable";
+import OrderLimit from "./OrderLimit";
+import Schedule from "./Schedule";
+import DisplayMessage from "./DisplayMessage";
 
 export default function PreOrder() {
     const productListDummy = [
@@ -309,11 +322,18 @@ export default function PreOrder() {
 
     const [flagActivation, setFlagActivation] = useState(true);
     const [flagProductSetup, setFlagProductSetup] = useState(false);
+    const [flagOrderLimit, setFlagOrderLimit] = useState(false);
+    const [flagOrderSchedule, setFlagOrderSchedule] = useState(false);
+    const [flagDisplayMessage, setFlagDisplayMessage] = useState(false);
+    const [flagBadgeDesign, setFlagBadgeDesign] = useState(false);
+    const [flagColorNText, setFlagColorNText] = useState(false);
+    const [flagCustomCoding, setFlagCustomCoding] = useState(false);
+    const [flagPreOrderProducts, setFlagPreOrderProducts] = useState(false)
 
     const [preOrderLimit, setPreOrderLimit] = useState(
         "preOrder-has-daily-limit"
     );
-    
+
     // const [preOrderButtonText, setPreOrderButtonText] = useState("Pre Order");
     // const [preOrderUnderButtonText, setPreOrderUnderButtonText] = useState(
     //     "We will deliver your product as soon as possible."
@@ -442,11 +462,21 @@ export default function PreOrder() {
     function activeActivation() {
         setFlagActivation(!flagActivation);
         setFlagProductSetup(!!flagActivation);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
     }
 
     function activeProductSetup() {
         setFlagActivation(!!flagProductSetup);
         setFlagProductSetup(!flagProductSetup);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
     }
 
     function cancelResourcePicker() {
@@ -456,6 +486,56 @@ export default function PreOrder() {
     function selectProducts(selectedProducts) {
         setProductList(productListDummy);
         console.log("Selected Products: ", selectedProducts.selection);
+    }
+
+    function activeOrderLimit() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(true);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
+    }
+
+    function activeOrderSchedule() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(true);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
+    }
+
+    function activeOrderDisplayMessage() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(true);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
+    }
+
+    function activeColorNText() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(true);
+        setFlagCustomCoding(false);
+    }
+
+    function activeCustomCoding() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(true);
     }
 
     return (
@@ -468,20 +548,33 @@ export default function PreOrder() {
             <div className="flex">
                 <div
                     id="docs-sidebar"
-                    class="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 pb-10 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
+                    class="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
                 >
                     <nav
-                        class="hs-accordion-group px-2 py-3 w-full flex flex-col flex-wrap"
+                        class="hs-accordion-group pb-3 w-full flex flex-col flex-wrap"
                         data-hs-accordion-always-open
                     >
-                        <ul class="space-y-1.5">
+                        <div class="gap-2 flex items-center bg-gray-200 justify-start p-3">
+                            <div class="flex grow-0 shrink-0 basis-auto items-center">
+                                <Avatar initials="WW" name="Woluwayemisi Weun-Jung" size="xl"/>
+                            </div>
+                            <div>
+                                <h3 class="BHLa_">ShopQuizDQ</h3>
+                                <p class="MIA9A">
+                                    <span class="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
+                                        shopquizdq.myshopify.com
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <ul class="space-y-1.5 mt-3 px-2">
                             <li
                                 className="cursor-pointer"
                                 onClick={() => activeActivation()}
                             >
                                 <div
                                     className={
-                                        "rounded-lg py-2 px-2 " +
+                                        "rounded-lg py-1 px-2 " +
                                         (flagActivation
                                             ? "bg-slate-200"
                                             : "bg-white")
@@ -502,7 +595,7 @@ export default function PreOrder() {
                             >
                                 <div
                                     className={
-                                        "rounded-lg py-2 px-2 " +
+                                        "rounded-lg py-1 px-2 " +
                                         (flagProductSetup
                                             ? "bg-slate-200"
                                             : "bg-white")
@@ -516,12 +609,162 @@ export default function PreOrder() {
                                     </div>
                                 </div>
                             </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeProductSetup()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagPreOrderProducts
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={OrdersMinor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Pre Orders</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeColorNText()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagColorNText
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={ColorsMajor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Colors & Text</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeOrderLimit()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagOrderLimit
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={OrdersFilledMinor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Order Limit</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeOrderSchedule()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagOrderSchedule
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={CalendarTimeMinor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Set Schedule</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeOrderDisplayMessage()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagDisplayMessage
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={ChatMajor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Display Message</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeBadgeDesign()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagBadgeDesign
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={DiscountsMajor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Badge Design</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li
+                                className="cursor-pointer"
+                                onClick={() => activeCustomCoding()}
+                            >
+                                <div
+                                    className={
+                                        "rounded-lg py-1 px-2 " +
+                                        (flagCustomCoding
+                                            ? "bg-slate-200"
+                                            : "bg-white")
+                                    }
+                                >
+                                    <div className="flex justify-start">
+                                        <Icon source={CodeMajor} />
+                                        <div className="ml-2 flex-1">
+                                            <Text>Custom CSS</Text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
                     </nav>
                 </div>
                 <div className="flex-1">
-                    {flagActivation && <Activation /> }
+                    {flagActivation && <Activation />}
                     {flagProductSetup && <ProductTable />}
+                    {flagOrderLimit && <OrderLimit />}
+                    {flagOrderSchedule && <Schedule />}
+                    {flagDisplayMessage && <DisplayMessage />}
                 </div>
             </div>
         </Page>

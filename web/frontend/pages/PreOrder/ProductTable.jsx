@@ -6,7 +6,8 @@ import {
     Text,
     useBreakpoints,
     useIndexResourceState,
-    Divider
+    Divider,
+    Button,
 } from "@shopify/polaris";
 
 export default function ProductTable() {
@@ -89,9 +90,15 @@ export default function ProductTable() {
     return (
         <>
             <BlockStack gap="500">
-                <Text variant="headingXl" as="h4">
-                    Product List
-                </Text>
+                <div className="flex">
+                    <Text variant="headingXl" as="h4">
+                        Product List
+                    </Text>
+                    <div className="ml-auto">
+                        <Button variant="primary">Add Product</Button>
+                    </div>
+                </div>
+
                 <Divider borderColor="border" />
                 <Card>
                     <IndexTable
@@ -105,15 +112,12 @@ export default function ProductTable() {
                         }
                         onSelectionChange={handleSelectionChange}
                         headings={[
-                            { title: "Order" },
-                            { title: "Date" },
-                            { title: "Customer" },
-                            {
-                                title: "Total",
-                                alignment: "end",
-                            },
-                            { title: "Payment status" },
-                            { title: "Fulfillment status" },
+                            { title: "Title" },
+                            { title: "Start Date" },
+                            { title: "End Date" },
+                            { title: "Order Limit" },
+                            { title: "Restock Alert" },
+                            { title: "Actions" },
                         ]}
                     >
                         {rowMarkup}
