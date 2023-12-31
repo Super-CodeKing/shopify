@@ -1,5 +1,5 @@
 import {
-    Badge,
+    Icon,
     BlockStack,
     Card,
     IndexTable,
@@ -8,38 +8,71 @@ import {
     useIndexResourceState,
     Divider,
     Button,
+    Checkbox,
 } from "@shopify/polaris";
+import { EditMajor, DeleteMajor } from "@shopify/polaris-icons";
+import { ResourcePicker } from "@shopify/app-bridge-react";
+import { useState } from "react";
 
 export default function ProductTable() {
+    const [checked, setChecked] = useState(true);
+    const [openResourcePicker, setOpenResourcePicker] = useState(false)
+
+    const handleChange = () => {
+        setChecked(!checked);
+    };
+
+    const selectProduct = (SelectPayload) => {
+        setOpenResourcePicker(false)
+        console.log(SelectPayload);
+    };
+    const cancelResourcePicker = () => {
+        setOpenResourcePicker(false);
+    };
+    const activeResourcePicker = () => {
+        console.log("Active Resource Picker", openResourcePicker);
+        setOpenResourcePicker(true);
+    };
+
     const orders = [
         {
             id: "1020",
-            order: "#1020",
-            date: "Jul 20 at 4:34pm",
-            customer: "Jaydon Stanton",
-            total: "$969.44",
-            paymentStatus: <Badge progress="complete">Paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-        },
-        {
-            id: "1019",
-            order: "#1019",
-            date: "Jul 20 at 3:46pm",
-            customer: "Ruben Westerfelt",
-            total: "$701.19",
-            paymentStatus: (
-                <Badge progress="partiallyComplete">Partially paid</Badge>
+            product_title: "The Collection Snowboard: Liquid",
+            start_date: "Jul 20, 2023",
+            end_date: "Jul 27, 2023",
+            order_limit: 10,
+            display_message: (
+                <Checkbox checked={checked} onChange={handleChange} />
             ),
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+            display_badge: (
+                <Checkbox checked={checked} onChange={handleChange} />
+            ),
         },
         {
-            id: "1018",
-            order: "#1018",
-            date: "Jul 20 at 3.44pm",
-            customer: "Leo Carder",
-            total: "$798.24",
-            paymentStatus: <Badge progress="complete">Paid</Badge>,
-            fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
+            id: "1021",
+            product_title: "The Collection Snowboard: Silver",
+            start_date: "Jul 20, 2023",
+            end_date: "Jul 27, 2023",
+            order_limit: 10,
+            display_message: (
+                <Checkbox checked={checked} onChange={handleChange} />
+            ),
+            display_badge: (
+                <Checkbox checked={checked} onChange={handleChange} />
+            ),
+        },
+        {
+            id: "1022",
+            product_title: "The Collection Snowboard: Gold",
+            start_date: "Jul 20, 2023",
+            end_date: "Jul 27, 2023",
+            order_limit: 10,
+            display_message: (
+                <Checkbox checked={checked} onChange={handleChange} />
+            ),
+            display_badge: (
+                <Checkbox checked={checked} onChange={handleChange} />
+            ),
         },
     ];
 
@@ -55,12 +88,12 @@ export default function ProductTable() {
         (
             {
                 id,
-                order,
-                date,
-                customer,
-                total,
-                paymentStatus,
-                fulfillmentStatus,
+                product_title,
+                start_date,
+                end_date,
+                order_limit,
+                display_message,
+                display_badge,
             },
             index
         ) => (
@@ -72,30 +105,48 @@ export default function ProductTable() {
             >
                 <IndexTable.Cell>
                     <Text variant="bodyMd" fontWeight="bold" as="span">
-                        {order}
+                        {product_title}
                     </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell>{date}</IndexTable.Cell>
-                <IndexTable.Cell>{customer}</IndexTable.Cell>
+                <IndexTable.Cell>{start_date}</IndexTable.Cell>
+                <IndexTable.Cell>{end_date}</IndexTable.Cell>
                 <IndexTable.Cell>
-                    <Text as="span" alignment="end" numeric>
-                        {total}
+                    <Text as="span" numeric alignment="justify">
+                        {order_limit}
                     </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell>{paymentStatus}</IndexTable.Cell>
-                <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell>
+                <IndexTable.Cell>{display_message}</IndexTable.Cell>
+                <IndexTable.Cell>{display_badge}</IndexTable.Cell>
+                <IndexTable.Cell>
+                    <div className="flex">
+                        <Icon source={EditMajor} tone="base" />
+                        <Icon source={DeleteMajor} tone="base" />
+                    </div>
+                </IndexTable.Cell>
             </IndexTable.Row>
         )
     );
     return (
         <>
             <BlockStack gap="500">
+                <ResourcePicker 
+                    resourceType="Product" 
+                    open={openResourcePicker}
+                    selectMultiple 
+                    onCancel={() => cancelResourcePicker()}
+                    onSelection={(SelectPayload) => selectProduct(SelectPayload)}
+                />
                 <div className="flex">
                     <Text variant="headingXl" as="h4">
                         Product List
                     </Text>
                     <div className="ml-auto">
-                        <Button variant="primary">Add Product</Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => activeResourcePicker()}
+                        >
+                            Add Product
+                        </Button>
                     </div>
                 </div>
 
@@ -116,7 +167,8 @@ export default function ProductTable() {
                             { title: "Start Date" },
                             { title: "End Date" },
                             { title: "Order Limit" },
-                            { title: "Restock Alert" },
+                            { title: "Display Message" },
+                            { title: "Display Badge" },
                             { title: "Actions" },
                         ]}
                     >

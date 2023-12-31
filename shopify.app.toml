@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "e2f917273995ea9e32bafc0a847352c1"
-application_url = "https://cart-bytes-bizrate-mustang.trycloudflare.com"
+application_url = "https://casio-justice-sender-prairie.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://cart-bytes-bizrate-mustang.trycloudflare.com/auth/callback",
-  "https://cart-bytes-bizrate-mustang.trycloudflare.com/auth/shopify/callback",
-  "https://cart-bytes-bizrate-mustang.trycloudflare.com/api/auth/callback"
+  "https://casio-justice-sender-prairie.trycloudflare.com/auth/callback",
+  "https://casio-justice-sender-prairie.trycloudflare.com/auth/shopify/callback",
+  "https://casio-justice-sender-prairie.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
