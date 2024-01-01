@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ShopifyProductCreatorException;
+use App\Http\Controllers\PreOrderSetupController;
 use App\Lib\AuthRedirection;
 use App\Lib\EnsureBilling;
 use App\Lib\ProductCreator;
@@ -96,6 +97,7 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
+Route::get('/api/preorder/get', [PreOrderSetupController::class, 'get'])->middleware('shopify.auth');
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
