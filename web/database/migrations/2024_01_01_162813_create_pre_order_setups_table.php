@@ -15,6 +15,7 @@ class CreatePreOrderSetupsTable extends Migration
     {
         Schema::create('pre_order_setups', function (Blueprint $table) {
             $table->id();
+            $table->string('shop');
             $table->boolean('active')->default(true);
             $table->boolean('active_on_product')->default(true);
             $table->boolean('active_on_collection')->default(false);

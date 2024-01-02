@@ -97,7 +97,9 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
-Route::get('/api/preorder/get', [PreOrderSetupController::class, 'get'])->middleware('shopify.auth');
+Route::get('/api/preorder/init', [PreOrderSetupController::class, 'init'])->middleware('shopify.auth');
+Route::get('/api/preorder/save', [PreOrderSetupController::class, 'save'])->middleware('shopify.auth');
+
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active

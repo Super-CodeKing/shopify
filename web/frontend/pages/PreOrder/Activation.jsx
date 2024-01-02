@@ -6,15 +6,38 @@ import {
     OptionList,
     Text,
 } from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export default function Activation() {
+    const fetch = useAuthenticatedFetch();
     const [isPreOrderActive, setIsPreOrderStatus] = useState(true);
     const [selected, setSelected] = useState([]);
 
     const changePreOrderStatus = useCallback(() => {
         setIsPreOrderStatus(!isPreOrderActive);
     });
+
+    const getPreOrderInitSettings = async () => {
+        const response = await fetch("/api/preorder/init");
+
+        if (response.ok) {
+            console.log("Success: ", response);
+        } else {
+            console.log("Error: ", response);
+        }
+    };
+
+    const saveActivation = () => {
+        console.log(selected);
+        console.log(isPreOrderActive);
+    }
+
+    useEffect(() => {
+        getPreOrderInitSettings();
+    }, []);
+
     return (
         <>
             <BlockStack gap="500">
@@ -82,11 +105,11 @@ export default function Activation() {
                                 onChange={setSelected}
                                 options={[
                                     {
-                                        value: "online_store",
+                                        value: "product_page",
                                         label: "Product Page",
                                     },
                                     {
-                                        value: "messenger",
+                                        value: "collection_page",
                                         label: "Collection Page",
                                     },
                                 ]}
@@ -97,6 +120,9 @@ export default function Activation() {
                     </div>
                 </Card>
             </BlockStack>
+            <div className="mt-3">
+                <Button variant="primary" size="large" onClick={() => saveActivation()}>Save</Button>
+            </div>
         </>
     );
 }
