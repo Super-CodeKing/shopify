@@ -3,8 +3,10 @@ import {
     Button,
     Card,
     Divider,
-    OptionList,
+    Checkbox,
     Text,
+    Toast,
+    Frame,
 } from "@shopify/polaris";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
@@ -12,77 +14,81 @@ import { useAuthenticatedFetch } from "../../hooks";
 
 export default function Activation() {
     const fetch = useAuthenticatedFetch();
-    const [isPreOrderActive, setIsPreOrderStatus] = useState(true);
-    const [
-        preOrderActivationOnProductOrCollection,
-        setPreOrderActivationOnProductOrCollection,
-    ] = useState([]);
 
-    const changePreOrderStatus = useCallback(() => {
-        setIsPreOrderStatus(!isPreOrderActive);
-    });
+    const [isPreOrderActive, setIsPreOrderActive] = useState(true);
+    const [checkedProductPage, setCheckedProductPage] = useState(true);
+    const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
+    const [toastActive, setToastActive] = useState(false);
+
+    const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
+    const activeOnProductPage = () =>
+        setCheckedProductPage(!checkedProductPage);
+    const activeOnCollectionPage = () =>
+        setCheckedCollectionPage(!checkedCollectionPage);
+
+    const toggleToastActive = useCallback(
+        () => setToastActive((toastActive) => !toastActive),
+        []
+    );
+
+    const toastMarkup = toastActive ? (
+        <Toast content="Activation Data Saved Successfully!" onDismiss={toggleToastActive} />
+    ) : null;
+
+    const setActivationData = (preOrderInitData) => {
+        let activation = preOrderInitData.active === 1 ? true : false;
+        setIsPreOrderActive(activation);
+
+        let poc = preOrderInitData.active_on_collection;
+        let pop = preOrderInitData.active_on_product;
+
+        if (poc === 1 && pop === 1) {
+            setCheckedProductPage(true);
+            setCheckedCollectionPage(true);
+        } else if (poc === 1 && pop === 0) {
+            setCheckedProductPage(false);
+            setCheckedCollectionPage(true);
+        } else if (poc === 0 && pop === 1) {
+            setCheckedProductPage(true);
+            setCheckedCollectionPage(false);
+        } else {
+            setCheckedProductPage(false);
+            setCheckedCollectionPage(false);
+        }
+    };
 
     const getPreOrderInitSettings = async () => {
         const response = await fetch("/api/preorder/init");
 
         if (response.ok) {
-            const responseData = await response.json();
-            console.log("Success: ", responseData);
-
+            const preOrderInitData = await response.json();
+            console.log("Get Pre Order Init Data ", preOrderInitData);
+            setActivationData(preOrderInitData);
         } else {
-            console.log("Error: ", response);
+            console.log("Error in Activaing Pre Order: ", response);
+            throw new Error(`HTTP error ${response.status}`);
         }
     };
 
-    const saveActivation = async () => {
+    const savePreOrderInitActivation = async () => {
         const formData = new FormData();
         formData.append("active", isPreOrderActive);
-
-        let activeOnProduct = true;
-        let activeOnCollection = false;
-
-        if (preOrderActivationOnProductOrCollection.length === 2) 
-        {
-            activeOnProduct = true;
-            activeOnCollection = true;
-
-            formData.append("active_on_product", activeOnProduct);
-            formData.append("active_on_collection", activeOnCollection);
-
-        } 
-        else if (preOrderActivationOnProductOrCollection.length === 1) 
-        {
-            if (preOrderActivationOnProductOrCollection[0] === "product_page") 
-            {
-                activeOnProduct = true;
-                formData.append("active_on_product", activeOnProduct);
-            } 
-            else 
-            {
-                activeOnCollection = true;
-                formData.append("active_on_collection", activeOnCollection);
-            }
-        } 
-        else 
-        {
-            activeOnProduct = false;
-            activeOnCollection = false;
-
-            formData.append("active_on_product", activeOnProduct);
-            formData.append("active_on_collection", activeOnCollection);
-        }
+        formData.append("active_on_product", checkedProductPage);
+        formData.append("active_on_collection", checkedCollectionPage);
 
         const response = await fetch("/api/preorder/save", {
             method: "POST",
-            body: formData ? formData : JSON.stringify(data), 
+            body: formData ? formData : JSON.stringify(data),
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }
 
-        const responseData = await response.json();
-        getPreOrderInitSettings();
+        if (response.ok) {
+            toggleToastActive(true);
+            getPreOrderInitSettings();
+        }
     };
 
     useEffect(() => {
@@ -121,7 +127,7 @@ export default function Activation() {
                                 <Button
                                     variant="primary"
                                     tone="critical"
-                                    onClick={changePreOrderStatus}
+                                    onClick={() => changePreOrderStatus()}
                                 >
                                     Deactive
                                 </Button>
@@ -129,7 +135,7 @@ export default function Activation() {
                             {!isPreOrderActive && (
                                 <Button
                                     variant="primary"
-                                    onClick={changePreOrderStatus}
+                                    onClick={() => changePreOrderStatus()}
                                 >
                                     Active
                                 </Button>
@@ -152,25 +158,21 @@ export default function Activation() {
                                     <Divider borderColor="border" />
                                 </div>
                             </div>
-                            <OptionList
-                                onChange={
-                                    setPreOrderActivationOnProductOrCollection
-                                }
-                                options={[
-                                    {
-                                        value: "product_page",
-                                        label: "Product Page",
-                                    },
-                                    {
-                                        value: "collection_page",
-                                        label: "Collection Page",
-                                    },
-                                ]}
-                                selected={
-                                    preOrderActivationOnProductOrCollection
-                                }
-                                allowMultiple
-                            />
+                            <div className="mt-1 flex flex-col">
+                                <div className="pb-1">
+                                    <Checkbox
+                                        label="Product Page"
+                                        checked={checkedProductPage}
+                                        onChange={() => activeOnProductPage()}
+                                    />
+                                </div>
+
+                                <Checkbox
+                                    label="Collection Page"
+                                    checked={checkedCollectionPage}
+                                    onChange={() => activeOnCollectionPage()}
+                                />
+                            </div>
                         </div>
                     </div>
                 </Card>
@@ -179,10 +181,11 @@ export default function Activation() {
                 <Button
                     variant="primary"
                     size="large"
-                    onClick={() => saveActivation()}
+                    onClick={() => savePreOrderInitActivation()}
                 >
                     Save
                 </Button>
+                <Frame>{toastMarkup}</Frame>
             </div>
         </>
     );

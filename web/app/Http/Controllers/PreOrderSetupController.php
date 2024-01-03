@@ -16,13 +16,11 @@ class PreOrderSetupController extends Controller
 
         $preOrderInitSettings = PreOrderSetup::where(['shop' => $shop])->first();
 
-        return response()->json(['data' => config('preorder')]);
         if (!$preOrderInitSettings) {
-            return config('preorder');
-            //return new JsonResponse(['PreOrderInitSetup' => config('preorder')]);
+            return response()->json(config('preorder'));
         }
 
-        return new JsonResponse(['PreOrderInitSetup' => $preOrderInitSettings]);
+        return response()->json($preOrderInitSettings);
     }
 
     public function save(Request $request)
@@ -30,22 +28,32 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
+        $activation = $request->active == 'true' ? 1 : 0;
+        $activation_product = $request->active_on_product == 'true' ? 1 : 0;
+        $activation_collection = $request->active_on_collection == 'true' ? 1 : 0;
+
         $preOrderInitSettings = PreOrderSetup::where(['shop' => $shop])->first();
         if (!$preOrderInitSettings) {
             $createdPreOrderSetup = PreOrderSetup::create([
                 'shop' => $shop,
-                'active' => $request->active,
-                'active_on_product' => $request->active_on_product,
-                'active_on_collection' => $request->active_on_collection
+                'active' => $activation,
+                'active_on_product' => $activation_product,
+                'active_on_collection' => $activation_collection
             ]);
-            return new JsonResponse($createdPreOrderSetup, 201);
+            return response()->json([
+                'message' => 'Pre Order Initial Data Saved Successfully.',
+                'data' => $createdPreOrderSetup
+            ], 201);
         } else {
             $updatedPreOrderSetup = PreOrderSetup::where('shop', $shop)->update([
-                'active' => $request->active,
-                'active_on_product' => $request->active_on_product,
-                'active_on_collection' => $request->active_on_collection
+                'active' => $activation,
+                'active_on_product' => $activation_product,
+                'active_on_collection' => $activation_collection
             ]);
-            return new JsonResponse($updatedPreOrderSetup, 200);
+            return response()->json([
+                'message' => 'Pre Order Initial Data Updated Successfully.',
+                'data' => $updatedPreOrderSetup
+            ], 200);
         }
     }
 }

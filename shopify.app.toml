@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "e2f917273995ea9e32bafc0a847352c1"
-application_url = "https://fascinating-unit-excluded-investigated.trycloudflare.com"
+application_url = "https://complications-bl-involved-happened.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://fascinating-unit-excluded-investigated.trycloudflare.com/auth/callback",
-  "https://fascinating-unit-excluded-investigated.trycloudflare.com/auth/shopify/callback",
-  "https://fascinating-unit-excluded-investigated.trycloudflare.com/api/auth/callback"
+  "https://complications-bl-involved-happened.trycloudflare.com/auth/callback",
+  "https://complications-bl-involved-happened.trycloudflare.com/auth/shopify/callback",
+  "https://complications-bl-involved-happened.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
