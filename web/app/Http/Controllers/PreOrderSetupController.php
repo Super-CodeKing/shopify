@@ -16,8 +16,10 @@ class PreOrderSetupController extends Controller
 
         $preOrderInitSettings = PreOrderSetup::where(['shop' => $shop])->first();
 
+        return response()->json(['data' => config('preorder')]);
         if (!$preOrderInitSettings) {
-            return new JsonResponse(['PreOrderInitSetup' => config('preorder')]);
+            return config('preorder');
+            //return new JsonResponse(['PreOrderInitSetup' => config('preorder')]);
         }
 
         return new JsonResponse(['PreOrderInitSetup' => $preOrderInitSettings]);

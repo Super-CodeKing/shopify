@@ -13,7 +13,10 @@ import { useAuthenticatedFetch } from "../../hooks";
 export default function Activation() {
     const fetch = useAuthenticatedFetch();
     const [isPreOrderActive, setIsPreOrderStatus] = useState(true);
-    const [selected, setSelected] = useState([]);
+    const [
+        preOrderActivationOnProductOrCollection,
+        setPreOrderActivationOnProductOrCollection,
+    ] = useState([]);
 
     const changePreOrderStatus = useCallback(() => {
         setIsPreOrderStatus(!isPreOrderActive);
@@ -23,16 +26,64 @@ export default function Activation() {
         const response = await fetch("/api/preorder/init");
 
         if (response.ok) {
-            console.log("Success: ", response);
+            const responseData = await response.json();
+            console.log("Success: ", responseData);
+
         } else {
             console.log("Error: ", response);
         }
     };
 
-    const saveActivation = () => {
-        console.log(selected);
-        console.log(isPreOrderActive);
-    }
+    const saveActivation = async () => {
+        const formData = new FormData();
+        formData.append("active", isPreOrderActive);
+
+        let activeOnProduct = true;
+        let activeOnCollection = false;
+
+        if (preOrderActivationOnProductOrCollection.length === 2) 
+        {
+            activeOnProduct = true;
+            activeOnCollection = true;
+
+            formData.append("active_on_product", activeOnProduct);
+            formData.append("active_on_collection", activeOnCollection);
+
+        } 
+        else if (preOrderActivationOnProductOrCollection.length === 1) 
+        {
+            if (preOrderActivationOnProductOrCollection[0] === "product_page") 
+            {
+                activeOnProduct = true;
+                formData.append("active_on_product", activeOnProduct);
+            } 
+            else 
+            {
+                activeOnCollection = true;
+                formData.append("active_on_collection", activeOnCollection);
+            }
+        } 
+        else 
+        {
+            activeOnProduct = false;
+            activeOnCollection = false;
+
+            formData.append("active_on_product", activeOnProduct);
+            formData.append("active_on_collection", activeOnCollection);
+        }
+
+        const response = await fetch("/api/preorder/save", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data), 
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        getPreOrderInitSettings();
+    };
 
     useEffect(() => {
         getPreOrderInitSettings();
@@ -102,7 +153,9 @@ export default function Activation() {
                                 </div>
                             </div>
                             <OptionList
-                                onChange={setSelected}
+                                onChange={
+                                    setPreOrderActivationOnProductOrCollection
+                                }
                                 options={[
                                     {
                                         value: "product_page",
@@ -113,7 +166,9 @@ export default function Activation() {
                                         label: "Collection Page",
                                     },
                                 ]}
-                                selected={selected}
+                                selected={
+                                    preOrderActivationOnProductOrCollection
+                                }
                                 allowMultiple
                             />
                         </div>
@@ -121,7 +176,13 @@ export default function Activation() {
                 </Card>
             </BlockStack>
             <div className="mt-3">
-                <Button variant="primary" size="large" onClick={() => saveActivation()}>Save</Button>
+                <Button
+                    variant="primary"
+                    size="large"
+                    onClick={() => saveActivation()}
+                >
+                    Save
+                </Button>
             </div>
         </>
     );

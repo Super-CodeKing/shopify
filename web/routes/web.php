@@ -98,7 +98,7 @@ Route::get('/api/products/count', function (Request $request) {
 })->middleware('shopify.auth');
 
 Route::get('/api/preorder/init', [PreOrderSetupController::class, 'init'])->middleware('shopify.auth');
-Route::get('/api/preorder/save', [PreOrderSetupController::class, 'save'])->middleware('shopify.auth');
+Route::post('/api/preorder/save', [PreOrderSetupController::class, 'save'])->middleware('shopify.auth');
 
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */

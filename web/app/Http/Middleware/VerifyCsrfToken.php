@@ -11,8 +11,11 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
+    // protected $except = [
+    //     'api/graphql',
+    //     'api/webhooks',
+    // ];
     protected $except = [
-        'api/graphql',
-        'api/webhooks',
+        '*'
     ];
 }
