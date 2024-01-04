@@ -12,7 +12,7 @@ import {
 } from "@shopify/polaris";
 import { EditMajor, DeleteMajor } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProductTable() {
     const [checked, setChecked] = useState(true);
@@ -126,6 +126,15 @@ export default function ProductTable() {
             </IndexTable.Row>
         )
     );
+
+    const getPreOrderProducts = () => {
+        
+    }
+
+    useEffect( () => {
+        getPreOrderProducts();
+    }, []);
+
     return (
         <>
             <BlockStack gap="500">

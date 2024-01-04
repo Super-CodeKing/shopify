@@ -12,7 +12,7 @@ import {
 import { ChevronDownMinor, TickMinor } from "@shopify/polaris-icons";
 import { useCallback, useState } from "react";
 export default function AppActivation() {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const handleToggle = useCallback(() => setOpen((open) => !open), []);
     return (
         <Layout.Section variant="oneHalf">
