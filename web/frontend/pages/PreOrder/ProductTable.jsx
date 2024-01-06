@@ -9,21 +9,28 @@ import {
     Divider,
     Button,
     Checkbox,
+    SkeletonBodyText,
+    Page,
 } from "@shopify/polaris";
 import { EditMajor, DeleteMajor } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
+import ProductsTableSkeleton from "./ProductsTableSkeleton";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export default function ProductTable() {
+    const fetch = useAuthenticatedFetch();
     const [checked, setChecked] = useState(true);
-    const [openResourcePicker, setOpenResourcePicker] = useState(false)
+    const [openResourcePicker, setOpenResourcePicker] = useState(false);
+    const [preOrderProducts, setPreOrderProducts] = useState([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(false);
 
     const handleChange = () => {
         setChecked(!checked);
     };
 
     const selectProduct = (SelectPayload) => {
-        setOpenResourcePicker(false)
+        setOpenResourcePicker(false);
         console.log(SelectPayload);
     };
     const cancelResourcePicker = () => {
@@ -127,64 +134,81 @@ export default function ProductTable() {
         )
     );
 
-    const getPreOrderProducts = () => {
-        
-    }
+    const getPreOrderProducts = async () => {
+        //
+        const response = await fetch("/api/preorder/products");
 
-    useEffect( () => {
+        if (response.ok) {
+            const preOrderProducts = await response.json();
+            console.log("Get Pre Order Products ", preOrderProducts);
+            setPreOrderProducts(preOrderProducts);
+            setIsLoadingProducts(false);
+        } else {
+            console.log("Error in Activaing Pre Order: ", response);
+            setIsLoadingProducts(false)
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    };
+
+    useEffect(() => {
+        setIsLoadingProducts(true);
         getPreOrderProducts();
     }, []);
 
     return (
         <>
-            <BlockStack gap="500">
-                <ResourcePicker 
-                    resourceType="Product" 
-                    open={openResourcePicker}
-                    selectMultiple 
-                    onCancel={() => cancelResourcePicker()}
-                    onSelection={(SelectPayload) => selectProduct(SelectPayload)}
-                />
-                <div className="flex">
-                    <Text variant="headingXl" as="h4">
-                        Product List
-                    </Text>
-                    <div className="ml-auto">
-                        <Button
-                            variant="primary"
-                            onClick={() => activeResourcePicker()}
-                        >
-                            Add Product
-                        </Button>
-                    </div>
-                </div>
-
-                <Divider borderColor="border" />
-                <Card>
-                    <IndexTable
-                        condensed={useBreakpoints().smDown}
-                        resourceName={resourceName}
-                        itemCount={orders.length}
-                        selectedItemsCount={
-                            allResourcesSelected
-                                ? "All"
-                                : selectedResources.length
+            {isLoadingProducts && <ProductsTableSkeleton title={"Product List"} />}
+            {!isLoadingProducts && <Page fullWidth>
+                <BlockStack gap="500">
+                    <ResourcePicker
+                        resourceType="Product"
+                        open={openResourcePicker}
+                        selectMultiple
+                        onCancel={() => cancelResourcePicker()}
+                        onSelection={(SelectPayload) =>
+                            selectProduct(SelectPayload)
                         }
-                        onSelectionChange={handleSelectionChange}
-                        headings={[
-                            { title: "Title" },
-                            { title: "Start Date" },
-                            { title: "End Date" },
-                            { title: "Order Limit" },
-                            { title: "Display Message" },
-                            { title: "Display Badge" },
-                            { title: "Actions" },
-                        ]}
-                    >
-                        {rowMarkup}
-                    </IndexTable>
-                </Card>
-            </BlockStack>
+                    />
+                    <div className="flex">
+                        <Text variant="headingXl" as="h4">
+                            Product List
+                        </Text>
+                        <div className="ml-auto">
+                            <Button
+                                variant="primary"
+                                onClick={() => activeResourcePicker()}
+                            >
+                                Add Product
+                            </Button>
+                        </div>
+                    </div>
+
+                    <Divider borderColor="border" />
+                    <Card>
+                        <IndexTable
+                            resourceName={resourceName}
+                            itemCount={orders.length}
+                            selectedItemsCount={
+                                allResourcesSelected
+                                    ? "All"
+                                    : selectedResources.length
+                            }
+                            onSelectionChange={() => handleSelectionChange()}
+                            headings={[
+                                { title: "Title" },
+                                { title: "Start Date" },
+                                { title: "End Date" },
+                                { title: "Order Limit" },
+                                { title: "Display Message" },
+                                { title: "Display Badge" },
+                                { title: "Actions" },
+                            ]}
+                        >
+                            {orders.length > 0 && rowMarkup}
+                        </IndexTable>
+                    </Card>
+                </BlockStack>
+            </Page>}
         </>
     );
 }

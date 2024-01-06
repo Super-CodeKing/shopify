@@ -14,7 +14,6 @@ class PreOrderProductsController extends Controller
 
         $preOrderProducts = PreOrderProducts::where('shop', $shop)->get();
         return response()->json([
-            'message' => 'Product Saved Successfully',
             'data' => $preOrderProducts
         ], 200);
     }

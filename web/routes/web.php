@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ShopifyProductCreatorException;
+use App\Http\Controllers\PreOrderProductsController;
 use App\Http\Controllers\PreOrderSetupController;
 use App\Lib\AuthRedirection;
 use App\Lib\EnsureBilling;
@@ -97,8 +98,25 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
+/**
+ * Pre Order API Routes
+ * 1. Activation
+ * 2. Product List
+ * 3. Pre Orders
+ * 4. Colors and Text
+ * 5. Set Order Limit
+ * 6. Set Pre Order Schedule
+ * 7. Set Display Message on Pre Order Product page
+ * 8. Pre Order badge Design
+ * 9. Custom CSS and Js
+ */
+
+// 1. Activation
 Route::get('/api/preorder/init', [PreOrderSetupController::class, 'init'])->middleware('shopify.auth');
 Route::post('/api/preorder/save', [PreOrderSetupController::class, 'save'])->middleware('shopify.auth');
+
+// Product List
+Route::get('/api/preorder/products', [PreOrderProductsController::class, 'index'])->middleware('shopify.auth');
 
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */

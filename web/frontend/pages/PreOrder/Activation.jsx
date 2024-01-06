@@ -21,15 +21,10 @@ export default function Activation() {
     const [toastActive, setToastActive] = useState(false);
 
     const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
-    const activeOnProductPage = () =>
-        setCheckedProductPage(!checkedProductPage);
-    const activeOnCollectionPage = () =>
-        setCheckedCollectionPage(!checkedCollectionPage);
+    const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
+    const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
 
-    const toggleToastActive = useCallback(
-        () => setToastActive((toastActive) => !toastActive),
-        []
-    );
+    const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
 
     const toastMarkup = toastActive ? (
         <Toast content="Activation Data Saved Successfully!" onDismiss={toggleToastActive} />
