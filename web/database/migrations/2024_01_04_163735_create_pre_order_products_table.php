@@ -16,11 +16,11 @@ class CreatePreOrderProductsTable extends Migration
         Schema::create('pre_order_products', function (Blueprint $table) {
             $table->id();
             $table->string('shop');
-            $table->bigInteger('product_id');
-            $table->bigInteger('variant_id')->nullable();
+            $table->string('product_id');
+            $table->string('variant_id')->nullable();
             $table->string('title');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->integer('order_limit')->nullable();
             $table->boolean('display_message')->default(false);
             $table->boolean('display_badge')->default(false);

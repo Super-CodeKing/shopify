@@ -460,8 +460,8 @@ export default function PreOrder() {
     // };
 
     function activeActivation() {
-        setFlagActivation(!flagActivation);
-        setFlagProductSetup(!!flagActivation);
+        setFlagActivation(true);
+        setFlagProductSetup(false);
         setFlagOrderLimit(false);
         setFlagOrderSchedule(false);
         setFlagDisplayMessage(false);
@@ -470,8 +470,8 @@ export default function PreOrder() {
     }
 
     function activeProductSetup() {
-        setFlagActivation(!!flagProductSetup);
-        setFlagProductSetup(!flagProductSetup);
+        setFlagActivation(false);
+        setFlagProductSetup(true);
         setFlagOrderLimit(false);
         setFlagOrderSchedule(false);
         setFlagDisplayMessage(false);
@@ -548,26 +548,26 @@ export default function PreOrder() {
             <div className="flex">
                 <div
                     id="docs-sidebar"
-                    class="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
+                    className="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
                 >
                     <nav
-                        class="hs-accordion-group pb-3 w-full flex flex-col flex-wrap"
+                        className="hs-accordion-group pb-3 w-full flex flex-col flex-wrap"
                         data-hs-accordion-always-open
                     >
-                        <div class="gap-2 flex items-center bg-gray-200 justify-start p-3">
-                            <div class="flex grow-0 shrink-0 basis-auto items-center">
+                        <div className="gap-2 flex items-center bg-gray-200 justify-start p-3">
+                            <div className="flex grow-0 shrink-0 basis-auto items-center">
                                 <Avatar initials="WW" name="Woluwayemisi Weun-Jung" size="xl"/>
                             </div>
                             <div>
-                                <h3 class="BHLa_">ShopQuizDQ</h3>
-                                <p class="MIA9A">
-                                    <span class="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
+                                <h3 className="BHLa_">ShopQuizDQ</h3>
+                                <p className="MIA9A">
+                                    <span className="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
                                         shopquizdq.myshopify.com
                                     </span>
                                 </p>
                             </div>
                         </div>
-                        <ul class="space-y-1.5 mt-3 px-2">
+                        <ul className="space-y-1.5 mt-3 px-2">
                             <li
                                 className="cursor-pointer"
                                 onClick={() => activeActivation()}
