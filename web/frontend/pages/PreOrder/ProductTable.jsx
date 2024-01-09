@@ -28,6 +28,8 @@ import { useAuthenticatedFetch } from "../../hooks";
 
 export default function ProductTable() {
     const fetch = useAuthenticatedFetch();
+    const today = new Date();
+
     const [checked, setChecked] = useState(true);
     const [openResourcePicker, setOpenResourcePicker] = useState(false);
     const [preOrderProducts, setPreOrderProducts] = useState([]);
@@ -40,11 +42,20 @@ export default function ProductTable() {
     const [toastContent, setToastContent] = useState("");
     const [editProductData, setEditProductData] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [editStartDate, setEditStartDate] = useState(today);
+    const [editEndDate, setEditEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+    const [hasEndDate, setHasEndDate] = useState(false);
+    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState()
+    const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState()
 
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
         []
     );
+
+    const changeEditStartDate = (e) => {
+        setEditStartDate(new Date(e));
+    }
 
     const toastMarkup = toastActive ? (
         <Toast content={toastContent} onDismiss={toggleToastActive} />
@@ -62,6 +73,10 @@ export default function ProductTable() {
                             content: "Close",
                             onAction: toggleModal,
                         }}
+                        secondaryActions={{
+                            content: "Submit",
+                            onAction: toggleModal
+                        }}
                     >
                         <Modal.Section>
                             <Form>
@@ -74,68 +89,46 @@ export default function ProductTable() {
                                     />
 
                                     <div className="flex">
-                                        <BlockStack
-                                            inlineAlign="center"
-                                            gap="400"
-                                        >
-                                            <Box
-                                                minWidth="276px"
-                                                padding={{ xs: 200 }}
-                                            >
-                                                <Popover
-                                                    active={visible}
-                                                    autofocusTarget="none"
-                                                    preferredAlignment="left"
-                                                    fullWidth
-                                                    preferInputActivator={false}
-                                                    preferredPosition="below"
-                                                    preventCloseOnChildOverlayClick
-                                                    onClose={handleOnClose}
-                                                    activator={
-                                                        <TextField
-                                                            role="combobox"
-                                                            label={"Start date"}
-                                                            prefix={
-                                                                <Icon
-                                                                    source={
-                                                                        CalendarMinor
-                                                                    }
-                                                                />
-                                                            }
-                                                            value={
-                                                                formattedValue
-                                                            }
-                                                            onFocus={() =>
-                                                                setVisible(true)
-                                                            }
-                                                            onChange={
-                                                                handleInputValueChange
-                                                            }
-                                                            autoComplete="off"
-                                                        />
-                                                    }
-                                                >
-                                                    <Card ref={datePickerRef}>
-                                                        <DatePicker
-                                                            month={month}
-                                                            year={year}
-                                                            selected={
-                                                                selectedDate
-                                                            }
-                                                            onMonthChange={
-                                                                handleMonthChange
-                                                            }
-                                                            onChange={
-                                                                handleDateSelection
-                                                            }
-                                                        />
-                                                    </Card>
-                                                </Popover>
-                                            </Box>
-                                        </BlockStack>
+                                        <div className="flex-1 mr-3">
+                                            <TextField
+                                                label="Start Date"
+                                                type="date"
+                                                value={editStartDate.toISOString().slice(0, 10)}
+                                                onChange={(e) => changeEditStartDate(e)}
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <TextField
+                                                label="End Date"
+                                                type="date"
+                                                value={editEndDate.toISOString().slice(0,10)}
+                                                onChange={(e) => setEditEndDate(e.target.value)}
+                                                disabled={hasEndDate}
+                                            />
+                                            <Checkbox label="No End Date" checked={hasEndDate} onChange={() => setHasEndDate(!hasEndDate)}/>
+                                        </div>
                                     </div>
 
-                                    <Button submit>Submit</Button>
+                                    <div className="flex items-end">
+                                        <div className="flex-1 mr-3">
+                                            <TextField
+                                                label="Order Limit"
+                                                type="number"
+                                                value={editProductData.order_limit ?? 0}
+                                                onChange={() => changeEditOrderLimit()}
+                                            />
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col self-end">
+                                            <div className="flex-1 mr-3">
+                                                <Checkbox label="Display Message" checked={editProductData.display_message} onChange={() => changeEditDisplayMessage()}/>
+                                            </div>
+
+                                            <div className="flex-1">
+                                                <Checkbox label="Display Badge" checked={editProductData.display_badge} onChange={() => changeEditDisplayBadge()}/>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </FormLayout>
                             </Form>
                         </Modal.Section>
@@ -219,6 +212,23 @@ export default function ProductTable() {
     const editProductFromPreOrderList = (productData) => {
         console.log(productData);
         setEditProductData(productData);
+        if(productData.start_date) {
+            setEditStartDate(new Date(productData.start_date))
+        }
+
+        if(productData.end_date) {
+            setEditEndDate(new Date(productData.end_date))
+            setHasEndDate(false)
+        }
+
+        if(productData.display_message) {
+            setEditCheckDisplayMessage(productData.display_message)
+        }
+
+        if(productData.display_badge) {
+            setEditCheckDisplayBadge(productData.display_badge)
+        }
+
         toggleModal();
     };
 
