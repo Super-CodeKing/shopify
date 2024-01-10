@@ -21,42 +21,58 @@ class PreOrderProductsController extends Controller
 
     public function store(Request $request)
     {
-
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $startDate = '';
-        if($request->start_date == "null" || $request->start_date == NULL) {
-            $startDate = NULL;
-        } else {
-            $startDate = date('Y-m-d H:i:s', strtotime($request->start_date));
+        $preOrderProductArray = json_decode($request->getContent(), true);
+        $makeData = [];
+
+        for($i = 0; $i < count($preOrderProductArray); $i++) {
+            $singleProductData = $preOrderProductArray[$i];
+
+            $singleProductData['shop'] = $shop;
+
+            $startDate = '';
+            if($singleProductData['start_date'] == "null" || $singleProductData['start_date'] == NULL) {
+                $startDate = NULL;
+            } else {
+                $startDate = date('Y-m-d H:i:s', strtotime($singleProductData['start_date']));
+            }
+
+            $singleProductData['start_date'] = $startDate;
+
+            $endDate = '';
+            if($singleProductData['end_date'] == "null" || $singleProductData['end_date'] == NULL) {
+                $endDate = NULL;
+            } else {
+                $endDate = date('Y-m-d H:i:s', strtotime($singleProductData['end_date']));
+            }
+
+            $singleProductData['end_date'] = $endDate;
+
+            $orderLimit = '';
+            if($singleProductData['order_limit'] == "null" || $singleProductData['order_limit'] == NULL || $singleProductData['order_limit'] == "") {
+                $orderLimit = NULL;
+            } else {
+                $orderLimit = intval($singleProductData['order_limit']);
+            }
+
+            $singleProductData['order_limit'] = $orderLimit;
+            $singleProductData['display_message'] = $singleProductData['order_limit'] == 1 ? 1 : 0;
+            $singleProductData['display_badge'] = $singleProductData['display_badge'] == 1 ? 1 : 0;
+
+            array_push($makeData, $singleProductData);
         }
 
-        $endDate = '';
-        if($request->end_date == "null" || $request->end_date == NULL) {
-            $endDate = NULL;
-        } else {
-            $endDate = date('Y-m-d H:i:s', strtotime($request->end_date));
+        $result = [];
+        foreach ($makeData as $data) {
+            $r = PreOrderProducts::create($data);
+            array_push($result, $r);
         }
-
-        $displayMessage = $request->display_message == 1 ? 1 : 0;
-        $displayBadge = $request->display_badge == 1 ? 1 : 0;
-
-        $preOrderProducts = PreOrderProducts::create([
-            'shop'              => $shop,
-            'product_id'        => $request->product_id,
-            'variant_id'        => $request->variant_id ?? null,
-            'title'             => $request->title,
-            'start_date'        => $startDate,
-            'end_date'          => $endDate,
-            'order_limit'       => $request->order_limit ?? null,
-            'display_message'   => $displayMessage,
-            'display_badge'     => $displayBadge
-        ]);
 
         return response()->json([
             'message' => 'Product Saved Successfully',
-            'data' => $preOrderProducts
+            'data' => $result
         ], 201);
     }
 

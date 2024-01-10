@@ -43,12 +43,15 @@ export default function ProductTable() {
     const [editProductData, setEditProductData] = useState(null);
     const [visible, setVisible] = useState(false);
     const [editStartDate, setEditStartDate] = useState(today);
-    const [editEndDate, setEditEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+    const [editEndDate, setEditEndDate] = useState(
+        new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
+    );
     const [editOrderLimit, setEditOrderLimit] = useState(0);
     const [hasEndDate, setHasEndDate] = useState(true);
-    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState(false)
+    const [editCheckDisplayMessage, setEditCheckDisplayMessage] =
+        useState(false);
     const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState(false);
-    const [countSaveProduct, setCountSaveProduct] = useState(0)
+    const [countSaveProduct, setCountSaveProduct] = useState(0);
 
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
@@ -57,49 +60,48 @@ export default function ProductTable() {
 
     const changeEditStartDate = (e) => {
         setEditStartDate(new Date(e));
-    }
+    };
 
     const changeEditEndDate = (e) => {
         setEditEndDate(new Date(e));
-    }
+    };
 
     const changeEditOrderLimit = (event) => {
         const newValue = Number(event);
         setEditOrderLimit(newValue);
-    }
+    };
 
     const changeEditDisplayMessage = () => {
         setEditCheckDisplayMessage(!editCheckDisplayMessage);
-    }
+    };
 
     const changeEditDisplayBadge = () => {
         setEditCheckDisplayBadge(!editCheckDisplayBadge);
-    }
+    };
 
     const updateEditProductData = async () => {
-        
         const formData = new FormData();
         let endDate = editEndDate.toISOString();
 
-        if(hasEndDate) {
-            endDate = null
+        if (hasEndDate) {
+            endDate = null;
         }
 
         let displayMessage = editCheckDisplayMessage;
-        if(editCheckDisplayMessage) {
+        if (editCheckDisplayMessage) {
             displayMessage = 1;
         } else {
             displayMessage = 0;
         }
 
         let displayBadge = editCheckDisplayBadge;
-        if(editCheckDisplayBadge) {
+        if (editCheckDisplayBadge) {
             displayBadge = 1;
         } else {
             displayBadge = 0;
         }
 
-        formData.append("id", editProductData.id)
+        formData.append("id", editProductData.id);
         formData.append("product_id", editProductData.product_id);
         formData.append("variant_id", editProductData.variant_id);
         formData.append("title", editProductData.title);
@@ -122,10 +124,9 @@ export default function ProductTable() {
             setToastContent("Product Updated Successfully.");
             toggleToastActive(true);
             getPreOrderProducts();
-            setEditModalActive(false)
+            setEditModalActive(false);
         }
-        
-    }
+    };
 
     const toastMarkup = toastActive ? (
         <Toast content={toastContent} onDismiss={toggleToastActive} />
@@ -145,7 +146,7 @@ export default function ProductTable() {
                         }}
                         secondaryActions={{
                             content: "Submit",
-                            onAction: () => updateEditProductData()
+                            onAction: () => updateEditProductData(),
                         }}
                     >
                         <Modal.Section>
@@ -163,22 +164,32 @@ export default function ProductTable() {
                                             <TextField
                                                 label="Start Date"
                                                 type="date"
-                                                value={editStartDate.toISOString().slice(0, 10)}
-                                                onChange={(e) => changeEditStartDate(e)}
+                                                value={editStartDate
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                                onChange={(e) =>
+                                                    changeEditStartDate(e)
+                                                }
                                             />
                                         </div>
                                         <div className="flex-1">
                                             <TextField
                                                 label="End Date"
                                                 type="date"
-                                                value={editEndDate.toISOString().slice(0,10)}
-                                                onChange={(e) => changeEditEndDate(e)}
+                                                value={editEndDate
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                                onChange={(e) =>
+                                                    changeEditEndDate(e)
+                                                }
                                                 disabled={hasEndDate}
                                             />
-                                            <Checkbox 
-                                                label="No End Date" 
-                                                checked={hasEndDate} 
-                                                onChange={() => setHasEndDate(!hasEndDate)}
+                                            <Checkbox
+                                                label="No End Date"
+                                                checked={hasEndDate}
+                                                onChange={() =>
+                                                    setHasEndDate(!hasEndDate)
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -197,18 +208,26 @@ export default function ProductTable() {
 
                                         <div className="flex-1 flex flex-col self-end">
                                             <div className="flex-1 mr-3">
-                                                <Checkbox 
-                                                    label="Display Message" 
-                                                    checked={editCheckDisplayMessage} 
-                                                    onChange={() => changeEditDisplayMessage()}
+                                                <Checkbox
+                                                    label="Display Message"
+                                                    checked={
+                                                        editCheckDisplayMessage
+                                                    }
+                                                    onChange={() =>
+                                                        changeEditDisplayMessage()
+                                                    }
                                                 />
                                             </div>
 
                                             <div className="flex-1">
-                                                <Checkbox 
-                                                    label="Display Badge" 
-                                                    checked={editCheckDisplayBadge} 
-                                                    onChange={() => changeEditDisplayBadge()}
+                                                <Checkbox
+                                                    label="Display Badge"
+                                                    checked={
+                                                        editCheckDisplayBadge
+                                                    }
+                                                    onChange={() =>
+                                                        changeEditDisplayBadge()
+                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -226,28 +245,35 @@ export default function ProductTable() {
         setChecked(!checked);
     };
 
-    const saveSelectedProducts = async (data, len) => {
-        const formData = new FormData();
+    const preOrderDataProcess = (data) => {
+        let processData = [];
+        for (let i = 0; i < data.length; i++) {
+            let dataObject = {
+                product_id: data[i].id,
+                title: data[i].title,
+                start_date: new Date(),
+                end_date: "",
+                order_limit: "",
+                display_message: 0,
+                display_badge: 0,
+            };
+            processData.push(dataObject);
+        }
+        return processData;
+    };
 
-        formData.append("product_id", data.id);
-        formData.append("variant_id", "");
-        formData.append("title", data.title);
-        formData.append("start_date", new Date().toISOString());
-        formData.append("end_date", "");
-        formData.append("order_limit", "");
-        formData.append("display_message", 0);
-        formData.append("display_badge", 0);
-
+    const saveSelectedProducts = async (data) => {
+        const processedPreOrderProductData = preOrderDataProcess(data);
         const response = await fetch("/api/preorder/products/store", {
             method: "POST",
-            body: formData ? formData : JSON.stringify(data),
+            body: JSON.stringify(processedPreOrderProductData),
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error ${response.status}`);
         }
 
-        if (response.ok && countSaveProduct == len) {
+        if (response.ok) {
             setToastContent("Product Saved Successfully.");
             toggleToastActive(true);
             getPreOrderProducts();
@@ -281,30 +307,24 @@ export default function ProductTable() {
         setOpenResourcePicker(false);
         let productPayload = SelectPayload.selection;
 
-        console.log("Testing:");
-        console.log(initialSelectedProductIds);
-        console.log(productPayload)
-
         let mainProductPayloadAfterCuttingSelectedBefore = [];
-        
+
         for (let i = 0; i < productPayload.length; i++) {
             let alreadyHas = 0;
-            for(let j = 0; j < initialSelectedProductIds.length; j++) {
-                if(productPayload[i].id == initialSelectedProductIds[j]) {
+            for (let j = 0; j < initialSelectedProductIds.length; j++) {
+                if (productPayload[i].id == initialSelectedProductIds[j].id) {
                     alreadyHas = 1;
                     break;
                 }
             }
 
-            if(!alreadyHas) {
-                mainProductPayloadAfterCuttingSelectedBefore.push(productPayload[i]);
+            if (!alreadyHas) {
+                mainProductPayloadAfterCuttingSelectedBefore.push(
+                    productPayload[i]
+                );
             }
         }
-
-        for (let i = 0; i < mainProductPayloadAfterCuttingSelectedBefore.length; i++) {
-            setCountSaveProduct(countSaveProduct+1);
-            saveSelectedProducts(productPayload[i], mainProductPayloadAfterCuttingSelectedBefore.length);
-        }
+        saveSelectedProducts(mainProductPayloadAfterCuttingSelectedBefore);
     };
     const cancelResourcePicker = () => {
         setOpenResourcePicker(false);
@@ -317,25 +337,25 @@ export default function ProductTable() {
 
     const editProductFromPreOrderList = (productData) => {
         setEditProductData(productData);
-        
-        if(productData.start_date) {
-            setEditStartDate(new Date(productData.start_date))
+
+        if (productData.start_date) {
+            setEditStartDate(new Date(productData.start_date));
         }
 
-        if(productData.end_date) {
-            setEditEndDate(new Date(productData.end_date))
-            setHasEndDate(false)
+        if (productData.end_date) {
+            setEditEndDate(new Date(productData.end_date));
+            setHasEndDate(false);
         }
 
-        if(productData.display_message) {
-            setEditCheckDisplayMessage(productData.display_message)
+        if (productData.display_message) {
+            setEditCheckDisplayMessage(productData.display_message);
         }
 
-        if(productData.display_badge) {
-            setEditCheckDisplayBadge(productData.display_badge)
+        if (productData.display_badge) {
+            setEditCheckDisplayBadge(productData.display_badge);
         }
 
-        if(productData.order_limit) {
+        if (productData.order_limit) {
             setEditOrderLimit(productData.order_limit ?? 0);
         }
 
@@ -343,7 +363,7 @@ export default function ProductTable() {
     };
 
     const toggleModal = () => {
-        setEditModalActive(true)
+        setEditModalActive(true);
     };
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
@@ -379,8 +399,18 @@ export default function ProductTable() {
                         {title}
                     </Text>
                 </IndexTable.Cell>
-                <IndexTable.Cell>{start_date ?? "Not set"}</IndexTable.Cell>
-                <IndexTable.Cell>{end_date ?? "Not set"}</IndexTable.Cell>
+                <IndexTable.Cell>
+                    {new Date(start_date).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    }) ?? "Not set"}
+                </IndexTable.Cell>
+                <IndexTable.Cell>{end_date ? new Date(end_date).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    }) : "Not set"}</IndexTable.Cell>
                 <IndexTable.Cell>
                     <Text as="span" numeric alignment="justify">
                         {order_limit ?? "Unlimited"}
