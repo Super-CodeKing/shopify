@@ -44,9 +44,11 @@ export default function ProductTable() {
     const [visible, setVisible] = useState(false);
     const [editStartDate, setEditStartDate] = useState(today);
     const [editEndDate, setEditEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
-    const [hasEndDate, setHasEndDate] = useState(false);
-    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState()
-    const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState()
+    const [editOrderLimit, setEditOrderLimit] = useState(0);
+    const [hasEndDate, setHasEndDate] = useState(true);
+    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState(false)
+    const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState(false);
+    const [countSaveProduct, setCountSaveProduct] = useState(0)
 
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
@@ -55,6 +57,74 @@ export default function ProductTable() {
 
     const changeEditStartDate = (e) => {
         setEditStartDate(new Date(e));
+    }
+
+    const changeEditEndDate = (e) => {
+        setEditEndDate(new Date(e));
+    }
+
+    const changeEditOrderLimit = (event) => {
+        const newValue = Number(event);
+        setEditOrderLimit(newValue);
+    }
+
+    const changeEditDisplayMessage = () => {
+        setEditCheckDisplayMessage(!editCheckDisplayMessage);
+    }
+
+    const changeEditDisplayBadge = () => {
+        setEditCheckDisplayBadge(!editCheckDisplayBadge);
+    }
+
+    const updateEditProductData = async () => {
+        
+        const formData = new FormData();
+        let endDate = editEndDate.toISOString();
+
+        if(hasEndDate) {
+            endDate = null
+        }
+
+        let displayMessage = editCheckDisplayMessage;
+        if(editCheckDisplayMessage) {
+            displayMessage = 1;
+        } else {
+            displayMessage = 0;
+        }
+
+        let displayBadge = editCheckDisplayBadge;
+        if(editCheckDisplayBadge) {
+            displayBadge = 1;
+        } else {
+            displayBadge = 0;
+        }
+
+        formData.append("id", editProductData.id)
+        formData.append("product_id", editProductData.product_id);
+        formData.append("variant_id", editProductData.variant_id);
+        formData.append("title", editProductData.title);
+        formData.append("start_date", editStartDate.toISOString());
+        formData.append("end_date", endDate);
+        formData.append("order_limit", editOrderLimit);
+        formData.append("display_message", displayMessage);
+        formData.append("display_badge", displayBadge);
+
+        const response = await fetch("/api/preorder/products/update", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        if (response.ok) {
+            setToastContent("Product Updated Successfully.");
+            toggleToastActive(true);
+            getPreOrderProducts();
+            setEditModalActive(false)
+        }
+        
     }
 
     const toastMarkup = toastActive ? (
@@ -67,15 +137,15 @@ export default function ProductTable() {
                 <Frame>
                     <Modal
                         open={editModalActive}
-                        onClose={toggleModal}
+                        onClose={() => setEditModalActive(false)}
                         title="Edit Pre Order Product Settings"
                         primaryAction={{
                             content: "Close",
-                            onAction: toggleModal,
+                            onAction: () => setEditModalActive(false),
                         }}
                         secondaryActions={{
                             content: "Submit",
-                            onAction: toggleModal
+                            onAction: () => updateEditProductData()
                         }}
                     >
                         <Modal.Section>
@@ -102,10 +172,14 @@ export default function ProductTable() {
                                                 label="End Date"
                                                 type="date"
                                                 value={editEndDate.toISOString().slice(0,10)}
-                                                onChange={(e) => setEditEndDate(e.target.value)}
+                                                onChange={(e) => changeEditEndDate(e)}
                                                 disabled={hasEndDate}
                                             />
-                                            <Checkbox label="No End Date" checked={hasEndDate} onChange={() => setHasEndDate(!hasEndDate)}/>
+                                            <Checkbox 
+                                                label="No End Date" 
+                                                checked={hasEndDate} 
+                                                onChange={() => setHasEndDate(!hasEndDate)}
+                                            />
                                         </div>
                                     </div>
 
@@ -114,18 +188,28 @@ export default function ProductTable() {
                                             <TextField
                                                 label="Order Limit"
                                                 type="number"
-                                                value={editProductData.order_limit ?? 0}
-                                                onChange={() => changeEditOrderLimit()}
+                                                value={editOrderLimit}
+                                                onChange={changeEditOrderLimit}
+                                                step={1}
+                                                min={0}
                                             />
                                         </div>
 
                                         <div className="flex-1 flex flex-col self-end">
                                             <div className="flex-1 mr-3">
-                                                <Checkbox label="Display Message" checked={editProductData.display_message} onChange={() => changeEditDisplayMessage()}/>
+                                                <Checkbox 
+                                                    label="Display Message" 
+                                                    checked={editCheckDisplayMessage} 
+                                                    onChange={() => changeEditDisplayMessage()}
+                                                />
                                             </div>
 
                                             <div className="flex-1">
-                                                <Checkbox label="Display Badge" checked={editProductData.display_badge} onChange={() => changeEditDisplayBadge()}/>
+                                                <Checkbox 
+                                                    label="Display Badge" 
+                                                    checked={editCheckDisplayBadge} 
+                                                    onChange={() => changeEditDisplayBadge()}
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -142,7 +226,7 @@ export default function ProductTable() {
         setChecked(!checked);
     };
 
-    const saveSelectedProducts = async (data) => {
+    const saveSelectedProducts = async (data, len) => {
         const formData = new FormData();
 
         formData.append("product_id", data.id);
@@ -163,7 +247,7 @@ export default function ProductTable() {
             throw new Error(`HTTP error ${response.status}`);
         }
 
-        if (response.ok) {
+        if (response.ok && countSaveProduct == len) {
             setToastContent("Product Saved Successfully.");
             toggleToastActive(true);
             getPreOrderProducts();
@@ -196,8 +280,30 @@ export default function ProductTable() {
     const selectProduct = (SelectPayload) => {
         setOpenResourcePicker(false);
         let productPayload = SelectPayload.selection;
+
+        console.log("Testing:");
+        console.log(initialSelectedProductIds);
+        console.log(productPayload)
+
+        let mainProductPayloadAfterCuttingSelectedBefore = [];
+        
         for (let i = 0; i < productPayload.length; i++) {
-            saveSelectedProducts(productPayload[i]);
+            let alreadyHas = 0;
+            for(let j = 0; j < initialSelectedProductIds.length; j++) {
+                if(productPayload[i].id == initialSelectedProductIds[j]) {
+                    alreadyHas = 1;
+                    break;
+                }
+            }
+
+            if(!alreadyHas) {
+                mainProductPayloadAfterCuttingSelectedBefore.push(productPayload[i]);
+            }
+        }
+
+        for (let i = 0; i < mainProductPayloadAfterCuttingSelectedBefore.length; i++) {
+            setCountSaveProduct(countSaveProduct+1);
+            saveSelectedProducts(productPayload[i], mainProductPayloadAfterCuttingSelectedBefore.length);
         }
     };
     const cancelResourcePicker = () => {
@@ -210,8 +316,8 @@ export default function ProductTable() {
     };
 
     const editProductFromPreOrderList = (productData) => {
-        console.log(productData);
         setEditProductData(productData);
+        
         if(productData.start_date) {
             setEditStartDate(new Date(productData.start_date))
         }
@@ -229,13 +335,16 @@ export default function ProductTable() {
             setEditCheckDisplayBadge(productData.display_badge)
         }
 
+        if(productData.order_limit) {
+            setEditOrderLimit(productData.order_limit ?? 0);
+        }
+
         toggleModal();
     };
 
-    const toggleModal = useCallback(
-        () => setEditModalActive((editModalActive) => !editModalActive),
-        []
-    );
+    const toggleModal = () => {
+        setEditModalActive(true)
+    };
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(preOrderProducts);
