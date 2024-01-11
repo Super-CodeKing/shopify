@@ -40,6 +40,7 @@ import ProductTable from "./ProductTable";
 import OrderLimit from "./OrderLimit";
 import Schedule from "./Schedule";
 import DisplayMessage from "./DisplayMessage";
+import OrdersTable from "./OrdersTable";
 
 export default function PreOrder() {
     const productListDummy = [
@@ -329,6 +330,7 @@ export default function PreOrder() {
     const [flagColorNText, setFlagColorNText] = useState(false);
     const [flagCustomCoding, setFlagCustomCoding] = useState(false);
     const [flagPreOrderProducts, setFlagPreOrderProducts] = useState(false)
+    const [flagPreOrderList, setFlagPreOrderList] = useState(false);
 
     const [preOrderLimit, setPreOrderLimit] = useState(
         "preOrder-has-daily-limit"
@@ -467,6 +469,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function activeProductSetup() {
@@ -477,6 +480,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function cancelResourcePicker() {
@@ -496,6 +500,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function activeOrderSchedule() {
@@ -506,6 +511,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function activeOrderDisplayMessage() {
@@ -516,6 +522,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(true);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function activeColorNText() {
@@ -526,6 +533,7 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(true);
         setFlagCustomCoding(false);
+        setFlagPreOrderList(false)
     }
 
     function activeCustomCoding() {
@@ -536,6 +544,18 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(true);
+        setFlagPreOrderList(false)
+    }
+
+    function activePreOrderList() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
+        setFlagPreOrderList(true)
     }
 
     return (
@@ -547,7 +567,6 @@ export default function PreOrder() {
 
             <div className="flex">
                 <div
-                    id="docs-sidebar"
                     className="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
                 >
                     <nav
@@ -612,12 +631,12 @@ export default function PreOrder() {
 
                             <li
                                 className="cursor-pointer"
-                                onClick={() => activeProductSetup()}
+                                onClick={() => activePreOrderList()}
                             >
                                 <div
                                     className={
                                         "rounded-lg py-1 px-2 " +
-                                        (flagPreOrderProducts
+                                        (flagPreOrderList
                                             ? "bg-slate-200"
                                             : "bg-white")
                                     }
@@ -762,6 +781,7 @@ export default function PreOrder() {
                 <div className="flex-1">
                     {flagActivation && <Activation />}
                     {flagProductSetup && <ProductTable />}
+                    {flagPreOrderList && <OrdersTable />}
                     {flagOrderLimit && <OrderLimit />}
                     {flagOrderSchedule && <Schedule />}
                     {flagDisplayMessage && <DisplayMessage />}

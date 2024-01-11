@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "e2f917273995ea9e32bafc0a847352c1"
-application_url = "https://syndication-cgi-determined-canon.trycloudflare.com"
+application_url = "https://allowing-defeat-client-roulette.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://syndication-cgi-determined-canon.trycloudflare.com/auth/callback",
-  "https://syndication-cgi-determined-canon.trycloudflare.com/auth/shopify/callback",
-  "https://syndication-cgi-determined-canon.trycloudflare.com/api/auth/callback"
+  "https://allowing-defeat-client-roulette.trycloudflare.com/auth/callback",
+  "https://allowing-defeat-client-roulette.trycloudflare.com/auth/shopify/callback",
+  "https://allowing-defeat-client-roulette.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

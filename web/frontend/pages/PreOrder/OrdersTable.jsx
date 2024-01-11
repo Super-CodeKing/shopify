@@ -26,7 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 import ProductsTableSkeleton from "./ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 
-export default function ProductTable() {
+export default function OrdersTable() {
     const fetch = useAuthenticatedFetch();
     const today = new Date();
 
@@ -485,7 +485,7 @@ export default function ProductTable() {
             <Frame>
                 {toastMarkup}
                 {isLoadingProducts && preOrderProducts.length === 0 && (
-                    <ProductsTableSkeleton title={"Product List"} has_button={true} button_title={"Add Product"}/>
+                    <ProductsTableSkeleton title={"Product List"} />
                 )}
                 {!isLoadingProducts && preOrderProducts.length > 0 && (
                     <Page fullWidth>
