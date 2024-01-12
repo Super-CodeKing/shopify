@@ -484,10 +484,10 @@ export default function ProductTable() {
             {editProductData != null && <EditProductFormModal />}
             <Frame>
                 {toastMarkup}
-                {isLoadingProducts && preOrderProducts.length === 0 && (
+                {isLoadingProducts && (
                     <ProductsTableSkeleton title={"Product List"} has_button={true} button_title={"Add Product"}/>
                 )}
-                {!isLoadingProducts && preOrderProducts.length > 0 && (
+                {!isLoadingProducts && (
                     <Page fullWidth>
                         <BlockStack gap="500">
                             <ResourcePicker
@@ -539,6 +539,7 @@ export default function ProductTable() {
                                     ]}
                                 >
                                     {preOrderProducts.length > 0 && rowMarkup}
+                                    {preOrderProducts.length === 0 && <p>Empty</p>}
                                 </IndexTable>
                             </Card>
                         </BlockStack>

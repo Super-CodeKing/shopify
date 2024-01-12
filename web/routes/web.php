@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ShopifyProductCreatorException;
+use App\Http\Controllers\PreOrderOrdersController;
 use App\Http\Controllers\PreOrderProductsController;
 use App\Http\Controllers\PreOrderSetupController;
 use App\Lib\AuthRedirection;
@@ -98,6 +99,10 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
+// Route::get('/api/shop', function (Request $request) {
+//     return $request->query('shop');
+// })
+
 /**
  * Pre Order API Routes
  * 1. Activation
@@ -120,6 +125,9 @@ Route::get('/api/preorder/products', [PreOrderProductsController::class, 'index'
 Route::post('/api/preorder/products/store', [PreOrderProductsController::class, 'store'])->middleware('shopify.auth');
 Route::post('/api/preorder/products/update', [PreOrderProductsController::class, 'update'])->middleware('shopify.auth');
 Route::post('/api/preorder/products/destroy', [PreOrderProductsController::class, 'destroy'])->middleware('shopify.auth');
+
+// Pre Orders
+Route::get('/api/preorder/orders', [PreOrderOrdersController::class, 'index'])->middleware('shopify.auth');
 
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */

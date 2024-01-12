@@ -28,7 +28,7 @@ export default function ProductsTableSkeleton({ title, has_button, button_title 
                     <div class="bg-white p-4 rounded-lg shadow">
                         <div class="animate-pulse">
                             <div class="flex mb-3">
-                                <div class="h-7 w-7 bg-gray-300 rounded mr-3"></div>
+                                <div class="h-7 w-10 bg-gray-300 rounded mr-3"></div>
                                 <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
                                 <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
                                 <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
@@ -40,7 +40,7 @@ export default function ProductsTableSkeleton({ title, has_button, button_title 
 
                             {elements.map((_, index) => (
                                 <div class="flex mb-3" key={index}>
-                                    <div class="h-7 w-7 bg-gray-300 rounded mr-3"></div>
+                                    <div class="h-7 w-10 bg-gray-300 rounded mr-3"></div>
                                     <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
                                     <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
                                     <div class="h-7 w-1/6 bg-gray-300 rounded mr-3"></div>
