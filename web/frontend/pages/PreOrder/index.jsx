@@ -41,6 +41,7 @@ import OrderLimit from "./OrderLimit";
 import Schedule from "./Schedule";
 import DisplayMessage from "./DisplayMessage";
 import OrdersTable from "./OrdersTable";
+import ColourNText from "./ColourNText";
 
 export default function PreOrder() {
     const productListDummy = [
@@ -785,6 +786,7 @@ export default function PreOrder() {
                     {flagOrderLimit && <OrderLimit />}
                     {flagOrderSchedule && <Schedule />}
                     {flagDisplayMessage && <DisplayMessage />}
+                    {flagColorNText && <ColourNText />}
                 </div>
             </div>
         </Page>

@@ -5,3 +5,7 @@
     outline: 0.0625rem solid #0000;
     overflow: clip;
 }
+
+.paddingLeftTextField .Polaris-TextField__Input {
+    padding-left: 2rem;
+}
