@@ -19,6 +19,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import "../../assets/preorder.css";
+import ToggleColourActivator from "../../components/ToggleColourActivator";
 export default function ColourNText() {
     const [toastActive, setToastActive] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState({
@@ -34,11 +35,30 @@ export default function ColourNText() {
         saturation: 1,
     });
     const [backgroundHoverHexColor, setBackgroundHoverHexColor] = useState("#121212");
-    const [textColor, setTextColor] = useState({
+    const [textColour, setTextColour] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
+    const [textHexColour, setTextHexColour] = useState("#fff");
+    const [textHoverColour, setTextHoverColour] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+    const [textHoverHexColour, setTextHoverHexColour] = useState("#fff");
+    const [borderColour, setBorderColour] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+    const [borderHexColour, setBorderHexColour] = useState("#fff");
+    const [borderHoverColour, setBorderHoverColour] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+    const [borderHoverHexColour, setBorderHoverHexColour] = useState("#fff");
     const [buttonHeight, setButtonHeight] = useState(40);
     const [buttonWidth, setButtonWidth] = useState(420);
     const [buttonRadiusValue, setButtonRadiusValue] = useState(32);
@@ -47,9 +67,17 @@ export default function ColourNText() {
     const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
     const [backgroundHoverColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
+    const [textColourPickerActive, setTextColourPickerActive] = useState(false);
+    const [textHoverColourPickerActive, setTextHoverColourPickerActive] = useState(false);
+    const [borderColourPickerActive, setBorderColourPickerActive] = useState(false);
+    const [borderHoverColourPickerActive, setBorderHoverColourPickerActive] = useState(false);
+    const [borderWidth, setBorderWidth] = useState(0);
+    const [isHover, setIsHover] = useState(false);
 
     const changeButtonRadius = (value) => setButtonRadiusValue(value);
     const changeButtonFontSize = (value) => setButtonFontSizeValue(value);
+    const changeBorderWidth = (value) => setBorderWidth(value);
+
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
         []
@@ -65,9 +93,49 @@ export default function ColourNText() {
         setBackgroundHexColor(hexColor);
     };
 
+    const handleTextColourChange = (newTextColour) => {
+        const hexColour = hsbToHex(newTextColour);
+        setTextColour(newTextColour);
+        setTextHexColour(hexColour);
+    }
+
+    const handleTextHoverColourChange = (newTextHoverColour) => {
+        const hexColour = hsbToHex(newTextHoverColour);
+        setTextHoverColour(newTextHoverColour);
+        setTextHoverHexColour(hexColour);
+    }
+
+    const handleBorderColourChange = (newBorderColour) => {
+        const hexColour = hsbToHex(newBorderColour);
+        setBorderColour(newBorderColour);
+        setBorderHexColour(hexColour);
+    }
+
+    const handleBorderHoverColourChange = (newBorderHoverColour) => {
+        const hexColour = hsbToHex(newBorderHoverColour);
+        setBorderHoverColour(newBorderHoverColour);
+        setBorderHoverHexColour(hexColour);
+    }
+
     const toggleBackgroundHoverColorPicker = () => {
         setBackgroundHoverColorPickerActive(!backgroundHoverColorPickerActive);
     };
+
+    const toggleTextColourPicker = () => {
+        setTextColourPickerActive(!textColourPickerActive);
+    }
+
+    const toggleTextHoverColourPicker = () => {
+        setTextHoverColourPickerActive(!textHoverColourPickerActive);
+    }
+
+    const toggleBorderColourPicker = () => {
+        setBorderColourPickerActive(!borderColourPickerActive);
+    }
+
+    const toggleBorderHoverColourPicker = () => {
+        setBorderHoverColourPickerActive(!borderHoverColourPickerActive);
+    }
 
     const handleBackgroundHoverColorChange = (newColor) => {
         const hexColor = hsbToHex(newColor);
@@ -76,10 +144,8 @@ export default function ColourNText() {
     };
 
     const handleBackgroundHoverColorChangeFromInput = (newColor) => {
-        console.log(newColor);
         const rgbColor = hexToRgb(newColor);
         const hsbColor = rgbToHsb(rgbColor);
-        console.log("HSB Color: ", hsbColor);
         setBackgroundHoverHexColor(newColor)
         setBackgroundHoverColor(hsbColor);
     };
@@ -91,33 +157,41 @@ export default function ColourNText() {
         setBackgroundColor(hsbColor);
     };
 
-    const backgroundColorPickerActivator = (
-        <div
-            onClick={toggleBackgroundColorPicker}
-            style={{
-                backgroundColor: hsbToHex(backgroundColor) ?? "#F8F2F2",
-                width: "22px",
-                height: "22px",
-                cursor: "pointer",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-            }}
-        ></div>
-    );
+    const handleTextColourChangeFormInput = (newHexColour) => {
+        const rgbColor = hexToRgb(newHexColour);
+        const hsbColor = rgbToHsb(rgbColor);
+        setTextHexColour(newHexColour)
+        setTextColour(hsbColor);
+    }
 
-    const backgroundHoverColorPickerActivator = (
-        <div
-            onClick={toggleBackgroundHoverColorPicker}
-            style={{
-                backgroundColor: hsbToHex(backgroundHoverColor) ?? "#F8F2F2",
-                width: "22px",
-                height: "22px",
-                cursor: "pointer",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-            }}
-        ></div>
-    );
+    const handleTextHoverColourChangeFormInput = (newTextHexColour) => {
+        const rgbColor = hexToRgb(newTextHexColour);
+        const hsbColor = rgbToHsb(rgbColor);
+        setTextHoverHexColour(newTextHexColour)
+        setTextHoverColour(hsbColor);
+    }
+
+    const handleBorderColourChangeFormInput = (newBorderHexColour) => {
+        const rgbColor = hexToRgb(newBorderHexColour);
+        const hsbColor = rgbToHsb(rgbColor);
+        setBorderHexColour(newBorderHexColour)
+        setBorderColour(hsbColor);
+    }
+
+    const handleBorderHoverColourChangeFormInput = (newBorderHoverHexColour) => {
+        const rgbColor = hexToRgb(newBorderHoverHexColour);
+        const hsbColor = rgbToHsb(rgbColor);
+        setBorderHoverHexColour(newBorderHoverHexColour)
+        setBorderHoverColour(hsbColor);
+    }
+
+    const handleMouseEnter = () => {
+        setIsHover(true);
+    }
+
+    const handleMouseLeave = () => {
+        setIsHover(false)
+    }
 
     const toastMarkup = toastActive ? (
         <Toast
@@ -179,7 +253,7 @@ export default function ColourNText() {
                                             >
                                                 <Popover
                                                     active={backgroundColorPickerActive}
-                                                    activator={backgroundColorPickerActivator}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBackgroundColorPicker()} color={backgroundHexColor}/>}
                                                     onClose={() =>toggleBackgroundColorPicker()}
                                                 >
                                                     <Popover.Pane>
@@ -215,7 +289,7 @@ export default function ColourNText() {
                                             >
                                                 <Popover
                                                     active={backgroundHoverColorPickerActive}
-                                                    activator={backgroundHoverColorPickerActivator}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBackgroundHoverColorPicker()} color={backgroundHoverHexColor}/>}
                                                     onClose={() => toggleBackgroundHoverColorPicker()}
                                                 >
                                                     <Popover.Pane>
@@ -237,7 +311,7 @@ export default function ColourNText() {
                                     </div>
                                 </div>
 
-                                {/* <div className="flex">
+                                <div className="flex">
                                     <div className="flex-1 mr-3 mb-3">
                                         <div className="relative w-full">
                                             <div className="pr-5"
@@ -249,14 +323,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={colorPickerActive}
-                                                    activator={colorPickerActivator}
-                                                    onClose={toggleColorPicker}
+                                                    active={textColourPickerActive}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleTextColourPicker()} color={textHexColour}/>}
+                                                    onClose={() => toggleTextColourPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={handleColorChange}
-                                                            color={backgroundColor}
+                                                            onChange={(e) => handleTextColourChange(e)}
+                                                            color={textColour}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -264,10 +338,9 @@ export default function ColourNText() {
                                             <div className="paddingLeftTextField">
                                                 <TextField
                                                     label="Text Color"
-                                                    value={hsbToHex(backgroundColor)}
-                                                    onChange={(e) => {
-                                                        handleTextChange(e, "background");
-                                                    }}
+                                                    autoComplete="off"
+                                                    value={textHexColour}
+                                                    onChange={handleTextColourChangeFormInput}
                                                 />
                                             </div>
                                         </div>
@@ -284,14 +357,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={colorPickerActive}
-                                                    activator={colorPickerActivator}
-                                                    onClose={toggleColorPicker}
+                                                    active={textHoverColourPickerActive}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleTextHoverColourPicker()} color={textHoverHexColour}/>}
+                                                    onClose={() => toggleTextHoverColourPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={handleColorChange}
-                                                            color={backgroundColor}
+                                                            onChange={(e) => handleTextHoverColourChange(e)}
+                                                            color={textHoverColour}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -299,15 +372,97 @@ export default function ColourNText() {
                                             <div className="paddingLeftTextField">
                                                 <TextField
                                                     label="Text Hover Color"
-                                                    value={hsbToHex(backgroundColor)}
-                                                    onChange={(e) => {
-                                                        handleTextChange(e, "background");
-                                                    }}
+                                                    autoComplete="off"
+                                                    value={textHoverHexColour}
+                                                    onChange={handleTextHoverColourChangeFormInput}
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                </div> */}
+                                </div>
+
+                                <div className="flex">
+                                    <div className="flex-1 mr-3">
+                                        <div className="relative w-full">
+                                            <div className="pr-5"
+                                                style={{
+                                                    position: "absolute",
+                                                    left: "5px",
+                                                    bottom: "5px",
+                                                    zIndex: "99",
+                                                }}
+                                            >
+                                                <Popover
+                                                    active={borderColourPickerActive}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBorderColourPicker()} color={borderHexColour}/>}
+                                                    onClose={() => toggleBorderColourPicker()}
+                                                >
+                                                    <Popover.Pane>
+                                                        <ColorPicker
+                                                            onChange={(e) => handleBorderColourChange(e)}
+                                                            color={borderColour}
+                                                        />
+                                                    </Popover.Pane>
+                                                </Popover>
+                                            </div>
+                                            <div className="paddingLeftTextField">
+                                                <TextField
+                                                    label="Border Color"
+                                                    autoComplete="off"
+                                                    value={borderHexColour}
+                                                    onChange={handleBorderColourChangeFormInput}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="relative w-full">
+                                            <div className="pr-5"
+                                                style={{
+                                                    position: "absolute",
+                                                    left: "5px",
+                                                    bottom: "5px",
+                                                    zIndex: "99",
+                                                }}
+                                            >
+                                                <Popover
+                                                    active={borderHoverColourPickerActive}
+                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBorderHoverColourPicker()} color={borderHoverHexColour}/>}
+                                                    onClose={() => toggleBorderHoverColourPicker()}
+                                                >
+                                                    <Popover.Pane>
+                                                        <ColorPicker
+                                                            onChange={(e) => handleBorderHoverColourChange(e)}
+                                                            color={borderHoverColour}
+                                                        />
+                                                    </Popover.Pane>
+                                                </Popover>
+                                            </div>
+                                            <div className="paddingLeftTextField">
+                                                <TextField
+                                                    label="Border Hover Color"
+                                                    autoComplete="off"
+                                                    value={borderHoverHexColour}
+                                                    onChange={handleBorderHoverColourChangeFormInput}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex">
+                                    <div className="w-full mr-3">
+                                        <div className="py-2">
+                                            <Text>Border Width</Text>
+                                        </div>
+                                        <RangeSlider
+                                            value={borderWidth}
+                                            onChange={changeBorderWidth}
+                                            output
+                                        />
+                                    </div>
+                                </div>
 
                                 <div className="flex">
                                     <div className="flex-1 mr-3">
@@ -317,6 +472,7 @@ export default function ColourNText() {
                                             autoComplete="off"
                                             suffix="px"
                                             value={buttonHeight}
+                                            onChange={(e) => setButtonHeight(e)}
                                         />
                                     </div>
                                     <div className="flex-1">
@@ -326,46 +482,52 @@ export default function ColourNText() {
                                             autoComplete="off"
                                             suffix="px"
                                             value={buttonWidth}
+                                            onChange={(e) => setButtonWidth(e)}
                                         />
                                     </div>
                                 </div>
 
-                                <div className="w-full">
-                                    <div className="py-2">
-                                        <Text>Button Radius</Text>
-                                    </div>
-                                    <RangeSlider
-                                        value={buttonRadiusValue}
-                                        label="Value in pixel"
-                                        onChange={changeButtonRadius}
-                                        output
-                                    />
-                                </div>
 
-                                <div className="w-full">
-                                    <div className="py-2">
-                                        <Text>Font Size</Text>
+
+                                <div className="flex">
+                                    <div className="w-full mr-3">
+                                        <div className="py-2">
+                                            <Text>Button Radius</Text>
+                                        </div>
+                                        <RangeSlider
+                                            value={buttonRadiusValue}
+                                            onChange={changeButtonRadius}
+                                            output
+                                        />
                                     </div>
-                                    <RangeSlider
-                                        value={buttonFontSizeValue}
-                                        label="Value in pixel"
-                                        onChange={changeButtonFontSize}
-                                        output
-                                    />
+
+                                    <div className="w-full">
+                                        <div className="py-2">
+                                            <Text>Font Size</Text>
+                                        </div>
+                                        <RangeSlider
+                                            value={buttonFontSizeValue}
+                                            onChange={changeButtonFontSize}
+                                            output
+                                        />
+                                    </div>
                                 </div>
                             </Card>
                         </div>
                         <div className="flex-1">
                             <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
                                 <button className={`text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
-                                    backgroundColor: backgroundHexColor,
+                                    backgroundColor: isHover? backgroundHoverHexColor : backgroundHexColor,
                                     height: buttonHeight + 'px',
                                     width: buttonWidth + 'px',
                                     fontSize: buttonFontSizeValue + 'px',
-                                    borderRadius: buttonRadiusValue + 'px'
+                                    borderRadius: buttonRadiusValue + 'px',
+                                    color: isHover? textHoverHexColour: textHexColour,
+                                    borderColor: isHover ? borderHoverHexColour: borderHexColour,
+                                    borderWidth: borderWidth + 'px'
                                 }}
-                                onMouseEnter={() => setBackgroundHexColor(backgroundHoverHexColor)}
-                                onMouseLeave={() => setBackgroundHexColor(backgroundHexColor)}
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                                 >
                                     {preOrderButtonText}
                                 </button>
