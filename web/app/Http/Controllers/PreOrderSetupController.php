@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PreOrderColorsNText;
 use App\Models\PreOrderSetup;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -55,5 +56,50 @@ class PreOrderSetupController extends Controller
                 'data' => $updatedPreOrderSetup
             ], 200);
         }
+    }
+
+    public function colorNText(Request $request) 
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $inherit_from_theme = $request->inherit_from_theme;
+        $settings = $request->settings;
+
+        $preOrderColorsSettings = PreOrderColorsNText::where(['shop' => $shop])->first();
+
+        if (!$preOrderColorsSettings) {
+            $createdPreOrderSetup = PreOrderColorsNText::create([
+                'shop' => $shop,
+                'inherit_from_theme' => $inherit_from_theme ? true : false,
+                'settings' => json_encode($settings)
+            ]);
+            return response()->json([
+                'message' => 'Button Colors and Text Settings Saved Successfully.',
+                'data' => $createdPreOrderSetup
+            ], 201);
+        } else {
+            $updatedPreOrderColorsSettings = PreOrderColorsNText::where('shop', $shop)->update([
+                'inherit_from_theme' => $inherit_from_theme ? true: false,
+                'settings' => json_encode($settings)
+            ]);
+            return response()->json([
+                'message' => 'Button Colors and Text Settings Updated Successfully.',
+                'data' => $updatedPreOrderColorsSettings
+            ], 200);
+        }
+    }
+
+    public function getColorNTextSettings(Request $request) {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $preOrderButtonSettings = PreOrderColorsNText::where(['shop' => $shop])->first();
+
+        if (!$preOrderButtonSettings) {
+            return response()->json(config('preorder')['button_settings']);
+        }
+
+        return response()->json($preOrderButtonSettings);
     }
 }

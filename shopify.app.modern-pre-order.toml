@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://integrating-thriller-announced-sri.trycloudflare.com"
+application_url = "https://substantial-satisfy-collecting-conferencing.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://integrating-thriller-announced-sri.trycloudflare.com/auth/callback",
-  "https://integrating-thriller-announced-sri.trycloudflare.com/auth/shopify/callback",
-  "https://integrating-thriller-announced-sri.trycloudflare.com/api/auth/callback"
+  "https://substantial-satisfy-collecting-conferencing.trycloudflare.com/auth/callback",
+  "https://substantial-satisfy-collecting-conferencing.trycloudflare.com/auth/shopify/callback",
+  "https://substantial-satisfy-collecting-conferencing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

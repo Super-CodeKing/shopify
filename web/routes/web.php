@@ -129,6 +129,10 @@ Route::post('/api/preorder/products/destroy', [PreOrderProductsController::class
 // Pre Orders
 Route::get('/api/preorder/orders', [PreOrderOrdersController::class, 'index'])->middleware('shopify.auth');
 
+// Colors and Text Settings
+Route::get('/api/preorder/colorntext', [PreOrderSetupController::class, 'getColorNTextSettings'])->middleware('shopify.auth');
+Route::post('/api/preorder/colorntext', [PreOrderSetupController::class, 'colorNText'])->middleware('shopify.auth');
+
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active

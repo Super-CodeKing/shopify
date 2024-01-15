@@ -27,6 +27,21 @@ export default function OrdersTable() {
         plural: "orders",
     };
 
+    function getShopName() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('shop');
+        if(name) return name.split('.')[0];
+        else null;
+    }
+
+    const getOrderLink = (id) => {
+        let shopName = getShopName();
+        if(shopName)
+        return `https://admin.shopify.com/store/${shopName}/orders/${id}`
+        else
+        return '#';
+    }
+
     const rowMarkup = preOrderOrders.map(
         (
             {
@@ -49,7 +64,7 @@ export default function OrdersTable() {
             >
                 <IndexTable.Cell>
                     <Text variant="bodyMd" fontWeight="bold" as="span">
-                        <a href={`https://admin.shopify.com/store/${getShopName()}/orders/${id}`} target="_blank">{name}</a>
+                        <a href={getOrderLink(id)} target="_blank">{name}</a>
                     </Text>
                 </IndexTable.Cell>
                 <IndexTable.Cell>
@@ -94,11 +109,7 @@ export default function OrdersTable() {
         }
     };
 
-    function getShopName() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('shop');
-        return name.split('.')[0];
-    }
+    
 
     useEffect(() => {
         setIsLoadingOrders(true);

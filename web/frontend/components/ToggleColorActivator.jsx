@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ToggleColourActivator = ({ toggleColourFunction, color }) => {
+const ToggleColorActivator = ({ toggleColourFunction, color }) => {
     return (
         <div
             onClick={toggleColourFunction}
@@ -16,4 +16,4 @@ const ToggleColourActivator = ({ toggleColourFunction, color }) => {
     );
 };
 
-export default ToggleColourActivator;
+export default ToggleColorActivator;

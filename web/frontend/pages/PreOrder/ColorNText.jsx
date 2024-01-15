@@ -15,12 +15,14 @@ import {
     hsbToHex,
     hexToRgb,
     rgbToHsb,
+    Banner
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import "../../assets/preorder.css";
-import ToggleColourActivator from "../../components/ToggleColourActivator";
-export default function ColourNText() {
+import ToggleColorActivator from "../../components/ToggleColorActivator";
+export default function ColorNText() {
+    const fetch = useAuthenticatedFetch();
     const [toastActive, setToastActive] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState({
         hue: 120,
@@ -35,30 +37,30 @@ export default function ColourNText() {
         saturation: 1,
     });
     const [backgroundHoverHexColor, setBackgroundHoverHexColor] = useState("#121212");
-    const [textColour, setTextColour] = useState({
+    const [textColor, setTextColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-    const [textHexColour, setTextHexColour] = useState("#fff");
-    const [textHoverColour, setTextHoverColour] = useState({
+    const [textHexColor, setTextHexColor] = useState("#fff");
+    const [textHoverColor, setTextHoverColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-    const [textHoverHexColour, setTextHoverHexColour] = useState("#fff");
-    const [borderColour, setBorderColour] = useState({
+    const [textHoverHexColor, setTextHoverHexColor] = useState("#fff");
+    const [borderColor, setBorderColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-    const [borderHexColour, setBorderHexColour] = useState("#fff");
-    const [borderHoverColour, setBorderHoverColour] = useState({
+    const [borderHexColor, setBorderHexColor] = useState("#fff");
+    const [borderHoverColor, setBorderHoverColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-    const [borderHoverHexColour, setBorderHoverHexColour] = useState("#fff");
+    const [borderHoverHexColor, setBorderHoverHexColor] = useState("#fff");
     const [buttonHeight, setButtonHeight] = useState(40);
     const [buttonWidth, setButtonWidth] = useState(420);
     const [buttonRadiusValue, setButtonRadiusValue] = useState(32);
@@ -67,10 +69,10 @@ export default function ColourNText() {
     const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
     const [backgroundHoverColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
-    const [textColourPickerActive, setTextColourPickerActive] = useState(false);
-    const [textHoverColourPickerActive, setTextHoverColourPickerActive] = useState(false);
-    const [borderColourPickerActive, setBorderColourPickerActive] = useState(false);
-    const [borderHoverColourPickerActive, setBorderHoverColourPickerActive] = useState(false);
+    const [textColorPickerActive, setTextColorPickerActive] = useState(false);
+    const [textHoverColorPickerActive, setTextHoverColorPickerActive] = useState(false);
+    const [borderColorPickerActive, setBorderColorPickerActive] = useState(false);
+    const [borderHoverColorPickerActive, setBorderHoverColorPickerActive] = useState(false);
     const [borderWidth, setBorderWidth] = useState(0);
     const [isHover, setIsHover] = useState(false);
 
@@ -93,48 +95,48 @@ export default function ColourNText() {
         setBackgroundHexColor(hexColor);
     };
 
-    const handleTextColourChange = (newTextColour) => {
-        const hexColour = hsbToHex(newTextColour);
-        setTextColour(newTextColour);
-        setTextHexColour(hexColour);
+    const handleTextColorChange = (newTextColor) => {
+        const hexColor = hsbToHex(newTextColor);
+        setTextColor(newTextColor);
+        setTextHexColor(hexColor);
     }
 
-    const handleTextHoverColourChange = (newTextHoverColour) => {
-        const hexColour = hsbToHex(newTextHoverColour);
-        setTextHoverColour(newTextHoverColour);
-        setTextHoverHexColour(hexColour);
+    const handleTextHoverColorChange = (newTextHoverColor) => {
+        const hexColor = hsbToHex(newTextHoverColor);
+        setTextHoverColor(newTextHoverColor);
+        setTextHoverHexColor(hexColor);
     }
 
-    const handleBorderColourChange = (newBorderColour) => {
-        const hexColour = hsbToHex(newBorderColour);
-        setBorderColour(newBorderColour);
-        setBorderHexColour(hexColour);
+    const handleBorderColorChange = (newBorderColor) => {
+        const hexColor = hsbToHex(newBorderColor);
+        setBorderColor(newBorderColor);
+        setBorderHexColor(hexColor);
     }
 
-    const handleBorderHoverColourChange = (newBorderHoverColour) => {
-        const hexColour = hsbToHex(newBorderHoverColour);
-        setBorderHoverColour(newBorderHoverColour);
-        setBorderHoverHexColour(hexColour);
+    const handleBorderHoverColorChange = (newBorderHoverColor) => {
+        const hexColor = hsbToHex(newBorderHoverColor);
+        setBorderHoverColor(newBorderHoverColor);
+        setBorderHoverHexColor(hexColor);
     }
 
     const toggleBackgroundHoverColorPicker = () => {
         setBackgroundHoverColorPickerActive(!backgroundHoverColorPickerActive);
     };
 
-    const toggleTextColourPicker = () => {
-        setTextColourPickerActive(!textColourPickerActive);
+    const toggleTextColorPicker = () => {
+        setTextColorPickerActive(!textColorPickerActive);
     }
 
-    const toggleTextHoverColourPicker = () => {
-        setTextHoverColourPickerActive(!textHoverColourPickerActive);
+    const toggleTextHoverColorPicker = () => {
+        setTextHoverColorPickerActive(!textHoverColorPickerActive);
     }
 
-    const toggleBorderColourPicker = () => {
-        setBorderColourPickerActive(!borderColourPickerActive);
+    const toggleBorderColorPicker = () => {
+        setBorderColorPickerActive(!borderColorPickerActive);
     }
 
-    const toggleBorderHoverColourPicker = () => {
-        setBorderHoverColourPickerActive(!borderHoverColourPickerActive);
+    const toggleBorderHoverColorPicker = () => {
+        setBorderHoverColorPickerActive(!borderHoverColorPickerActive);
     }
 
     const handleBackgroundHoverColorChange = (newColor) => {
@@ -157,32 +159,32 @@ export default function ColourNText() {
         setBackgroundColor(hsbColor);
     };
 
-    const handleTextColourChangeFormInput = (newHexColour) => {
-        const rgbColor = hexToRgb(newHexColour);
+    const handleTextColorChangeFormInput = (newHexColor) => {
+        const rgbColor = hexToRgb(newHexColor);
         const hsbColor = rgbToHsb(rgbColor);
-        setTextHexColour(newHexColour)
-        setTextColour(hsbColor);
+        setTextHexColor(newHexColor)
+        setTextColor(hsbColor);
     }
 
-    const handleTextHoverColourChangeFormInput = (newTextHexColour) => {
-        const rgbColor = hexToRgb(newTextHexColour);
+    const handleTextHoverColorChangeFormInput = (newTextHexColor) => {
+        const rgbColor = hexToRgb(newTextHexColor);
         const hsbColor = rgbToHsb(rgbColor);
-        setTextHoverHexColour(newTextHexColour)
-        setTextHoverColour(hsbColor);
+        setTextHoverHexColor(newTextHexColor)
+        setTextHoverColor(hsbColor);
     }
 
-    const handleBorderColourChangeFormInput = (newBorderHexColour) => {
-        const rgbColor = hexToRgb(newBorderHexColour);
+    const handleBorderColorChangeFormInput = (newBorderHexColor) => {
+        const rgbColor = hexToRgb(newBorderHexColor);
         const hsbColor = rgbToHsb(rgbColor);
-        setBorderHexColour(newBorderHexColour)
-        setBorderColour(hsbColor);
+        setBorderHexColor(newBorderHexColor)
+        setBorderColor(hsbColor);
     }
 
-    const handleBorderHoverColourChangeFormInput = (newBorderHoverHexColour) => {
-        const rgbColor = hexToRgb(newBorderHoverHexColour);
+    const handleBorderHoverColorChangeFormInput = (newBorderHoverHexColor) => {
+        const rgbColor = hexToRgb(newBorderHoverHexColor);
         const hsbColor = rgbToHsb(rgbColor);
-        setBorderHoverHexColour(newBorderHoverHexColour)
-        setBorderHoverColour(hsbColor);
+        setBorderHoverHexColor(newBorderHoverHexColor)
+        setBorderHoverColor(hsbColor);
     }
 
     const handleMouseEnter = () => {
@@ -193,16 +195,68 @@ export default function ColourNText() {
         setIsHover(false)
     }
 
+    function makeColorNTextSettings() {
+        return JSON.stringify({
+            'button_text' : preOrderButtonText,
+            'button_bg_color': backgroundHexColor,
+            'button_bg_hover_color': backgroundHoverHexColor,
+            'button_text_color': textHexColor,
+            'button_text_hover_color': textHoverHexColor,
+            'button_border_color': borderHexColor,
+            'button_border_hex_color': borderHoverHexColor,
+            'button_border_width': borderWidth,
+            'button_height': buttonHeight,
+            'button_width': buttonWidth,
+            'button_border_radius': buttonRadiusValue,
+            'button_font_size': buttonFontSizeValue
+        })
+    }
+
     const toastMarkup = toastActive ? (
         <Toast
-            content="Button Text and Colour Settings Saved Successfully!"
+            content="Button Text and Color Settings Saved Successfully!"
             onDismiss={toggleToastActive}
         />
     ) : null;
 
-    const savePreOrderButtonNTextColout = () => {
-        console.log("Saving...............");
+    const getPreOrderButtonSettings = async () => {
+        const response = await fetch("/api/preorder/colorntext");
+        if (response.ok) {
+            const preOrderButtonSettings = await response.json();
+            if(preOrderButtonSettings && preOrderButtonSettings['settings'] == null) {
+                setIsInheritFromTheme(true);
+            }
+        } else {
+            console.log("Error in Activaing Pre Order: ", response);
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    }
+
+    const savePreOrderButtonNTextColor = async () => {
+        let colorNTextSettings = makeColorNTextSettings();
+
+        console.log("Settings: ", colorNTextSettings);
+        const formData = new FormData();
+        formData.append("inherit_from_theme", isInheritFromTheme);
+        formData.append("settings", colorNTextSettings);
+
+        const response = await fetch("/api/preorder/colorntext", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        if (response.ok) {
+            toggleToastActive(true);
+        }
     };
+
+    useEffect(() => {
+        getPreOrderButtonSettings();
+    }, []);
 
     return (
         <>
@@ -227,6 +281,13 @@ export default function ColourNText() {
                                             )
                                         }
                                     />
+                                    <div className="mt-3">
+                                        <Banner>
+                                            <p>
+                                                If inherit from theme is activated, then others design settings will not work.
+                                            </p>
+                                        </Banner>
+                                    </div>
                                 </Card>
                             </div>
                             <Card>
@@ -253,7 +314,7 @@ export default function ColourNText() {
                                             >
                                                 <Popover
                                                     active={backgroundColorPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBackgroundColorPicker()} color={backgroundHexColor}/>}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundColorPicker()} color={backgroundHexColor}/>}
                                                     onClose={() =>toggleBackgroundColorPicker()}
                                                 >
                                                     <Popover.Pane>
@@ -289,7 +350,7 @@ export default function ColourNText() {
                                             >
                                                 <Popover
                                                     active={backgroundHoverColorPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBackgroundHoverColorPicker()} color={backgroundHoverHexColor}/>}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundHoverColorPicker()} color={backgroundHoverHexColor}/>}
                                                     onClose={() => toggleBackgroundHoverColorPicker()}
                                                 >
                                                     <Popover.Pane>
@@ -323,14 +384,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={textColourPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleTextColourPicker()} color={textHexColour}/>}
-                                                    onClose={() => toggleTextColourPicker()}
+                                                    active={textColorPickerActive}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleTextColorPicker()} color={textHexColor}/>}
+                                                    onClose={() => toggleTextColorPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={(e) => handleTextColourChange(e)}
-                                                            color={textColour}
+                                                            onChange={(e) => handleTextColorChange(e)}
+                                                            color={textColor}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -339,8 +400,8 @@ export default function ColourNText() {
                                                 <TextField
                                                     label="Text Color"
                                                     autoComplete="off"
-                                                    value={textHexColour}
-                                                    onChange={handleTextColourChangeFormInput}
+                                                    value={textHexColor}
+                                                    onChange={handleTextColorChangeFormInput}
                                                 />
                                             </div>
                                         </div>
@@ -357,14 +418,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={textHoverColourPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleTextHoverColourPicker()} color={textHoverHexColour}/>}
-                                                    onClose={() => toggleTextHoverColourPicker()}
+                                                    active={textHoverColorPickerActive}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleTextHoverColorPicker()} color={textHoverHexColor}/>}
+                                                    onClose={() => toggleTextHoverColorPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={(e) => handleTextHoverColourChange(e)}
-                                                            color={textHoverColour}
+                                                            onChange={(e) => handleTextHoverColorChange(e)}
+                                                            color={textHoverColor}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -373,8 +434,8 @@ export default function ColourNText() {
                                                 <TextField
                                                     label="Text Hover Color"
                                                     autoComplete="off"
-                                                    value={textHoverHexColour}
-                                                    onChange={handleTextHoverColourChangeFormInput}
+                                                    value={textHoverHexColor}
+                                                    onChange={handleTextHoverColorChangeFormInput}
                                                 />
                                             </div>
                                         </div>
@@ -393,14 +454,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={borderColourPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBorderColourPicker()} color={borderHexColour}/>}
-                                                    onClose={() => toggleBorderColourPicker()}
+                                                    active={borderColorPickerActive}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBorderColorPicker()} color={borderHexColor}/>}
+                                                    onClose={() => toggleBorderColorPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={(e) => handleBorderColourChange(e)}
-                                                            color={borderColour}
+                                                            onChange={(e) => handleBorderColorChange(e)}
+                                                            color={borderColor}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -409,8 +470,8 @@ export default function ColourNText() {
                                                 <TextField
                                                     label="Border Color"
                                                     autoComplete="off"
-                                                    value={borderHexColour}
-                                                    onChange={handleBorderColourChangeFormInput}
+                                                    value={borderHexColor}
+                                                    onChange={handleBorderColorChangeFormInput}
                                                 />
                                             </div>
                                         </div>
@@ -427,14 +488,14 @@ export default function ColourNText() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={borderHoverColourPickerActive}
-                                                    activator={<ToggleColourActivator toggleColourFunction={() => toggleBorderHoverColourPicker()} color={borderHoverHexColour}/>}
-                                                    onClose={() => toggleBorderHoverColourPicker()}
+                                                    active={borderHoverColorPickerActive}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBorderHoverColorPicker()} color={borderHoverHexColor}/>}
+                                                    onClose={() => toggleBorderHoverColorPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={(e) => handleBorderHoverColourChange(e)}
-                                                            color={borderHoverColour}
+                                                            onChange={(e) => handleBorderHoverColorChange(e)}
+                                                            color={borderHoverColor}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
@@ -443,8 +504,8 @@ export default function ColourNText() {
                                                 <TextField
                                                     label="Border Hover Color"
                                                     autoComplete="off"
-                                                    value={borderHoverHexColour}
-                                                    onChange={handleBorderHoverColourChangeFormInput}
+                                                    value={borderHoverHexColor}
+                                                    onChange={handleBorderHoverColorChangeFormInput}
                                                 />
                                             </div>
                                         </div>
@@ -522,8 +583,8 @@ export default function ColourNText() {
                                     width: buttonWidth + 'px',
                                     fontSize: buttonFontSizeValue + 'px',
                                     borderRadius: buttonRadiusValue + 'px',
-                                    color: isHover? textHoverHexColour: textHexColour,
-                                    borderColor: isHover ? borderHoverHexColour: borderHexColour,
+                                    color: isHover? textHoverHexColor: textHexColor,
+                                    borderColor: isHover ? borderHoverHexColor: borderHexColor,
                                     borderWidth: borderWidth + 'px'
                                 }}
                                 onMouseEnter={handleMouseEnter}
@@ -539,7 +600,7 @@ export default function ColourNText() {
                         <Button
                             variant="primary"
                             size="large"
-                            onClick={() => savePreOrderButtonNTextColout()}
+                            onClick={() => savePreOrderButtonNTextColor()}
                         >
                             Save
                         </Button>
