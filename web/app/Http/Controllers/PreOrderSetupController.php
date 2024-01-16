@@ -100,6 +100,7 @@ class PreOrderSetupController extends Controller
             return response()->json(config('preorder')['button_settings']);
         }
 
+        $preOrderButtonSettings->settings = json_decode($preOrderButtonSettings->settings, true);
         return response()->json($preOrderButtonSettings);
     }
 }

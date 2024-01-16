@@ -89,6 +89,12 @@ export default function ColorNText() {
         setBackgroundColorPickerActive(!backgroundColorPickerActive);
     };
 
+    function HexToHsb(color) {
+        const rgbColor = hexToRgb(color);
+        const hsbColor = rgbToHsb(rgbColor);
+        return hsbColor
+    }
+
     const handleBackgroundColorChange = (newColor) => {
         const hexColor = hsbToHex(newColor);
         setBackgroundColor(newColor);
@@ -202,14 +208,39 @@ export default function ColorNText() {
             'button_bg_hover_color': backgroundHoverHexColor,
             'button_text_color': textHexColor,
             'button_text_hover_color': textHoverHexColor,
-            'button_border_color': borderHexColor,
-            'button_border_hex_color': borderHoverHexColor,
+            'button_border_hex_color': borderHexColor,
+            'button_border_hover_hex_color': borderHoverHexColor,
             'button_border_width': borderWidth,
             'button_height': buttonHeight,
             'button_width': buttonWidth,
             'button_border_radius': buttonRadiusValue,
             'button_font_size': buttonFontSizeValue
         })
+    }
+
+    function setColorNTextSettings(settings) {
+        setPreOrderButtonText(settings.button_text);
+
+        setBackgroundHexColor(settings.button_bg_color);
+        setBackgroundColor(HexToHsb(settings.button_bg_color));
+        setBackgroundHoverHexColor(settings.button_bg_hover_color);
+        setBackgroundHoverColor(HexToHsb(settings.button_bg_color));
+
+        setTextColor(HexToHsb(settings.button_bg_color));
+        setTextHexColor(settings.button_text_color);
+        setTextHoverHexColor(settings.button_text_hover_color);
+        setTextHoverColor(HexToHsb(settings.button_bg_color));
+
+        setBorderColor(HexToHsb(settings.button_border_hex_color));
+        setBorderHexColor(settings.button_border_hex_color);
+        setBorderHoverHexColor(settings.button_border_hover_hex_color);
+        setBorderHoverColor(HexToHsb(settings.button_border_hover_hex_color));
+
+        setBorderWidth(settings.button_border_width);
+        setButtonHeight(settings.button_height);
+        setButtonWidth(settings.button_width);
+        setButtonRadiusValue(settings.button_border_radius);
+        setButtonFontSizeValue(settings.button_font_size);
     }
 
     const toastMarkup = toastActive ? (
@@ -225,6 +256,10 @@ export default function ColorNText() {
             const preOrderButtonSettings = await response.json();
             if(preOrderButtonSettings && preOrderButtonSettings['settings'] == null) {
                 setIsInheritFromTheme(true);
+            } else if(preOrderButtonSettings.settings) {
+                const settings = JSON.parse(preOrderButtonSettings.settings);
+                setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme)
+                setColorNTextSettings(settings);
             }
         } else {
             console.log("Error in Activaing Pre Order: ", response);
@@ -281,7 +316,7 @@ export default function ColorNText() {
                                             )
                                         }
                                     />
-                                    <div className="mt-3">
+                                    <div className="mt-1">
                                         <Banner>
                                             <p>
                                                 If inherit from theme is activated, then others design settings will not work.

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ToggleColorActivator = ({ toggleColourFunction, color }) => {
+const ToggleColorActivator = ({ toggleColorFunction, color }) => {
     return (
         <div
-            onClick={toggleColourFunction}
+            onClick={toggleColorFunction}
             style={{
                 backgroundColor: color ?? "#F8F2F2",
                 width: "22px",
