@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PreOrderColorsNText;
+use App\Models\PreOrderLimit;
 use App\Models\PreOrderSetup;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -102,5 +103,46 @@ class PreOrderSetupController extends Controller
 
         $preOrderButtonSettings->settings = json_decode($preOrderButtonSettings->settings, true);
         return response()->json($preOrderButtonSettings);
+    }
+
+    public function getOrderLimit(Request $request) {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $preOrderLimitSettings = PreOrderLimit::where(['shop' => $shop])->first();
+
+        if (!$preOrderLimitSettings) {
+            return response()->json(config('preorder')['limit']);
+        }
+
+        $preOrderLimitSettings->limit = json_decode($preOrderLimitSettings->limit, true);
+        return response()->json($preOrderLimitSettings);
+    }
+
+    public function storeOrderLimit(Request $request) {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $limit = $request->limit;
+
+        $preOrderLimitSettings = PreOrderLimit::where(['shop' => $shop])->first();
+        if (!$preOrderLimitSettings) {
+            $createdPreOrderLimit = PreOrderLimit::create([
+                'shop' => $shop,
+                'limit' => json_encode($limit),
+            ]);
+            return response()->json([
+                'message' => 'Pre Order Limit Data Saved Successfully.',
+                'data' => $createdPreOrderLimit
+            ], 201);
+        } else {
+            $updatedPreOrderLimit = PreOrderLimit::where('shop', $shop)->update([
+                'limit' => json_encode($limit),
+            ]);
+            return response()->json([
+                'message' => 'Pre Order Limit Data Updated Successfully.',
+                'data' => $updatedPreOrderLimit
+            ], 200);
+        }
     }
 }

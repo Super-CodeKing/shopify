@@ -133,6 +133,10 @@ Route::get('/api/preorder/orders', [PreOrderOrdersController::class, 'index'])->
 Route::get('/api/preorder/colorntext', [PreOrderSetupController::class, 'getColorNTextSettings'])->middleware('shopify.auth');
 Route::post('/api/preorder/colorntext', [PreOrderSetupController::class, 'colorNText'])->middleware('shopify.auth');
 
+// Limit Settings
+Route::get('/api/preorder/limit', [PreOrderSetupController::class, 'getOrderLimit'])->middleware('shopify.auth');
+Route::post('/api/preorder/limit', [PreOrderSetupController::class, 'storeOrderLimit'])->middleware('shopify.auth');
+
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active

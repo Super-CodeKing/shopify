@@ -7,5 +7,6 @@ return [
     "button_settings"        => [
         "inherit_from_theme" =>    true,
         "settings"           =>    null
-    ]
+    ],
+    "limit"        =>        "no-limit"
 ];
