@@ -10,7 +10,10 @@ import {
     Button,
     Banner,
     ChoiceList,
-    TextField
+    TextField,
+    List,
+    Bleed,
+    Box
 } from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
@@ -118,35 +121,57 @@ export default function OrderLimit() {
                         Order Limit
                     </Text>
                     <Divider borderColor="border" />
-                    <Card>
-                        <Banner>
-                            <p>This settings will work on every products.</p>
-                            <p>You will be able to set product wise on <strong>Product Setup.</strong></p>
-                        </Banner>
-                        <div className="mt-3">
-                            <ChoiceList
-                                title="Select Limit"
-                                choices={[
-                                    {
-                                        label: 'No Limit', 
-                                        value: 'no-limit'
-                                    },
-                                    {
-                                        label: 'Daily Limit', 
-                                        value: 'daily-limit',
-                                        renderChildren: renderChildrenDailyLimit
-                                    },
-                                    {
-                                        label: 'Total Limit', 
-                                        value: 'total-limit',
-                                        renderChildren: renderChildrenTotalLimit
-                                    },
-                                ]}
-                                selected={limitSelected}
-                                onChange={handleChoiceListChange}
-                            />
-                        </div>
-                    </Card>
+                    <div className="">
+                        <Card padding={0}>
+                            <div className="pb-3 pt-5 px-5">
+                                <Text variant="headingMd" as="h6">Select Limit</Text>
+                                <Text>Best way to set a regular limit for all products. Then if you need to change then do it on product setup page.</Text>
+                            </div>
+                            <div className="mt-0 w-1/2 px-5">
+                                
+                                <ChoiceList
+                                    title="Select Limit"
+                                    titleHidden
+                                    choices={[
+                                        {
+                                            label: 'No Limit', 
+                                            value: 'no-limit'
+                                        },
+                                        {
+                                            label: 'Daily Limit', 
+                                            value: 'daily-limit',
+                                            renderChildren: renderChildrenDailyLimit
+                                        },
+                                        {
+                                            label: 'Total Limit', 
+                                            value: 'total-limit',
+                                            renderChildren: renderChildrenTotalLimit
+                                        },
+                                    ]}
+                                    selected={limitSelected}
+                                    onChange={handleChoiceListChange}
+                                />
+                            </div>
+
+                            <div className="mt-5">
+                                <Box
+                                    background="bg-surface-secondary"
+                                    paddingBlock="300"
+                                    paddingInline="600"
+                                >
+                                    <BlockStack gap="200">
+                                    <Text as="h3" variant="headingSm" fontWeight="medium">
+                                        Note
+                                    </Text>
+                                    <List>
+                                        <List.Item><strong>Daily Limit:</strong> Cap daily pre-orders to protect inventory.</List.Item>
+                                        <List.Item><strong>Total Limit:</strong> Overall pre orders to maintain inventory</List.Item>
+                                    </List>
+                                    </BlockStack>
+                                </Box>
+                            </div>
+                        </Card>
+                    </div>
                 </BlockStack>
                 <div className="mt-3">
                     <Button
