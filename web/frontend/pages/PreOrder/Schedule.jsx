@@ -8,17 +8,29 @@ import {
     Toast,
     Frame,
     Page,
+    Form,
+    FormLayout,
+    TextField,
+    Box,
+    List
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 
 export default function Schedule() {
     const fetch = useAuthenticatedFetch();
+    const today = new Date();
 
     const [isPreOrderActive, setIsPreOrderActive] = useState(true);
     const [checkedProductPage, setCheckedProductPage] = useState(true);
     const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
     const [toastActive, setToastActive] = useState(false);
+    const [editStartDate, setEditStartDate] = useState(today);
+    const [editEndDate, setEditEndDate] = useState(
+        new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
+    );
+    const [hasEndDate, setHasEndDate] = useState(true);
+    const [hasRestockDate, setHasRestockDate] = useState(false)
 
     const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
     const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
@@ -98,78 +110,93 @@ export default function Schedule() {
                         Schedule for Pre Order
                     </Text>
                     <Divider borderColor="border" />
-                    <Card>
-                        <div className="flex items-center">
-                            <div className="flex flex-col">
-                                <Text variant="headingMd" as="h5">
-                                    Activation Status
-                                </Text>
-                                <p>
-                                    Current Status:{" "}
-                                    {isPreOrderActive && (
-                                        <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 ml-1">
-                                            On
-                                        </span>
-                                    )}
-                                    {!isPreOrderActive && (
-                                        <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ml-1">
-                                            Off
-                                        </span>
-                                    )}
-                                </p>
-                            </div>
-                            <div className="ml-auto">
-                                {isPreOrderActive && (
-                                    <Button
-                                        variant="primary"
-                                        tone="critical"
-                                        onClick={() => changePreOrderStatus()}
-                                    >
-                                        Deactive
-                                    </Button>
-                                )}
-                                {!isPreOrderActive && (
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => changePreOrderStatus()}
-                                    >
-                                        Active
-                                    </Button>
-                                )}
-                            </div>
+                    <Card padding={0}>
+                        <div className="pb-3 pt-5 px-5">
+                            <Text variant="headingMd" as="h6">Pre Order Start, End & Restock Date</Text>
+                            <Text>Best way to set a start and end date for all products. Then if you need to change then do it on product setup page.</Text>
                         </div>
-                    </Card>
-                    <Card>
-                        <div className="flex items-center">
-                            <div className="flex flex-col w-full">
-                                <div>
-                                    <Text variant="headingMd" as="h6">
-                                        Where to show
-                                    </Text>
-                                    <Text>
-                                        You will be able to active this on Product
-                                        page and Collection page.{" "}
-                                    </Text>
-                                    <div className="mt-3 mb-2">
-                                        <Divider borderColor="border" />
-                                    </div>
-                                </div>
-                                <div className="mt-1 flex flex-col">
-                                    <div className="pb-1">
-                                        <Checkbox
-                                            label="Product Page"
-                                            checked={checkedProductPage}
-                                            onChange={() => activeOnProductPage()}
-                                        />
-                                    </div>
+                        <div className="pb-3 pt-3 px-5">
+                            <Form>
+                                <FormLayout>
 
-                                    <Checkbox
-                                        label="Collection Page"
-                                        checked={checkedCollectionPage}
-                                        onChange={() => activeOnCollectionPage()}
-                                    />
-                                </div>
-                            </div>
+                                    <div className="flex">
+                                        <div className="flex-1 mr-3">
+                                            <TextField
+                                                label="Start Date"
+                                                type="date"
+                                                value={editStartDate
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                                onChange={(e) =>
+                                                    changeEditStartDate(e)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <TextField
+                                                label="End Date"
+                                                type="date"
+                                                value={editEndDate
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                                onChange={(e) =>
+                                                    changeEditEndDate(e)
+                                                }
+                                                disabled={hasEndDate}
+                                            />
+                                            <Checkbox
+                                                label="No End Date"
+                                                checked={hasEndDate}
+                                                onChange={() =>
+                                                    setHasEndDate(!hasEndDate)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div className="flex-1 mr-3">
+                                            <TextField
+                                                label="Estimated Restock Date"
+                                                type="date"
+                                                value={editStartDate
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                                onChange={(e) =>
+                                                    changeEditStartDate(e)
+                                                }
+                                                disabled={hasRestockDate}
+                                            />
+                                            <Checkbox
+                                                label="No Restock Date"
+                                                checked={hasRestockDate}
+                                                onChange={() =>
+                                                    setHasRestockDate(!hasRestockDate)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                        </div>
+                                    </div>
+                                </FormLayout>
+                            </Form>
+                        </div>
+                        <div className="mt-5">
+                            <Box
+                                background="bg-surface-secondary"
+                                paddingBlock="300"
+                                paddingInline="600"
+                            >
+                                <BlockStack gap="200">
+                                <Text as="h3" variant="headingSm" fontWeight="medium">
+                                    Note
+                                </Text>
+                                <List>
+                                    <List.Item><strong>Start Date:</strong> When you want to take pre orders.</List.Item>
+                                    <List.Item><strong>End Date:</strong> When you want to stop taking pre orders.</List.Item>
+                                    <List.Item><strong>Restock Date:</strong> When you will be able to deliver or restock those products.</List.Item>
+                                </List>
+                                </BlockStack>
+                            </Box>
                         </div>
                     </Card>
                 </BlockStack>
