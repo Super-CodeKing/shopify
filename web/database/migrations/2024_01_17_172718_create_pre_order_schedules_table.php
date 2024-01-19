@@ -18,7 +18,9 @@ class CreatePreOrderSchedulesTable extends Migration
             $table->string('shop');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
+            $table->boolean('no_end_date')->default(true);
             $table->timestamp('estimated_restock_date')->nullable();
+            $table->boolean('no_restock_date')->default(true);
             $table->timestamps();
         });
     }

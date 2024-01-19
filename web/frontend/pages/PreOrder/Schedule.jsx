@@ -5,8 +5,6 @@ import {
     Divider,
     Checkbox,
     Text,
-    Toast,
-    Frame,
     Page,
     Form,
     FormLayout,
@@ -14,92 +12,112 @@ import {
     Box,
     List
 } from "@shopify/polaris";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
+import Toaster from "../../components/Toaster";
 
 export default function Schedule() {
     const fetch = useAuthenticatedFetch();
     const today = new Date();
 
-    const [isPreOrderActive, setIsPreOrderActive] = useState(true);
-    const [checkedProductPage, setCheckedProductPage] = useState(true);
-    const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
-    const [toastActive, setToastActive] = useState(false);
-    const [editStartDate, setEditStartDate] = useState(today);
-    const [editEndDate, setEditEndDate] = useState(
-        new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
-    );
-    const [hasEndDate, setHasEndDate] = useState(true);
-    const [hasRestockDate, setHasRestockDate] = useState(false)
+    const [showToast, setShowToast] = useState(false);
+    const [toastContent, setToastContent] = useState('');
+    const [isErrorToast, setIsErrorToast] = useState(false);
 
-    const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
-    const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
-    const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
+    const [startDate, setStartDate] = useState(today);
+    const [endDate, setEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+    const [restockDate, setRestockDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+    const [noEndDate, setNoEndDate] = useState(true);
+    const [noRestockDate, setNoRestockDate] = useState(true);
 
-    const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
+    const changeStartDate = (e) => {
+        setStartDate(new Date(e));
+    }
 
-    const toastMarkup = toastActive ? (
-        <Toast content="Schedule Data Saved Successfully!" onDismiss={toggleToastActive} />
-    ) : null;
+    const changeEndDate = (e) => {
+        setEndDate(new Date(e));
+    }
 
-    const setActivationData = (preOrderInitData) => {
-        let activation = preOrderInitData.active === 1 ? true : false;
-        setIsPreOrderActive(activation);
+    const changeRestockDate = (e) => {
+        setRestockDate(new Date(e));
+    }
 
-        let poc = preOrderInitData.active_on_collection;
-        let pop = preOrderInitData.active_on_product;
-
-        if (poc === 1 && pop === 1) {
-            setCheckedProductPage(true);
-            setCheckedCollectionPage(true);
-        } else if (poc === 1 && pop === 0) {
-            setCheckedProductPage(false);
-            setCheckedCollectionPage(true);
-        } else if (poc === 0 && pop === 1) {
-            setCheckedProductPage(true);
-            setCheckedCollectionPage(false);
-        } else {
-            setCheckedProductPage(false);
-            setCheckedCollectionPage(false);
-        }
-    };
-
-    const getPreOrderInitSettings = async () => {
-        const response = await fetch("/api/preorder/init");
+    const getPreOrderSchedule = async () => {
+        const response = await fetch("/api/preorder/schedule");
 
         if (response.ok) {
-            const preOrderInitData = await response.json();
-            console.log("Get Pre Order Init Data ", preOrderInitData);
-            setActivationData(preOrderInitData);
+            const preOrderSchedule = await response.json();
+            console.log("Schedule Date: ", preOrderSchedule);
+            
+            if(!preOrderSchedule.start_date) {
+                setStartDate(startDate);
+            } else {
+                setStartDate(new Date(preOrderSchedule.start_date));
+            }
+
+            if(!preOrderSchedule.end_date) {
+                setEndDate(endDate);
+            } else {
+                setEndDate(new Date(preOrderSchedule.end_date));
+            }
+
+            if(!preOrderSchedule.restock_date) {
+                setRestockDate(restockDate);
+            } else {
+                setRestockDate(new Date(preOrderSchedule.estimated_restock_date));
+            }
+
+            setNoEndDate(preOrderSchedule.no_end_date);
+            setNoRestockDate(preOrderSchedule.no_restock_date);
+
         } else {
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
-    const savePreOrderInitActivation = async () => {
+    const savePreOrderSchedule = async () => {
+        console.log("Saving Scheduled Data");
         const formData = new FormData();
-        formData.append("active", isPreOrderActive);
-        formData.append("active_on_product", checkedProductPage);
-        formData.append("active_on_collection", checkedCollectionPage);
+        
+        let endDateString = endDate.toISOString();
+        if (noEndDate) {
+            endDateString = null;
+        }
 
-        const response = await fetch("/api/preorder/save", {
+        let restockDateString = restockDate.toISOString();
+        if(noRestockDate) {
+            restockDateString = null;
+        }
+
+        formData.append("start_date", startDate.toISOString());
+        formData.append("end_date", endDateString);
+        formData.append("no_end_date", noEndDate == true ? 1 : 0);
+        formData.append("restock_date", restockDateString);
+        formData.append("no_restock_date", noRestockDate == true ? 1 : 0);
+
+        const response = await fetch("/api/preorder/schedule", {
             method: "POST",
             body: formData ? formData : JSON.stringify(data),
         });
 
         if (!response.ok) {
+            setToastContent("Something went wrong");
+            setIsErrorToast(true);
+            setShowToast(true);
             throw new Error(`HTTP error ${response.status}`);
         }
 
         if (response.ok) {
-            toggleToastActive(true);
-            getPreOrderInitSettings();
+            setToastContent("Pre Order Schedule Saved Successfully");
+            setIsErrorToast(false);
+            setShowToast(true);
+            getPreOrderSchedule();
         }
-    };
+    }
 
     useEffect(() => {
-        getPreOrderInitSettings();
+        getPreOrderSchedule();
     }, []);
 
     return (
@@ -124,32 +142,22 @@ export default function Schedule() {
                                             <TextField
                                                 label="Start Date"
                                                 type="date"
-                                                value={editStartDate
-                                                    .toISOString()
-                                                    .slice(0, 10)}
-                                                onChange={(e) =>
-                                                    changeEditStartDate(e)
-                                                }
+                                                value={startDate.toISOString().slice(0, 10)}
+                                                onChange={(e) => changeStartDate(e)}
                                             />
                                         </div>
                                         <div className="flex-1">
                                             <TextField
                                                 label="End Date"
                                                 type="date"
-                                                value={editEndDate
-                                                    .toISOString()
-                                                    .slice(0, 10)}
-                                                onChange={(e) =>
-                                                    changeEditEndDate(e)
-                                                }
-                                                disabled={hasEndDate}
+                                                value={endDate.toISOString().slice(0, 10)}
+                                                onChange={(e) => changeEndDate(e)}
+                                                disabled={noEndDate}
                                             />
                                             <Checkbox
                                                 label="No End Date"
-                                                checked={hasEndDate}
-                                                onChange={() =>
-                                                    setHasEndDate(!hasEndDate)
-                                                }
+                                                checked={noEndDate}
+                                                onChange={() => setNoEndDate(!noEndDate)}
                                             />
                                         </div>
                                     </div>
@@ -158,20 +166,14 @@ export default function Schedule() {
                                             <TextField
                                                 label="Estimated Restock Date"
                                                 type="date"
-                                                value={editStartDate
-                                                    .toISOString()
-                                                    .slice(0, 10)}
-                                                onChange={(e) =>
-                                                    changeEditStartDate(e)
-                                                }
-                                                disabled={hasRestockDate}
+                                                value={restockDate.toISOString().slice(0, 10)}
+                                                onChange={(e) => changeRestockDate(e)}
+                                                disabled={noRestockDate}
                                             />
                                             <Checkbox
                                                 label="No Restock Date"
-                                                checked={hasRestockDate}
-                                                onChange={() =>
-                                                    setHasRestockDate(!hasRestockDate)
-                                                }
+                                                checked={noRestockDate}
+                                                onChange={() => setNoRestockDate(!noRestockDate)}
                                             />
                                         </div>
                                         <div className="flex-1">
@@ -204,11 +206,17 @@ export default function Schedule() {
                     <Button
                         variant="primary"
                         size="large"
-                        onClick={() => savePreOrderInitActivation()}
+                        onClick={() => savePreOrderSchedule()}
                     >
                         Save
                     </Button>
-                    <Frame>{toastMarkup}</Frame>
+
+                    <Toaster
+                        active={showToast}
+                        content={toastContent}
+                        toggleToastActive={() => setShowToast(false)}
+                        isError={isErrorToast}
+                    />
                 </div>
             </Page>
         </>

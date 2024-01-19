@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PreOrderColorsNText;
 use App\Models\PreOrderLimit;
+use App\Models\PreOrderSchedule;
 use App\Models\PreOrderSetup;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class PreOrderSetupController extends Controller
         }
     }
 
-    public function colorNText(Request $request) 
+    public function colorNText(Request $request)
     {
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
@@ -81,7 +82,7 @@ class PreOrderSetupController extends Controller
             ], 201);
         } else {
             $updatedPreOrderColorsSettings = PreOrderColorsNText::where('shop', $shop)->update([
-                'inherit_from_theme' => $inherit_from_theme ? true: false,
+                'inherit_from_theme' => $inherit_from_theme ? true : false,
                 'settings' => json_encode($settings)
             ]);
             return response()->json([
@@ -91,7 +92,8 @@ class PreOrderSetupController extends Controller
         }
     }
 
-    public function getColorNTextSettings(Request $request) {
+    public function getColorNTextSettings(Request $request)
+    {
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
@@ -105,7 +107,8 @@ class PreOrderSetupController extends Controller
         return response()->json($preOrderButtonSettings);
     }
 
-    public function getOrderLimit(Request $request) {
+    public function getOrderLimit(Request $request)
+    {
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
@@ -119,7 +122,8 @@ class PreOrderSetupController extends Controller
         return response()->json($preOrderLimitSettings);
     }
 
-    public function storeOrderLimit(Request $request) {
+    public function storeOrderLimit(Request $request)
+    {
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
@@ -144,5 +148,79 @@ class PreOrderSetupController extends Controller
                 'data' => $updatedPreOrderLimit
             ], 200);
         }
+    }
+
+    public function storePreOrderSchedule(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $startDate = $this->dateFormatToStore($request->start_date);
+        $endDate = $this->dateFormatToStore($request->end_date);
+        $noEndDate = $this->boolFormatToStore($request->no_end_date);
+        $restockDate = $this->dateFormatToStore($request->restock_date);
+        $noRestokDate = $this->boolFormatToStore($request->no_restock_date);
+
+        $schedule = PreOrderSchedule::where('shop', $shop)->first();
+
+        if ($schedule) {
+            $preOrderSchedule = PreOrderSchedule::where('shop', $shop)->update([
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'no_end_date' => $noEndDate,
+                'estimated_restock_date' => $restockDate,
+                'no_restock_date' => $noRestokDate
+            ]);
+        } else {
+            $preOrderSchedule = PreOrderSchedule::create([
+                'shop' => $shop,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'no_end_date' => $noEndDate,
+                'estimated_restock_date' => $restockDate,
+                'no_restock_date' => $noRestokDate
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Pre Order Schedule Saved Successfully.',
+            'data' => $preOrderSchedule
+        ], 200);
+    }
+
+    public function getPreOrderSchedule(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $preOrderSchedule = PreOrderSchedule::where(['shop' => $shop])->first();
+
+        if (!$preOrderSchedule) {
+            return response()->json(config('preorder')['schedule']);
+        }
+
+        $preOrderSchedule = json_decode($preOrderSchedule, true);
+        return response()->json($preOrderSchedule);
+    }
+
+    private function dateFormatToStore($requestDate)
+    {
+        $date = '';
+        if ($requestDate == "null" || $requestDate == NULL || $requestDate == "") {
+            $date = NULL;
+        } else {
+            $date = date('Y-m-d H:i:s', strtotime($requestDate));
+        }
+        return $date;
+    }
+
+    private function boolFormatToStore($requestBool) {
+        $value = false;
+        if($requestBool == "0" || $requestBool == 0 || $requestBool == false) {
+            $value = false;
+        } else if($requestBool == "1" || $requestBool == 1 || $requestBool == true) {
+            $value = true;
+        }
+        return $value;
     }
 }
