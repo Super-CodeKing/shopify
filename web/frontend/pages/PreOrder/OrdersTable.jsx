@@ -118,7 +118,7 @@ export default function OrdersTable() {
     }, []);
 
     return (
-        <>
+        <div className="orders [&>div>div]:pt-0">
             <Frame>
                 {isLoadingOrders && (
                     <ProductsTableSkeleton title={"PRE-ORDER Orders List"} />
@@ -172,6 +172,6 @@ export default function OrdersTable() {
                     </Page>
                 )}
             </Frame>
-        </>
+        </div>
     );
 }

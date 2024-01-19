@@ -294,7 +294,7 @@ export default function ColorNText() {
     }, []);
 
     return (
-        <>
+        <div  className="color-n-text [&>div>div]:pt-0">
             <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
@@ -644,6 +644,6 @@ export default function ColorNText() {
                     <Frame>{toastMarkup}</Frame>
                 </div>
             </Page>
-        </>
+        </div>
     );
 }

@@ -114,7 +114,7 @@ export default function OrderLimit() {
         getPreOrderLimitSettings()
     }, [])
     return (
-        <>
+        <div className="orderlimit [&>div>div]:pt-0">
             <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
@@ -184,6 +184,6 @@ export default function OrderLimit() {
                     <Frame>{toastMarkup}</Frame>
                 </div>
             </Page>
-        </>
+        </div>
     );
 }

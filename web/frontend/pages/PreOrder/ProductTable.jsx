@@ -488,62 +488,64 @@ export default function ProductTable() {
                     <ProductsTableSkeleton title={"Product List"} has_button={true} button_title={"Add Product"}/>
                 )}
                 {!isLoadingProducts && (
-                    <Page fullWidth>
-                        <BlockStack gap="500">
-                            <ResourcePicker
-                                resourceType="Product"
-                                open={openResourcePicker}
-                                selectMultiple
-                                showVariants={false}
-                                onCancel={() => cancelResourcePicker()}
-                                initialSelectionIds={initialSelectedProductIds}
-                                onSelection={(SelectPayload) =>
-                                    selectProduct(SelectPayload)
-                                }
-                            />
-                            <div className="flex">
-                                <Text variant="headingXl" as="h4">
-                                    Product List
-                                </Text>
-                                <div className="ml-auto">
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => activeResourcePicker()}
-                                    >
-                                        Add Product
-                                    </Button>
+                    <div className="product-table [&>div>div]:pt-0">
+                        <Page fullWidth>
+                            <BlockStack gap="500">
+                                <ResourcePicker
+                                    resourceType="Product"
+                                    open={openResourcePicker}
+                                    selectMultiple
+                                    showVariants={false}
+                                    onCancel={() => cancelResourcePicker()}
+                                    initialSelectionIds={initialSelectedProductIds}
+                                    onSelection={(SelectPayload) =>
+                                        selectProduct(SelectPayload)
+                                    }
+                                />
+                                <div className="flex">
+                                    <Text variant="headingXl" as="h4">
+                                        Product List
+                                    </Text>
+                                    <div className="ml-auto">
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => activeResourcePicker()}
+                                        >
+                                            Add Product
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <Divider borderColor="border" />
-                            <Card>
-                                <IndexTable
-                                    resourceName={resourceName}
-                                    itemCount={preOrderProducts.length}
-                                    selectedItemsCount={
-                                        allResourcesSelected
-                                            ? "All"
-                                            : selectedResources.length
-                                    }
-                                    onSelectionChange={() =>
-                                        handleSelectionChange()
-                                    }
-                                    headings={[
-                                        { title: "Title" },
-                                        { title: "Start Date" },
-                                        { title: "End Date" },
-                                        { title: "Order Limit" },
-                                        { title: "Display Message" },
-                                        { title: "Display Badge" },
-                                        { title: "Actions" },
-                                    ]}
-                                >
-                                    {preOrderProducts.length > 0 && rowMarkup}
-                                    {preOrderProducts.length === 0 && <p>Empty</p>}
-                                </IndexTable>
-                            </Card>
-                        </BlockStack>
-                    </Page>
+                                <Divider borderColor="border" />
+                                <Card>
+                                    <IndexTable
+                                        resourceName={resourceName}
+                                        itemCount={preOrderProducts.length}
+                                        selectedItemsCount={
+                                            allResourcesSelected
+                                                ? "All"
+                                                : selectedResources.length
+                                        }
+                                        onSelectionChange={() =>
+                                            handleSelectionChange()
+                                        }
+                                        headings={[
+                                            { title: "Title" },
+                                            { title: "Start Date" },
+                                            { title: "End Date" },
+                                            { title: "Order Limit" },
+                                            { title: "Display Message" },
+                                            { title: "Display Badge" },
+                                            { title: "Actions" },
+                                        ]}
+                                    >
+                                        {preOrderProducts.length > 0 && rowMarkup}
+                                        {preOrderProducts.length === 0 && <p>Empty</p>}
+                                    </IndexTable>
+                                </Card>
+                            </BlockStack>
+                        </Page>
+                    </div>
                 )}
             </Frame>
         </>

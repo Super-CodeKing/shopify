@@ -91,7 +91,7 @@ export default function Activation() {
     }, []);
 
     return (
-        <>
+        <div className="activation [&>div>div]:pt-0">
             <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
@@ -184,6 +184,6 @@ export default function Activation() {
                     <Frame>{toastMarkup}</Frame>
                 </div>
             </Page>
-        </>
+        </div>
     );
 }

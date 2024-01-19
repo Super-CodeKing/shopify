@@ -99,10 +99,6 @@ Route::get('/api/products/count', function (Request $request) {
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
 
-// Route::get('/api/shop', function (Request $request) {
-//     return $request->query('shop');
-// })
-
 /**
  * Pre Order API Routes
  * 1. Activation

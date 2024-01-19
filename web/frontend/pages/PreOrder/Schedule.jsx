@@ -121,7 +121,7 @@ export default function Schedule() {
     }, []);
 
     return (
-        <>
+        <div className="schedule [&>div>div]:pt-0">
             <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
@@ -219,6 +219,6 @@ export default function Schedule() {
                     />
                 </div>
             </Page>
-        </>
+        </div>
     );
 }
