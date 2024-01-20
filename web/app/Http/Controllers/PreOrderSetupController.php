@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PreOrderColorsNText;
+use App\Models\PreOrderDisplayMessage;
 use App\Models\PreOrderLimit;
 use App\Models\PreOrderSchedule;
 use App\Models\PreOrderSetup;
@@ -213,6 +214,49 @@ class PreOrderSetupController extends Controller
 
         $preOrderSchedule = json_decode($preOrderSchedule, true);
         return response()->json($preOrderSchedule);
+    }
+
+    public function storeDisplayMessage(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $displayMessage = PreOrderDisplayMessage::where('shop', $shop)->first();
+
+        if ($displayMessage) {
+            $preOrderMessage = PreOrderDisplayMessage::where('shop', $shop)->update([
+                'message' => $request->message,
+                'position' => $request->position,
+                'alignment' => $request->alignment
+            ]);
+        } else {
+            $preOrderMessage = PreOrderDisplayMessage::create([
+                'shop' => $shop,
+                'message' => $request->message,
+                'position' => $request->position,
+                'alignment' => $request->alignment
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Pre Order Display Message Saved Successfully.',
+            'data' => $preOrderMessage
+        ], 200);
+    }
+
+    public function getDisplayMessage(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $preOrderDisplayMessage = PreOrderDisplayMessage::where('shop', $shop)->first();
+
+        if (!$preOrderDisplayMessage) {
+            return response()->json(config('preorder')['display_message']);
+        }
+
+        $preOrderDisplayMessage = json_decode($preOrderDisplayMessage, true);
+        return response()->json($preOrderDisplayMessage);
     }
 
     private function dateFormatToStore($requestDate)

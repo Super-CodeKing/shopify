@@ -18,4 +18,9 @@ return [
         "estimated_restock_date"    =>    null,
         "no_restock_date"           =>    1
     ],
+    "display_message"               => [
+        'message'                   => '',
+        'position'                  => 'before-preorder-button',
+        'alignment'                 => 'left'
+    ]
 ];

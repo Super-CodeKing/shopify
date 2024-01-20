@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://controversy-chains-bookmark-writing.trycloudflare.com"
+application_url = "https://execute-wallpapers-proposed-legislation.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://controversy-chains-bookmark-writing.trycloudflare.com/auth/callback",
-  "https://controversy-chains-bookmark-writing.trycloudflare.com/auth/shopify/callback",
-  "https://controversy-chains-bookmark-writing.trycloudflare.com/api/auth/callback"
+  "https://execute-wallpapers-proposed-legislation.trycloudflare.com/auth/callback",
+  "https://execute-wallpapers-proposed-legislation.trycloudflare.com/auth/shopify/callback",
+  "https://execute-wallpapers-proposed-legislation.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

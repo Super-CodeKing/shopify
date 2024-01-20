@@ -11,8 +11,11 @@ import {
     Select,
 } from "@shopify/polaris";
 import { useEffect, useState } from "react";
+import Toaster from "../../components/Toaster";
+import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 
 export default function DisplayMessage() {
+    const fetch = useAuthenticatedFetch();
     const displayMessageExample = [
         "📢 10% discount on Pre Order",
         "Limited Time ⌚",
@@ -32,10 +35,12 @@ export default function DisplayMessage() {
 
     const [selectedMessageIndex, setSelectedMessageIndex] = useState(0);
     const [displayMessage, setDisplayMessage] = useState("");
-    const [selectPosition, setSelectPosition] = useState(
-        "before-preorder-button"
-    );
+    const [selectPosition, setSelectPosition] = useState("before-preorder-button");
     const [selectAlignment, setSelectAlignment] = useState("left");
+
+    const [showToast, setShowToast] = useState(false);
+    const [toastContent, setToastContent] = useState('');
+    const [isErrorToast, setIsErrorToast] = useState(false);
 
     const handleChangeDisplayMessageExample = (index) => {
         setSelectedMessageIndex(index);
@@ -47,17 +52,58 @@ export default function DisplayMessage() {
     };
 
     const changeMessagePosition = (position) => {
-        console.log("Position: ", position);
         setSelectPosition(position);
     };
 
     const changeMessageAlignment = (alignment) => {
-        console.log("Alignment: ", alignment);
         setSelectAlignment(alignment);
+    };
+
+    const savePreOrderDisplayMessage = async () => {
+        const formData = new FormData();
+        formData.append("message", displayMessage);
+        formData.append("position", selectPosition);
+        formData.append("alignment", selectAlignment);
+
+        const response = await fetch("/api/preorder/display-message", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            setToastContent("Something went wrong");
+            setIsErrorToast(true);
+            setShowToast(true);
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        if (response.ok) {
+            setToastContent("Pre Order Display Message Saved Successfully");
+            setIsErrorToast(false);
+            setShowToast(true);
+        }
+    }
+
+    const getPreOrderDisplayMessage = async () => {
+        const response = await fetch("/api/preorder/display-message");
+
+        if (response.ok) {
+            const preOrderDisplayMessage = await response.json();
+            console.log("Schedule Date: ", preOrderDisplayMessage);
+            setDisplayMessage(preOrderDisplayMessage.message);
+            setSelectPosition(preOrderDisplayMessage.position);
+            setSelectAlignment(preOrderDisplayMessage.alignment);
+        } else {
+            setToastContent("Something went wrong");
+            setIsErrorToast(true);
+            setShowToast(true);
+            throw new Error(`HTTP error ${response.status}`);
+        }
     };
 
     useEffect(() => {
         setDisplayMessage(displayMessageExample[0]);
+        getPreOrderDisplayMessage();
     }, []);
 
     return (
@@ -138,8 +184,8 @@ export default function DisplayMessage() {
                         </BlockStack>
                     </div>
                     <div className="flex-1">
-                        <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
-                            <div className="flex">
+                        <div className="border-dashed border-2 border-indigo-600 h-full rounded-md flex items-center">
+                            <div className="flex mx-auto">
                                 <img
                                     className="flex-1 w-32 mr-5"
                                     src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=webp&v=1530129081"
@@ -209,10 +255,17 @@ export default function DisplayMessage() {
                     <Button
                         variant="primary"
                         size="large"
-                        onClick={() => savePreOrderInitActivation()}
+                        onClick={() => savePreOrderDisplayMessage()}
                     >
                         Save
                     </Button>
+
+                    <Toaster
+                        active={showToast}
+                        content={toastContent}
+                        toggleToastActive={() => setShowToast(false)}
+                        isError={isErrorToast}
+                    />
                 </div>
             </Page>
         </div>
