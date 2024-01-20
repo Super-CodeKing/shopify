@@ -250,12 +250,8 @@ class PreOrderSetupController extends Controller
         $shop = $session->getShop();
 
         $preOrderDisplayMessage = PreOrderDisplayMessage::where('shop', $shop)->first();
-
-        if (!$preOrderDisplayMessage) {
-            return response()->json(config('preorder')['display_message']);
-        }
-
         $preOrderDisplayMessage = json_decode($preOrderDisplayMessage, true);
+        
         return response()->json($preOrderDisplayMessage);
     }
 

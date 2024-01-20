@@ -89,10 +89,17 @@ export default function DisplayMessage() {
 
         if (response.ok) {
             const preOrderDisplayMessage = await response.json();
-            console.log("Schedule Date: ", preOrderDisplayMessage);
-            setDisplayMessage(preOrderDisplayMessage.message);
-            setSelectPosition(preOrderDisplayMessage.position);
-            setSelectAlignment(preOrderDisplayMessage.alignment);
+            console.log("Display Message: ", preOrderDisplayMessage);
+            if(Object.keys(preOrderDisplayMessage).length !== 0) {
+                setDisplayMessage(preOrderDisplayMessage.message);
+                setSelectPosition(preOrderDisplayMessage.position);
+                setSelectAlignment(preOrderDisplayMessage.alignment);
+            } else {
+                setDisplayMessage(displayMessageExample[0]);
+                setSelectPosition(positionOptions[0]);
+                setSelectAlignment(alignmentOptions[0]);
+            }
+            
         } else {
             setToastContent("Something went wrong");
             setIsErrorToast(true);
