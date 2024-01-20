@@ -302,7 +302,7 @@ export default function ColorNText() {
                     </Text>
                     <Divider borderColor="border" />
                 </BlockStack>
-                <div className="mt-3">
+                <div className="mt-5">
                     <div className="flex">
                         <div className="flex-1 mr-5">
                             <div className="mb-3">

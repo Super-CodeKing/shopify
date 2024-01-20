@@ -19,6 +19,8 @@ class CreatePreOrderSetupsTable extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('active_on_product')->default(true);
             $table->boolean('active_on_collection')->default(false);
+            $table->tinyInteger('when_show_pre_order')->default(2);
+            $table->integer('specific_inventory')->default(0);
             $table->timestamps();
         });
     }

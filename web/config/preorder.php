@@ -4,6 +4,8 @@ return [
     "activation"                    =>    false,
     "active_on_product"             =>    true,
     "active_on_collection"          =>    false,
+    "when_show_preorder"            =>    2,
+    "specific_inventory"            =>    0,
     "button_settings"               =>    [
         "inherit_from_theme"        =>    true,
         "settings"                  =>    null

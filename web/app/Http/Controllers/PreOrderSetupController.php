@@ -34,14 +34,24 @@ class PreOrderSetupController extends Controller
         $activation = $request->active == 'true' ? 1 : 0;
         $activation_product = $request->active_on_product == 'true' ? 1 : 0;
         $activation_collection = $request->active_on_collection == 'true' ? 1 : 0;
+        $whenToShowPreOrderButton = 2;
+        $specificInventoryToShowPreOrderButton = 0;
+        if($request->when_show_preorder == 'always') {
+            $whenToShowPreOrderButton = 1;
+        } else if($request->when_show_preorder == 'specific-inventory') {
+            $whenToShowPreOrderButton = 3;
+            $specificInventoryToShowPreOrderButton = (int)$request->specific_inventory;
+        }
 
         $preOrderInitSettings = PreOrderSetup::where(['shop' => $shop])->first();
         if (!$preOrderInitSettings) {
             $createdPreOrderSetup = PreOrderSetup::create([
-                'shop' => $shop,
-                'active' => $activation,
-                'active_on_product' => $activation_product,
-                'active_on_collection' => $activation_collection
+                'shop'                  => $shop,
+                'active'                => $activation,
+                'active_on_product'     => $activation_product,
+                'active_on_collection'  => $activation_collection,
+                'when_show_pre_order'   => $whenToShowPreOrderButton,
+                'specific_inventory'    => $specificInventoryToShowPreOrderButton  
             ]);
             return response()->json([
                 'message' => 'Pre Order Initial Data Saved Successfully.',
@@ -49,9 +59,11 @@ class PreOrderSetupController extends Controller
             ], 201);
         } else {
             $updatedPreOrderSetup = PreOrderSetup::where('shop', $shop)->update([
-                'active' => $activation,
-                'active_on_product' => $activation_product,
-                'active_on_collection' => $activation_collection
+                'active'                => $activation,
+                'active_on_product'     => $activation_product,
+                'active_on_collection'  => $activation_collection,
+                'when_show_pre_order'   => $whenToShowPreOrderButton,
+                'specific_inventory'    => $specificInventoryToShowPreOrderButton
             ]);
             return response()->json([
                 'message' => 'Pre Order Initial Data Updated Successfully.',

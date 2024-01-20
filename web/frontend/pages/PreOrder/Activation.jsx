@@ -8,6 +8,8 @@ import {
     Toast,
     Frame,
     Page,
+    RadioButton,
+    TextField,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
@@ -25,6 +27,14 @@ export default function Activation() {
     const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
 
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
+
+    const [whenToShow, setWhenToShow] = useState('always');
+    const [specicInventory, setSpecificInventory] = useState(0);
+    const handleChange = (newWhenToShowValue) => {
+        console.log(newWhenToShowValue);
+        setWhenToShow(newWhenToShowValue);
+    }
+    const handleSpecificInventory = useCallback((value) => setSpecificInventory(value),[]);
 
     const toastMarkup = toastActive ? (
         <Toast content="Activation Data Saved Successfully!" onDismiss={toggleToastActive} />
@@ -70,6 +80,8 @@ export default function Activation() {
         formData.append("active", isPreOrderActive);
         formData.append("active_on_product", checkedProductPage);
         formData.append("active_on_collection", checkedCollectionPage);
+        formData.append("when_show_preorder", whenToShow);
+        formData.append("specific_inventory", setSpecificInventory);
 
         const response = await fetch("/api/preorder/save", {
             method: "POST",
@@ -168,6 +180,58 @@ export default function Activation() {
                                         checked={checkedCollectionPage}
                                         onChange={() => activeOnCollectionPage()}
                                     />
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                    <Card>
+                        <div className="flex items-center">
+                            <div className="flex flex-col w-full">
+                                <div>
+                                    <Text variant="headingMd" as="h6">
+                                        When to show
+                                    </Text>
+                                    <Text>
+                                        When you want to show the Pre Order button 
+                                        on your product page.{" "}
+                                    </Text>
+                                    <div className="mt-3 mb-2">
+                                        <Divider borderColor="border" />
+                                    </div>
+                                </div>
+                                <div className="mt-1 flex flex-col">
+                                    <RadioButton
+                                        label="Always"
+                                        helpText="Add to cart button will be always replaced by Pre Order Button"
+                                        checked={whenToShow === 'always'}
+                                        name="preorder-whenToShow"
+                                        onChange={() => handleChange('always')}
+                                    />
+                                    <RadioButton
+                                        label="Inventory Zero"
+                                        helpText="When inventory will zero then SOLD Out button comes, Replace that Sold Out button with Pre Order Button"
+                                        name="preorder-whenToShow"
+                                        checked={whenToShow === 'sold-out'}
+                                        onChange={() => handleChange('sold-out')}
+                                    />
+                                    <RadioButton
+                                        label="After Specific Inventory"
+                                        helpText="When inventory will reach out a specific number then Pre Order Button will come."
+                                        name="preorder-whenToShow"
+                                        checked={whenToShow === 'specific-inventory'}
+                                        onChange={() => handleChange('specific-inventory')}
+                                    />
+                                    {whenToShow === 'specific-inventory' &&
+                                        <div className="ml-6 mt-3 w-1/2">    
+                                            <TextField 
+                                                type="number" 
+                                                placeholder={10} 
+                                                onChange={handleSpecificInventory} 
+                                                requiredIndicator
+                                                value={specicInventory}
+                                            />
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
