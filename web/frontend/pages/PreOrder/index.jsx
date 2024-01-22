@@ -42,6 +42,7 @@ import Schedule from "./Schedule";
 import DisplayMessage from "./DisplayMessage";
 import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
+import BadgeDesign from "./BadgeDesign";
 
 export default function PreOrder() {
     const productListDummy = [
@@ -471,6 +472,7 @@ export default function PreOrder() {
         setFlagColorNText(false);
         setFlagCustomCoding(false);
         setFlagPreOrderList(false)
+        setFlagBadgeDesign(false);
     }
 
     function activeProductSetup() {
@@ -482,15 +484,7 @@ export default function PreOrder() {
         setFlagColorNText(false);
         setFlagCustomCoding(false);
         setFlagPreOrderList(false)
-    }
-
-    function cancelResourcePicker() {
-        setProductResourcePicker(false);
-    }
-
-    function selectProducts(selectedProducts) {
-        setProductList(productListDummy);
-        console.log("Selected Products: ", selectedProducts.selection);
+        setFlagBadgeDesign(false);
     }
 
     function activeOrderLimit() {
@@ -502,6 +496,7 @@ export default function PreOrder() {
         setFlagColorNText(false);
         setFlagCustomCoding(false);
         setFlagPreOrderList(false)
+        setFlagBadgeDesign(false);
     }
 
     function activeOrderSchedule() {
@@ -513,6 +508,7 @@ export default function PreOrder() {
         setFlagColorNText(false);
         setFlagCustomCoding(false);
         setFlagPreOrderList(false)
+        setFlagBadgeDesign(false);
     }
 
     function activeOrderDisplayMessage() {
@@ -524,6 +520,7 @@ export default function PreOrder() {
         setFlagColorNText(false);
         setFlagCustomCoding(false);
         setFlagPreOrderList(false)
+        setFlagBadgeDesign(false);
     }
 
     function activeColorNText() {
@@ -534,7 +531,20 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(true);
         setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
+        setFlagPreOrderList(false);
+        setFlagBadgeDesign(false);
+    }
+
+    function activeBadgeDesign() {
+        setFlagActivation(false);
+        setFlagProductSetup(false);
+        setFlagOrderLimit(false);
+        setFlagOrderSchedule(false);
+        setFlagDisplayMessage(false);
+        setFlagColorNText(false);
+        setFlagCustomCoding(false);
+        setFlagPreOrderList(false);
+        setFlagBadgeDesign(true);
     }
 
     function activeCustomCoding() {
@@ -545,7 +555,8 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(true);
-        setFlagPreOrderList(false)
+        setFlagPreOrderList(false);
+        setFlagBadgeDesign(false);
     }
 
     function activePreOrderList() {
@@ -556,7 +567,8 @@ export default function PreOrder() {
         setFlagDisplayMessage(false);
         setFlagColorNText(false);
         setFlagCustomCoding(false);
-        setFlagPreOrderList(true)
+        setFlagPreOrderList(true);
+        setFlagBadgeDesign(false);
     }
 
     return (
@@ -786,6 +798,7 @@ export default function PreOrder() {
                     {flagOrderLimit && <OrderLimit />}
                     {flagOrderSchedule && <Schedule />}
                     {flagDisplayMessage && <DisplayMessage />}
+                    {flagBadgeDesign && <BadgeDesign />}
                     {flagColorNText && <ColorNText />}
                 </div>
             </div>
