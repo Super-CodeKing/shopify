@@ -33,22 +33,35 @@ export default function BadgeDesign() {
     
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
     const [badgeTextColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
+    const [badgeCornerColorPickerActive, setBadgeCornerColorPickerActive] = useState(false);
+
     const [backgroundColor, setBackgroundColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-
     const [backgroundHexColor, setBackgroundHexColor] = useState("#121212");
+    
     const [badgeTextColor, setBadgeTextColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
     const [badgeTextHexColor, setBadgeTextHexColor] = useState("#ffffff");
-    const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
 
+    const [badgeCornerColor, setBadgeCornerColor] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+    const [badgeCornerHexColor, setBadgeCornerHexColor] = useState("#121212");
+    
+    const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
     const [ribbonRightLeftValue, setRibbonRightLeftValue] = useState(-25);
+
+    const ribbonBorderStyle = {
+        "--ribbon-border-color": badgeCornerHexColor
+    }
 
     const toggleBackgroundColorPicker = () => {
         setBackgroundColorPickerActive(!backgroundColorPickerActive);
@@ -56,6 +69,10 @@ export default function BadgeDesign() {
 
     const toggleBadgeTextColorPicker = () => {
         setBackgroundHoverColorPickerActive(!badgeTextColorPickerActive);
+    };
+
+    const toggleBadgeCornerColorPicker = () => {
+        setBadgeCornerColorPickerActive(!badgeCornerColorPickerActive);
     };
 
     const changeButtonFontSize = (value) => setButtonFontSizeValue(value);
@@ -72,6 +89,12 @@ export default function BadgeDesign() {
         setBadgeTextColor(newColor);
     };
 
+    const handleBadgeCornerColorChange = (newColor) => {
+        const hexColor = hsbToHex(newColor);
+        setBadgeCornerHexColor(hexColor);
+        setBadgeCornerColor(newColor);
+    };
+
     const handleBadgeTextColorChangeFromInput = (newColor) => {
         const rgbColor = hexToRgb(newColor);
         const hsbColor = rgbToHsb(rgbColor);
@@ -84,6 +107,13 @@ export default function BadgeDesign() {
         const hsbColor = rgbToHsb(rgbColor);
         setBackgroundHexColor(newColor)
         setBackgroundColor(hsbColor);
+    };
+
+    const handleBadgeCornerColorChangeFromInput = (newColor) => {
+        const rgbColor = hexToRgb(newColor);
+        const hsbColor = rgbToHsb(rgbColor);
+        setBadgeCornerHexColor(newColor)
+        setBadgeCornerColor(hsbColor);
     };
 
     const changeRibbonBadgePosition = useCallback((event, ribbonBadgePosition) => {
@@ -245,7 +275,6 @@ export default function BadgeDesign() {
                                     </div>
                                 </div>
 
-                                <p className="mt-5 mb-1">Text Color</p>
                                 <div className="flex">
                                     <div className="my-3 flex-1 mr-3">
                                         <div className="relative w-full">
@@ -335,10 +364,10 @@ export default function BadgeDesign() {
                             </BlockStack>
                         </div>
                         <div className="flex-1">
-                            <div>
-                                <div className="flex">
+                            <div className="h-full">
+                                <div className="flex h-full">
                                     <div
-                                        className="box w-full"
+                                        className="rounded-lg relative overflow-hidden h-full bg-white border w-full"
                                         style={{
                                         backgroundImage: `url('https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=webp&v=1530129081')`,
                                         backgroundSize: 'cover',
@@ -359,17 +388,23 @@ export default function BadgeDesign() {
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "top-right" && (
-                                        <div className="ribbon ribbon-top-right">
-                                            <span 
+                                        <div class="absolute right-0 top-0 h-16 w-16">
+                                            <div
                                                 style={{ 
-                                                    color: `${badgeTextHexColor}`, 
+                                                    color: `${badgeTextHexColor}`,
                                                     fontSize: `${buttonFontSizeValue}px`,
-                                                    left: `${ribbonRightLeftValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
+                                                }}
+                                                class="absolute transform rotate-45 text-center font-semibold py-2 right-[-40px] top-[20px] w-[170px] shadow">
+                                                <span 
+                                                style={{ 
+                                                    color: `${badgeTextHexColor}`,
+                                                    fontSize: `${buttonFontSizeValue}px`,
                                                 }}
                                             >
                                                 {ribbonBadgeText}
                                             </span>
+                                            </div>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "bottom-left" && (
