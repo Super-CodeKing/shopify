@@ -7,7 +7,7 @@ import {
     Page,
     Divider,
     Button,
-    Select,
+    Banner,
     ColorPicker,
     RadioButton,
     Popover,
@@ -32,7 +32,7 @@ export default function BadgeDesign() {
     const [ribbonBadgeTextColor, setRibbonBadgeTextColor] = useState({hue: 120,brightness: 1,saturation: 1,});
     
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
-    const [backgroundHoverColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
+    const [badgeTextColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState({
         hue: 120,
         brightness: 1,
@@ -40,20 +40,22 @@ export default function BadgeDesign() {
     });
 
     const [backgroundHexColor, setBackgroundHexColor] = useState("#121212");
-    const [backgroundHoverColor, setBackgroundHoverColor] = useState({
+    const [badgeTextColor, setBadgeTextColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-    const [backgroundHoverHexColor, setBackgroundHoverHexColor] = useState("#121212");
+    const [badgeTextHexColor, setBadgeTextHexColor] = useState("#ffffff");
     const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
+
+    const [ribbonRightLeftValue, setRibbonRightLeftValue] = useState(-25);
 
     const toggleBackgroundColorPicker = () => {
         setBackgroundColorPickerActive(!backgroundColorPickerActive);
     };
 
-    const toggleBackgroundHoverColorPicker = () => {
-        setBackgroundHoverColorPickerActive(!backgroundHoverColorPickerActive);
+    const toggleBadgeTextColorPicker = () => {
+        setBackgroundHoverColorPickerActive(!badgeTextColorPickerActive);
     };
 
     const changeButtonFontSize = (value) => setButtonFontSizeValue(value);
@@ -64,17 +66,17 @@ export default function BadgeDesign() {
         setBackgroundHexColor(hexColor);
     };
 
-    const handleBackgroundHoverColorChange = (newColor) => {
+    const handleBadgeTextColorChange = (newColor) => {
         const hexColor = hsbToHex(newColor);
-        setBackgroundHoverHexColor(hexColor);
-        setBackgroundHoverColor(newColor);
+        setBadgeTextHexColor(hexColor);
+        setBadgeTextColor(newColor);
     };
 
-    const handleBackgroundHoverColorChangeFromInput = (newColor) => {
+    const handleBadgeTextColorChangeFromInput = (newColor) => {
         const rgbColor = hexToRgb(newColor);
         const hsbColor = rgbToHsb(rgbColor);
-        setBackgroundHoverHexColor(newColor)
-        setBackgroundHoverColor(hsbColor);
+        setBadgeTextHexColor(newColor)
+        setBadgeTextColor(hsbColor);
     };
 
     const handleBackgroundColorChangeFromInput = (newColor) => {
@@ -150,7 +152,7 @@ export default function BadgeDesign() {
     };
 
     useEffect(() => {
-        getPreOrderDisplayMessage();
+        //getPreOrderDisplayMessage();
     }, []);
 
     return (
@@ -293,23 +295,23 @@ export default function BadgeDesign() {
                                                 }}
                                             >
                                                 <Popover
-                                                    active={backgroundHoverColorPickerActive}
-                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundHoverColorPicker()} color={backgroundHoverHexColor}/>}
-                                                    onClose={() => toggleBackgroundHoverColorPicker()}
+                                                    active={badgeTextColorPickerActive}
+                                                    activator={<ToggleColorActivator toggleColorFunction={() => toggleBadgeTextColorPicker()} color={badgeTextHexColor}/>}
+                                                    onClose={() => toggleBadgeTextColorPicker()}
                                                 >
                                                     <Popover.Pane>
                                                         <ColorPicker
-                                                            onChange={(e) => handleBackgroundHoverColorChange(e)}
-                                                            color={backgroundHoverColor}
+                                                            onChange={(e) => handleBadgeTextColorChange(e)}
+                                                            color={badgeTextColor}
                                                         />
                                                     </Popover.Pane>
                                                 </Popover>
                                             </div>
                                             <div className="paddingLeftTextField">
                                                 <TextField
-                                                    label="Background Hover Color"
-                                                    value={backgroundHoverHexColor}
-                                                    onChange={handleBackgroundHoverColorChangeFromInput}
+                                                    label="Badge Text Color"
+                                                    value={badgeTextHexColor}
+                                                    onChange={handleBadgeTextColorChangeFromInput}
                                                 />
                                             </div>
                                         </div>
@@ -325,6 +327,9 @@ export default function BadgeDesign() {
                                         onChange={changeButtonFontSize}
                                         output
                                     />
+                                    <div className="mt-1">
+                                        <Banner>You will not show any effect of Font Size.</Banner>
+                                    </div>
                                 </div>
                                 </Card>
                             </BlockStack>
@@ -342,22 +347,55 @@ export default function BadgeDesign() {
                                     >
                                         {ribbonBadgePosition === "top-left" && (
                                         <div className="ribbon ribbon-top-left">
-                                            <span style={{ color: `${hsbToHex(ribbonBadgeTextColor)}` }}>{ribbonBadgeText}</span>
+                                            <span 
+                                                style={{ 
+                                                    color: `${badgeTextHexColor}`, 
+                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    backgroundColor: `${backgroundHexColor}`
+                                                }}
+                                            >
+                                                {ribbonBadgeText}
+                                            </span>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "top-right" && (
                                         <div className="ribbon ribbon-top-right">
-                                            <span style={{ color: `${hsbToHex(ribbonBadgeTextColor)}` }}>{ribbonBadgeText}</span>
+                                            <span 
+                                                style={{ 
+                                                    color: `${badgeTextHexColor}`, 
+                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    left: `${ribbonRightLeftValue}px`,
+                                                    backgroundColor: `${backgroundHexColor}`
+                                                }}
+                                            >
+                                                {ribbonBadgeText}
+                                            </span>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "bottom-left" && (
                                         <div className="ribbon ribbon-bottom-left">
-                                            <span style={{ color: `${hsbToHex(ribbonBadgeTextColor)}` }}>{ribbonBadgeText}</span>
+                                            <span 
+                                                style={{ 
+                                                    color: `${badgeTextHexColor}`,
+                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    backgroundColor: `${backgroundHexColor}`
+                                                }}
+                                            >
+                                                {ribbonBadgeText}
+                                            </span>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "bottom-right" && (
                                         <div className="ribbon ribbon-bottom-right">
-                                            <span style={{ color: `${hsbToHex(ribbonBadgeTextColor)}` }}>{ribbonBadgeText}</span>
+                                            <span 
+                                                style={{ 
+                                                    color: `${badgeTextHexColor}`,
+                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    backgroundColor: `${backgroundHexColor}`
+                                                }}
+                                            >
+                                                {ribbonBadgeText}
+                                            </span>
                                         </div>
                                         )}
                                     </div>
