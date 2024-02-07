@@ -19,8 +19,15 @@ return [
         "no_restock_date"           =>    1
     ],
     "display_message"               => [
-        'message'                   => '',
+        'message'                   => 'Stock will be available soon.',
         'position'                  => 'before-preorder-button',
         'alignment'                 => 'left'
+    ],
+    "badge_design"                  => [
+        'text'                      => 'Pre Order',
+        'position'                  => 'top-right',
+        'bg_color'                  => '#000000',
+        'text_color'                => '#ffffff',
+        'font_size'                 => 16
     ]
 ];

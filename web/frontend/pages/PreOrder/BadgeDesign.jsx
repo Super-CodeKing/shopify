@@ -29,7 +29,6 @@ export default function BadgeDesign() {
     const [toastProps, setToastProps] = useState(emptyToastProps);
     const [ribbonBadgePosition, setRibbonBadgePosition] = useState("top-right");
     const [ribbonBadgeText, setRibbonBadgeText] = useState("Pre Order");
-    const [ribbonBadgeTextColor, setRibbonBadgeTextColor] = useState({hue: 120,brightness: 1,saturation: 1,});
     
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
     const [badgeTextColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
@@ -48,20 +47,7 @@ export default function BadgeDesign() {
         saturation: 1,
     });
     const [badgeTextHexColor, setBadgeTextHexColor] = useState("#ffffff");
-
-    const [badgeCornerColor, setBadgeCornerColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [badgeCornerHexColor, setBadgeCornerHexColor] = useState("#121212");
-    
-    const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
-    const [ribbonRightLeftValue, setRibbonRightLeftValue] = useState(-25);
-
-    const ribbonBorderStyle = {
-        "--ribbon-border-color": badgeCornerHexColor
-    }
+    const [badgeFontSizeValue, setBadgeFontSizeValue] = useState(16);
 
     const toggleBackgroundColorPicker = () => {
         setBackgroundColorPickerActive(!backgroundColorPickerActive);
@@ -71,11 +57,7 @@ export default function BadgeDesign() {
         setBackgroundHoverColorPickerActive(!badgeTextColorPickerActive);
     };
 
-    const toggleBadgeCornerColorPicker = () => {
-        setBadgeCornerColorPickerActive(!badgeCornerColorPickerActive);
-    };
-
-    const changeButtonFontSize = (value) => setButtonFontSizeValue(value);
+    const changeBadgeFontSize = (value) => setBadgeFontSizeValue(value);
 
     const handleBackgroundColorChange = (newColor) => {
         const hexColor = hsbToHex(newColor);
@@ -87,12 +69,6 @@ export default function BadgeDesign() {
         const hexColor = hsbToHex(newColor);
         setBadgeTextHexColor(hexColor);
         setBadgeTextColor(newColor);
-    };
-
-    const handleBadgeCornerColorChange = (newColor) => {
-        const hexColor = hsbToHex(newColor);
-        setBadgeCornerHexColor(hexColor);
-        setBadgeCornerColor(newColor);
     };
 
     const handleBadgeTextColorChangeFromInput = (newColor) => {
@@ -109,13 +85,6 @@ export default function BadgeDesign() {
         setBackgroundColor(hsbColor);
     };
 
-    const handleBadgeCornerColorChangeFromInput = (newColor) => {
-        const rgbColor = hexToRgb(newColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setBadgeCornerHexColor(newColor)
-        setBadgeCornerColor(hsbColor);
-    };
-
     const changeRibbonBadgePosition = useCallback((event, ribbonBadgePosition) => {
             setRibbonBadgePosition(ribbonBadgePosition), [];
         }
@@ -123,21 +92,20 @@ export default function BadgeDesign() {
 
     const changeRibbonBadgeText = useCallback((newValue) => setRibbonBadgeText(newValue),[]);
 
-    const changeRibbonBadgeTextColor = useCallback((newValue) => {
-        setRibbonBadgeTextColor(newValue);
-    }, []);
-
     const toastMarkup = toastProps.content && (
         <Toast {...toastProps} onDismiss={() => setToastProps(emptyToastProps)} />
     );
 
-    const savePreOrderDisplayMessage = async () => {
+    const savePreOrderBadgeDesign = async () => {
         const formData = new FormData();
-        formData.append("message", displayMessage);
-        formData.append("position", selectPosition);
-        formData.append("alignment", selectAlignment);
 
-        const response = await fetch("/api/preorder/display-message", {
+        formData.append("text", ribbonBadgeText);
+        formData.append("position", ribbonBadgePosition);
+        formData.append("bg_color", backgroundHexColor);
+        formData.append("text_color", badgeTextHexColor);
+        formData.append("font_size", badgeFontSizeValue)
+
+        const response = await fetch("/api/preorder/badge-design", {
             method: "POST",
             body: formData ? formData : JSON.stringify(data),
         });
@@ -152,37 +120,31 @@ export default function BadgeDesign() {
 
         if (response.ok) {
             setToastProps({
-                content: "Pre Order Display Message Saved Successfully!"
+                content: "Pre Order Badge Design Saved Successfully!"
             });
         }
     }
 
-    const getPreOrderDisplayMessage = async () => {
-        const response = await fetch("/api/preorder/display-message");
+    const getPreOrderBadgeDesign = async () => {
+        const response = await fetch("/api/preorder/badge-design");
 
         if (response.ok) {
-            const preOrderDisplayMessage = await response.json();
-            console.log("Display Message: ", preOrderDisplayMessage);
-            if(Object.keys(preOrderDisplayMessage).length !== 0) {
-                setDisplayMessage(preOrderDisplayMessage.message);
-                setSelectPosition(preOrderDisplayMessage.position);
-                setSelectAlignment(preOrderDisplayMessage.alignment);
-            } else {
-                setDisplayMessage(displayMessageExample[0]);
-                setSelectPosition(positionOptions[0].value);
-                setSelectAlignment(alignmentOptions[0].value);
-            }
-            
+            const preOrderBadgeDesign = await response.json();
+            console.log("Badge Design: ", preOrderBadgeDesign);
+            if(Object.keys(preOrderBadgeDesign).length !== 0) {
+                setRibbonBadgeText(preOrderBadgeDesign.text);
+                setRibbonBadgePosition(preOrderBadgeDesign.position);
+                setBackgroundHexColor(preOrderBadgeDesign.bg_color);
+                setBadgeTextHexColor(preOrderBadgeDesign.text_color);
+                setBadgeFontSizeValue(preOrderBadgeDesign.font_size);
+            } 
         } else {
-            setToastContent("Something went wrong");
-            setIsErrorToast(true);
-            setShowToast(true);
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
     useEffect(() => {
-        //getPreOrderDisplayMessage();
+        getPreOrderBadgeDesign();
     }, []);
 
     return (
@@ -352,8 +314,8 @@ export default function BadgeDesign() {
                                         <Text>Font Size</Text>
                                     </div>
                                     <RangeSlider
-                                        value={buttonFontSizeValue}
-                                        onChange={changeButtonFontSize}
+                                        value={badgeFontSizeValue}
+                                        onChange={changeBadgeFontSize}
                                         output
                                     />
                                     <div className="mt-1">
@@ -379,14 +341,14 @@ export default function BadgeDesign() {
                                             <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
-                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    fontSize: `${badgeFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
                                                 class="absolute transform rotate-[-45deg] text-center font-semibold py-2 left-[-40px] top-[20px] w-[170px] shadow">
                                                 <span 
                                                     style={{ 
                                                         color: `${badgeTextHexColor}`,
-                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                        fontSize: `${badgeFontSizeValue}px`,
                                                     }}
                                                 >
                                                     {ribbonBadgeText}
@@ -399,14 +361,14 @@ export default function BadgeDesign() {
                                             <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
-                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    fontSize: `${badgeFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
                                                 class="absolute transform rotate-45 text-center font-semibold py-2 right-[-40px] top-[20px] w-[170px] shadow">
                                                 <span 
                                                     style={{ 
                                                         color: `${badgeTextHexColor}`,
-                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                        fontSize: `${badgeFontSizeValue}px`,
                                                     }}
                                                 >
                                                     {ribbonBadgeText}
@@ -419,14 +381,14 @@ export default function BadgeDesign() {
                                             <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
-                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    fontSize: `${badgeFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
                                                 class="absolute transform rotate-45 text-center font-semibold py-2 left-[-40px] top-[50px] w-[170px] shadow">
                                                 <span 
                                                     style={{ 
                                                         color: `${badgeTextHexColor}`,
-                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                        fontSize: `${badgeFontSizeValue}px`,
                                                     }}
                                                 >
                                                     {ribbonBadgeText}
@@ -439,14 +401,14 @@ export default function BadgeDesign() {
                                             <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
-                                                    fontSize: `${buttonFontSizeValue}px`,
+                                                    fontSize: `${badgeFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
                                                 class="absolute transform rotate-[-45deg] text-center font-semibold py-2 right-[-40px] top-[50px] w-[170px] shadow">
                                                 <span 
                                                     style={{ 
                                                         color: `${badgeTextHexColor}`,
-                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                        fontSize: `${badgeFontSizeValue}px`,
                                                     }}
                                                 >
                                                     {ribbonBadgeText}
@@ -464,7 +426,7 @@ export default function BadgeDesign() {
                         <Button
                             variant="primary"
                             size="large"
-                            onClick={() => savePreOrderDisplayMessage()}
+                            onClick={() => savePreOrderBadgeDesign()}
                         >
                             Save
                         </Button>

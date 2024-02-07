@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PreOrder\BadgeDesign;
 use App\Models\PreOrderColorsNText;
 use App\Models\PreOrderDisplayMessage;
 use App\Models\PreOrderLimit;
@@ -250,9 +251,60 @@ class PreOrderSetupController extends Controller
         $shop = $session->getShop();
 
         $preOrderDisplayMessage = PreOrderDisplayMessage::where('shop', $shop)->first();
+        if (!$preOrderDisplayMessage) {
+            return response()->json(config('preorder')['display_message']);
+        }
         $preOrderDisplayMessage = json_decode($preOrderDisplayMessage, true);
         
         return response()->json($preOrderDisplayMessage);
+    }
+
+    public function getBadgeDesign(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $preOrderBadgeDesign = BadgeDesign::where('shop', $shop)->first();
+
+        if (!$preOrderBadgeDesign) {
+            return response()->json(config('preorder')['badge_design']);
+        }
+
+        $preOrderBadgeDesign = json_decode($preOrderBadgeDesign, true);
+        
+        return response()->json($preOrderBadgeDesign);
+    }
+
+    public function storeBadgeDesign(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $badgeDesign = BadgeDesign::where('shop', $shop)->first();
+
+        if ($badgeDesign) {
+            $badgeDesign = BadgeDesign::where('shop', $shop)->update([
+                'text'          => $request->text,
+                'position'      => $request->position,
+                'bg_color'      => $request->bg_color,
+                'text_color'    => $request->text_color,
+                'font_size'     => $request->font_size
+            ]);
+        } else {
+            $badgeDesign = BadgeDesign::create([
+                'shop'          => $shop,
+                'text'          => $request->text,
+                'position'      => $request->position,
+                'bg_color'      => $request->bg_color,
+                'text_color'    => $request->text_color,
+                'font_size'     => $request->font_size
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Pre Order Badge Design Saved Successfully.',
+            'data'    => $badgeDesign
+        ], 200);
     }
 
     private function dateFormatToStore($requestDate)

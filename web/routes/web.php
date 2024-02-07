@@ -141,6 +141,9 @@ Route::post('/api/preorder/schedule', [PreOrderSetupController::class, 'storePre
 Route::get('/api/preorder/display-message', [PreOrderSetupController::class, 'getDisplayMessage'])->middleware('shopify.auth');
 Route::post('/api/preorder/display-message', [PreOrderSetupController::class, 'storeDisplayMessage'])->middleware('shopify.auth');
 
+Route::get('/api/preorder/badge-design', [PreOrderSetupController::class, 'getBadgeDesign'])->middleware('shopify.auth');
+Route::post('/api/preorder/badge-design', [PreOrderSetupController::class, 'storeBadgeDesign'])->middleware('shopify.auth');
+
 Route::get('/api/products/create', function (Request $request) {
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
