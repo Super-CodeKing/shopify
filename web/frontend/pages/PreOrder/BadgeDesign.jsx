@@ -375,16 +375,23 @@ export default function BadgeDesign() {
                                         }}
                                     >
                                         {ribbonBadgePosition === "top-left" && (
-                                        <div className="ribbon ribbon-top-left">
-                                            <span 
+                                        <div className="absolute left-0 top-0 h-16 w-16">
+                                            <div
                                                 style={{ 
-                                                    color: `${badgeTextHexColor}`, 
+                                                    color: `${badgeTextHexColor}`,
                                                     fontSize: `${buttonFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
-                                            >
-                                                {ribbonBadgeText}
-                                            </span>
+                                                class="absolute transform rotate-[-45deg] text-center font-semibold py-2 left-[-40px] top-[20px] w-[170px] shadow">
+                                                <span 
+                                                    style={{ 
+                                                        color: `${badgeTextHexColor}`,
+                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                    }}
+                                                >
+                                                    {ribbonBadgeText}
+                                                </span>
+                                            </div>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "top-right" && (
@@ -397,40 +404,54 @@ export default function BadgeDesign() {
                                                 }}
                                                 class="absolute transform rotate-45 text-center font-semibold py-2 right-[-40px] top-[20px] w-[170px] shadow">
                                                 <span 
-                                                style={{ 
-                                                    color: `${badgeTextHexColor}`,
-                                                    fontSize: `${buttonFontSizeValue}px`,
-                                                }}
-                                            >
-                                                {ribbonBadgeText}
-                                            </span>
+                                                    style={{ 
+                                                        color: `${badgeTextHexColor}`,
+                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                    }}
+                                                >
+                                                    {ribbonBadgeText}
+                                                </span>
                                             </div>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "bottom-left" && (
-                                        <div className="ribbon ribbon-bottom-left">
-                                            <span 
+                                        <div class="absolute left-0 bottom-0 h-28 w-28">
+                                            <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
                                                     fontSize: `${buttonFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
-                                            >
-                                                {ribbonBadgeText}
-                                            </span>
+                                                class="absolute transform rotate-45 text-center font-semibold py-2 left-[-40px] top-[50px] w-[170px] shadow">
+                                                <span 
+                                                    style={{ 
+                                                        color: `${badgeTextHexColor}`,
+                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                    }}
+                                                >
+                                                    {ribbonBadgeText}
+                                                </span>
+                                            </div>
                                         </div>
                                         )}
                                         {ribbonBadgePosition === "bottom-right" && (
-                                        <div className="ribbon ribbon-bottom-right">
-                                            <span 
+                                        <div class="absolute right-0 bottom-0 h-28 w-28">
+                                            <div
                                                 style={{ 
                                                     color: `${badgeTextHexColor}`,
                                                     fontSize: `${buttonFontSizeValue}px`,
                                                     backgroundColor: `${backgroundHexColor}`
                                                 }}
-                                            >
-                                                {ribbonBadgeText}
-                                            </span>
+                                                class="absolute transform rotate-[-45deg] text-center font-semibold py-2 right-[-40px] top-[50px] w-[170px] shadow">
+                                                <span 
+                                                    style={{ 
+                                                        color: `${badgeTextHexColor}`,
+                                                        fontSize: `${buttonFontSizeValue}px`,
+                                                    }}
+                                                >
+                                                    {ribbonBadgeText}
+                                                </span>
+                                            </div>
                                         </div>
                                         )}
                                     </div>
