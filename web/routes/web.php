@@ -50,10 +50,7 @@ Route::fallback(function (Request $request) {
 
 Route::get('/api/auth', function (Request $request) {
     $shop = Utils::sanitizeShopDomain($request->query('shop'));
-
-    // Delete any previously created OAuth sessions that were not completed (don't have an access token)
     Session::where('shop', $shop)->where('access_token', null)->delete();
-
     return AuthRedirection::redirect($request);
 });
 

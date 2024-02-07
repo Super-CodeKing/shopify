@@ -318,9 +318,9 @@ export default function BadgeDesign() {
                                         onChange={changeBadgeFontSize}
                                         output
                                     />
-                                    <div className="mt-1">
+                                    {/* <div className="mt-1">
                                         <Banner>You will not show any effect of Font Size.</Banner>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 </Card>
                             </BlockStack>

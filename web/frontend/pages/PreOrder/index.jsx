@@ -1,28 +1,11 @@
 import {
-    Card,
     Page,
-    Layout,
-    TextContainer,
-    EmptyState,
-    TextField,
-    Modal,
-    Button,
-    PageActions,
-    DatePicker,
     Text,
-    AccountConnection,
-    Link,
-    BlockStack,
-    Divider,
-    OptionList,
     Icon,
     Avatar,
-    useBreakpoints,
-    Badge,
-    useIndexResourceState,
 } from "@shopify/polaris";
-import { TitleBar, ResourcePicker } from "@shopify/app-bridge-react";
-import { useCallback, useState } from "react";
+import { TitleBar } from "@shopify/app-bridge-react";
+import { useEffect, useState } from "react";
 import "../../assets/preorder.css";
 import {
     ChatMajor,
@@ -32,7 +15,6 @@ import {
     CalendarTimeMinor,
     DiscountsMajor,
     ColorsMajor,
-    CodeMajor,
     OrdersMinor
 } from "@shopify/polaris-icons";
 import Activation from "./Activation";
@@ -45,283 +27,10 @@ import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
 
 export default function PreOrder() {
-    const productListDummy = [
-        {
-            availablePublicationCount: 4,
-            createdAt: "2023-11-07T17:42:38Z",
-            descriptionHtml: "",
-            handle: "selling-plans-ski-wax",
-            hasOnlyDefaultVariant: false,
-            id: "gid://shopify/Product/8301163675812",
-            images: [
-                {
-                    id: "gid://shopify/ProductImage/43490589409444",
-                    altText: "A bar of golden yellow wax",
-                    originalSrc:
-                        "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/snowboard_wax.png?v=1699378958",
-                },
-                {
-                    id: "gid://shopify/ProductImage/43490589474980",
-                    altText: "A bar of purple wax",
-                    originalSrc:
-                        "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/wax-special.png?v=1699378958",
-                },
-                {
-                    id: "gid://shopify/ProductImage/43490589507748",
-                    altText: "a small cube of wax",
-                    originalSrc:
-                        "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/sample-normal-wax.png?v=1699378958",
-                },
-            ],
-            options: [
-                {
-                    id: "gid://shopify/ProductOption/10596527931556",
-                    name: "Title",
-                    position: 1,
-                    values: [
-                        "Selling Plans Ski Wax",
-                        "Special Selling Plans Ski Wax",
-                        "Sample Selling Plans Ski Wax",
-                    ],
-                },
-            ],
-            productType: "",
-            publishedAt: "2023-11-07T17:42:39Z",
-            tags: ["Accessory", "Sport", "Winter"],
-            templateSuffix: null,
-            title: "Selling Plans Ski Wax",
-            totalInventory: 30,
-            tracksInventory: true,
-            updatedAt: "2023-11-07T17:42:42Z",
-            variants: [
-                {
-                    availableForSale: true,
-                    barcode: null,
-                    compareAtPrice: null,
-                    createdAt: "2023-11-07T17:42:38Z",
-                    displayName:
-                        "Selling Plans Ski Wax - Selling Plans Ski Wax",
-                    fulfillmentService: {
-                        id: "gid://shopify/FulfillmentService/manual",
-                        inventoryManagement: false,
-                        productBased: true,
-                        serviceName: "Manual",
-                        type: "MANUAL",
-                    },
-                    id: "gid://shopify/ProductVariant/44738920710308",
-                    image: {
-                        id: "gid://shopify/ProductImage/43490589409444",
-                        altText: "A bar of golden yellow wax",
-                        originalSrc:
-                            "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/snowboard_wax.png?v=1699378958",
-                    },
-                    inventoryItem: {
-                        __typename: "InventoryItem",
-                        id: "gid://shopify/InventoryItem/46590023598244",
-                    },
-                    inventoryManagement: "SHOPIFY",
-                    inventoryPolicy: "DENY",
-                    inventoryQuantity: 10,
-                    position: 1,
-                    price: "24.95",
-                    product: {
-                        __typename: "Product",
-                        id: "gid://shopify/Product/8301163675812",
-                    },
-                    requiresShipping: true,
-                    selectedOptions: [
-                        {
-                            __typename: "SelectedOption",
-                            value: "Selling Plans Ski Wax",
-                        },
-                    ],
-                    sku: "",
-                    taxable: true,
-                    title: "Selling Plans Ski Wax",
-                    updatedAt: "2023-11-07T17:42:38Z",
-                    weight: 2,
-                    weightUnit: "OUNCES",
-                },
-                {
-                    availableForSale: true,
-                    barcode: null,
-                    compareAtPrice: null,
-                    createdAt: "2023-11-07T17:42:38Z",
-                    displayName:
-                        "Selling Plans Ski Wax - Special Selling Plans Ski Wax",
-                    fulfillmentService: {
-                        id: "gid://shopify/FulfillmentService/manual",
-                        inventoryManagement: false,
-                        productBased: true,
-                        serviceName: "Manual",
-                        type: "MANUAL",
-                    },
-                    id: "gid://shopify/ProductVariant/44738920743076",
-                    image: {
-                        id: "gid://shopify/ProductImage/43490589474980",
-                        altText: "A bar of purple wax",
-                        originalSrc:
-                            "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/wax-special.png?v=1699378958",
-                    },
-                    inventoryItem: {
-                        __typename: "InventoryItem",
-                        id: "gid://shopify/InventoryItem/46590023631012",
-                    },
-                    inventoryManagement: "SHOPIFY",
-                    inventoryPolicy: "DENY",
-                    inventoryQuantity: 10,
-                    position: 2,
-                    price: "49.95",
-                    product: {
-                        __typename: "Product",
-                        id: "gid://shopify/Product/8301163675812",
-                    },
-                    requiresShipping: true,
-                    selectedOptions: [
-                        {
-                            __typename: "SelectedOption",
-                            value: "Special Selling Plans Ski Wax",
-                        },
-                    ],
-                    sku: "",
-                    taxable: true,
-                    title: "Special Selling Plans Ski Wax",
-                    updatedAt: "2023-11-07T17:42:38Z",
-                    weight: 2.5,
-                    weightUnit: "OUNCES",
-                },
-                {
-                    availableForSale: true,
-                    barcode: null,
-                    compareAtPrice: null,
-                    createdAt: "2023-11-07T17:42:38Z",
-                    displayName:
-                        "Selling Plans Ski Wax - Sample Selling Plans Ski Wax",
-                    fulfillmentService: {
-                        id: "gid://shopify/FulfillmentService/manual",
-                        inventoryManagement: false,
-                        productBased: true,
-                        serviceName: "Manual",
-                        type: "MANUAL",
-                    },
-                    id: "gid://shopify/ProductVariant/44738920775844",
-                    image: {
-                        id: "gid://shopify/ProductImage/43490589507748",
-                        altText: "a small cube of wax",
-                        originalSrc:
-                            "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/sample-normal-wax.png?v=1699378958",
-                    },
-                    inventoryItem: {
-                        __typename: "InventoryItem",
-                        id: "gid://shopify/InventoryItem/46590023663780",
-                    },
-                    inventoryManagement: "SHOPIFY",
-                    inventoryPolicy: "DENY",
-                    inventoryQuantity: 10,
-                    position: 3,
-                    price: "9.95",
-                    product: {
-                        __typename: "Product",
-                        id: "gid://shopify/Product/8301163675812",
-                    },
-                    requiresShipping: true,
-                    selectedOptions: [
-                        {
-                            __typename: "SelectedOption",
-                            value: "Sample Selling Plans Ski Wax",
-                        },
-                    ],
-                    sku: "",
-                    taxable: true,
-                    title: "Sample Selling Plans Ski Wax",
-                    updatedAt: "2023-11-07T17:42:38Z",
-                    weight: 0.5,
-                    weightUnit: "OUNCES",
-                },
-            ],
-            vendor: "ShopQuizDQ",
-            status: "ACTIVE",
-        },
-        {
-            availablePublicationCount: 4,
-            createdAt: "2023-11-07T17:42:35Z",
-            descriptionHtml: "",
-            handle: "the-3p-fulfilled-snowboard",
-            hasOnlyDefaultVariant: true,
-            id: "gid://shopify/Product/8301163577508",
-            images: [
-                {
-                    id: "gid://shopify/ProductImage/43490589081764",
-                    altText:
-                        "Top and bottom view of a snowboard. The top view shows 7 stacked hexagons and the bottom view shows\n          a small, centred hexagonal logo for Hydrogen.",
-                    originalSrc:
-                        "https://cdn.shopify.com/s/files/1/0629/2599/6196/products/Main_b9e0da7f-db89-4d41-83f0-7f417b02831d.jpg?v=1699378955",
-                },
-            ],
-            options: [
-                {
-                    id: "gid://shopify/ProductOption/10596527833252",
-                    name: "Title",
-                    position: 1,
-                    values: ["Default Title"],
-                },
-            ],
-            productType: "",
-            publishedAt: "2023-11-07T17:42:36Z",
-            tags: ["Accessory", "Sport", "Winter"],
-            templateSuffix: null,
-            title: "The 3p Fulfilled Snowboard",
-            totalInventory: 20,
-            tracksInventory: true,
-            updatedAt: "2023-11-07T17:42:42Z",
-            variants: [
-                {
-                    availableForSale: true,
-                    barcode: null,
-                    compareAtPrice: null,
-                    createdAt: "2023-11-07T17:42:35Z",
-                    displayName: "The 3p Fulfilled Snowboard - Default Title",
-                    fulfillmentService: {
-                        id: "gid://shopify/FulfillmentService/manual",
-                        inventoryManagement: false,
-                        productBased: true,
-                        serviceName: "Manual",
-                        type: "MANUAL",
-                    },
-                    id: "gid://shopify/ProductVariant/44738920579236",
-                    inventoryItem: {
-                        __typename: "InventoryItem",
-                        id: "gid://shopify/InventoryItem/46590023467172",
-                    },
-                    inventoryManagement: "SHOPIFY",
-                    inventoryPolicy: "DENY",
-                    inventoryQuantity: 20,
-                    position: 1,
-                    price: "2629.95",
-                    product: {
-                        __typename: "Product",
-                        id: "gid://shopify/Product/8301163577508",
-                    },
-                    requiresShipping: true,
-                    selectedOptions: [
-                        {
-                            __typename: "SelectedOption",
-                            value: "Default Title",
-                        },
-                    ],
-                    sku: "sku-hosted-1",
-                    taxable: true,
-                    title: "Default Title",
-                    updatedAt: "2023-11-07T17:42:42Z",
-                    weight: 0,
-                    weightUnit: "KILOGRAMS",
-                },
-            ],
-            vendor: "ShopQuizDQ",
-            status: "ACTIVE",
-        },
-    ];
     const primaryAction = { content: "Help", url: "/help" };
+
+    const [storeName, setStoreName] = useState('');
+    const [storeMainPart, setStoreMainPart] = useState('');
 
     const [flagActivation, setFlagActivation] = useState(true);
     const [flagProductSetup, setFlagProductSetup] = useState(false);
@@ -331,137 +40,7 @@ export default function PreOrder() {
     const [flagBadgeDesign, setFlagBadgeDesign] = useState(false);
     const [flagColorNText, setFlagColorNText] = useState(false);
     const [flagCustomCoding, setFlagCustomCoding] = useState(false);
-    const [flagPreOrderProducts, setFlagPreOrderProducts] = useState(false)
     const [flagPreOrderList, setFlagPreOrderList] = useState(false);
-
-    const [preOrderLimit, setPreOrderLimit] = useState(
-        "preOrder-has-daily-limit"
-    );
-
-    // const [preOrderButtonText, setPreOrderButtonText] = useState("Pre Order");
-    // const [preOrderUnderButtonText, setPreOrderUnderButtonText] = useState(
-    //     "We will deliver your product as soon as possible."
-    // );
-    // const [preOrderTotalLimit, setPreOrderTotalLimit] = useState(0);
-    // const [preOrderDailyTotalLimit, setPreOrderDailyTotalLimit] = useState(0);
-
-    // const [{ month, year }, setDate] = useState({ month: 1, year: 2018 });
-    // const [selectedDates, setSelectedDates] = useState({
-    //     start: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
-    //     end: new Date("Wed Feb 07 2018 00:00:00 GMT-0500 (EST)"),
-    // });
-
-    // const [connected, setConnected] = useState(false);
-
-    // const handleAction = useCallback(() => {
-    //     setConnected((connected) => !connected);
-    // }, []);
-
-    const [
-        activePreOrderButtonTextPreviewModal,
-        setActivePreOrderButtonTextPreviewModal,
-    ] = useState(false);
-
-    // const [preOrderTimeRemaining, setPreOrderTimeRemaining] = useState(false);
-    // const [preOrderTimeRemainingMessage, setPreOrderTimeRemainingMessage] =
-    //     useState("Only D days are remaining.");
-
-    const [preOrderEndDateShowing, setPreOrderEndDateShowing] = useState(false);
-    preOrderEndDateShowing;
-    // const [preOrderEndDateMessage, setPreOrderEndDateMessage] = useState(
-    //     "Pre Order ends on MM/DD/YYYY"
-    // );
-
-    // const [preOrderEstimatedDateMessage, setPreOrderEstimatedDateMessage] =
-    //     useState("Pre Order Product will be available on MM/DD/YYYY");
-
-    // const [productResourcePicker, setProductResourcePicker] = useState(false);
-
-    // const handleChangePreOrderEndDateShowing = useCallback(
-    //     (newChecked) => setPreOrderEndDateShowing(newChecked),
-    //     []
-    // );
-
-    // const handleChangePreOrderTotalLimit = useCallback(
-    //     (newValue) => setPreOrderTotalLimit(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderDailyTotalLimit = useCallback(
-    //     (newValue) => setPreOrderDailyTotalLimit(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderButtonText = useCallback(
-    //     (newValue) => setPreOrderButtonText(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderUnderButtonText = useCallback(
-    //     (newValue) => setPreOrderUnderButtonText(newValue),
-    //     []
-    // );
-
-    // const handleChangeOpenPreOrderButtonTextPreview = useCallback(
-    //     () =>
-    //         setActivePreOrderButtonTextPreviewModal(
-    //             !activePreOrderButtonTextPreviewModal
-    //         ),
-    //     [activePreOrderButtonTextPreviewModal]
-    // );
-
-    // const handleChangePreOrderEndDateMessage = useCallback(
-    //     (newValue) => setPreOrderEndDateMessage(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderTimeRemainingMessage = useCallback(
-    //     (newValue) => setPreOrderTimeRemainingMessage(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderTimeRemaining = useCallback(
-    //     (newValue) => setPreOrderTimeRemaining(newValue),
-    //     []
-    // );
-
-    // const handleChangePreOrderEstimatedDateMessage = useCallback(
-    //     (newValue) => setPreOrderEstimatedDateMessage(newValue),
-    //     []
-    // );
-
-    // const GetPreviewModal = ({ imgSrc }) => {
-    //     return (
-    //         <div style={{ height: "500px" }}>
-    //             <Modal
-    //                 open={activePreOrderButtonTextPreviewModal}
-    //                 onClose={handleChangeOpenPreOrderButtonTextPreview}
-    //                 title="Reach more shoppers with Instagram product tags"
-    //                 secondaryActions={[
-    //                     {
-    //                         content: "Close",
-    //                         onAction: handleChangeOpenPreOrderButtonTextPreview,
-    //                     },
-    //                 ]}
-    //             >
-    //                 <Modal.Section>
-    //                     <TextContainer>
-    //                         <img
-    //                             src={imgSrc}
-    //                             alt="Preview of Pre Order Button and Under button Text"
-    //                             className="mx-auto"
-    //                         />
-    //                     </TextContainer>
-    //                 </Modal.Section>
-    //             </Modal>
-    //         </div>
-    //     );
-    // };
-
-    // const preOrderProductList = {
-    //     singular: "Product List",
-    //     plural: "Product List",
-    // };
 
     function activeActivation() {
         setFlagActivation(true);
@@ -571,6 +150,19 @@ export default function PreOrder() {
         setFlagBadgeDesign(false);
     }
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const storeName = urlParams.get('shop');
+        setStoreName(storeName);
+
+        const mainPart = storeName.split('.');
+        const parts = mainPart[0].split('-');
+        const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
+        const capitalizedUrl = capitalizedParts.join('-');
+
+        setStoreMainPart(capitalizedUrl); 
+    })
+
     return (
         <Page fullWidth>
             <TitleBar
@@ -588,13 +180,13 @@ export default function PreOrder() {
                     >
                         <div className="gap-2 flex items-center bg-gray-200 justify-start p-3">
                             <div className="flex grow-0 shrink-0 basis-auto items-center">
-                                <Avatar initials="WW" name="Woluwayemisi Weun-Jung" size="xl"/>
+                                <img width="40" height="40" src="https://img.icons8.com/emoji/40/convenience-store.png" alt="convenience-store"/>
                             </div>
                             <div>
-                                <h3 className="BHLa_">ShopQuizDQ</h3>
+                                <h3 className="BHLa_">{storeMainPart}</h3>
                                 <p className="MIA9A">
                                     <span className="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
-                                        shopquizdq.myshopify.com
+                                        {storeName}
                                     </span>
                                 </p>
                             </div>
@@ -768,7 +360,7 @@ export default function PreOrder() {
                                 </div>
                             </li>
 
-                            <li
+                            {/* <li
                                 className="cursor-pointer"
                                 onClick={() => activeCustomCoding()}
                             >
@@ -787,7 +379,7 @@ export default function PreOrder() {
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li> */}
                         </ul>
                     </nav>
                 </div>
