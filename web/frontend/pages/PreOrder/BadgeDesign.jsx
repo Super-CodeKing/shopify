@@ -21,10 +21,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import '../../assets/preorder.css'
 import ToggleColorActivator from "../../components/ToggleColorActivator";
+import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
 
 export default function BadgeDesign() {
     const emptyToastProps = { content: null };
     const fetch = useAuthenticatedFetch();
+    const [loading, setLoading] = useState(false);
 
     const [toastProps, setToastProps] = useState(emptyToastProps);
     const [ribbonBadgePosition, setRibbonBadgePosition] = useState("top-right");
@@ -137,13 +139,16 @@ export default function BadgeDesign() {
                 setBackgroundHexColor(preOrderBadgeDesign.bg_color);
                 setBadgeTextHexColor(preOrderBadgeDesign.text_color);
                 setBadgeFontSizeValue(preOrderBadgeDesign.font_size);
-            } 
+            }
+            setLoading(false)
         } else {
+            setLoading(false)
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
     useEffect(() => {
+        setLoading(true);
         getPreOrderBadgeDesign();
     }, []);
 
@@ -151,7 +156,8 @@ export default function BadgeDesign() {
         <>
             {toastMarkup}
             <div className="display-message [&>div>div]:pt-0">
-                <Page fullWidth>
+                {loading === true && <SkeletonBodyWithDisplay />}
+                {loading === false && <Page fullWidth>
                     <BlockStack gap="500">
                         <Text variant="headingXl" as="h4">
                             Pre Order Badge Design
@@ -431,7 +437,7 @@ export default function BadgeDesign() {
                             Save
                         </Button>
                     </div>
-                </Page>
+                </Page>}
             </div>
         </>
     );

@@ -21,15 +21,17 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import "../../assets/preorder.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
+import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
 export default function ColorNText() {
     const fetch = useAuthenticatedFetch();
     const [toastActive, setToastActive] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const [backgroundColor, setBackgroundColor] = useState({
         hue: 120,
         brightness: 1,
         saturation: 1,
     });
-
     const [backgroundHexColor, setBackgroundHexColor] = useState("#121212");
     const [backgroundHoverColor, setBackgroundHoverColor] = useState({
         hue: 120,
@@ -261,7 +263,9 @@ export default function ColorNText() {
                 setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme)
                 setColorNTextSettings(settings);
             }
+            setLoading(false)
         } else {
+            setLoading(false);
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -290,19 +294,22 @@ export default function ColorNText() {
     };
 
     useEffect(() => {
+        setLoading(true);
         getPreOrderButtonSettings();
     }, []);
 
     return (
         <div  className="color-n-text [&>div>div]:pt-0">
-            <Page fullWidth>
+            {loading === true && <SkeletonBodyWithDisplay title="Color Settings"/>}
+            {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Button Settings
                     </Text>
                     <Divider borderColor="border" />
                 </BlockStack>
-                <div className="mt-5">
+                
+                 <div className="mt-5">
                     <div className="flex">
                         <div className="flex-1 mr-5">
                             <div className="mb-3">
@@ -643,7 +650,7 @@ export default function ColorNText() {
 
                     <Frame>{toastMarkup}</Frame>
                 </div>
-            </Page>
+            </Page>}
         </div>
     );
 }

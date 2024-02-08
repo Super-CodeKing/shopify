@@ -13,9 +13,11 @@ import {
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
+import SkeletonActivation from "./Skeleton/Activation";
 
 export default function Activation() {
     const fetch = useAuthenticatedFetch();
+    const [loading, setLoading] = useState(false);
 
     const [isPreOrderActive, setIsPreOrderActive] = useState(true);
     const [checkedProductPage, setCheckedProductPage] = useState(true);
@@ -69,7 +71,9 @@ export default function Activation() {
             const preOrderInitData = await response.json();
             console.log("Get Pre Order Init Data ", preOrderInitData);
             setActivationData(preOrderInitData);
+            setLoading(false)
         } else {
+            setLoading(false)
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -99,12 +103,15 @@ export default function Activation() {
     };
 
     useEffect(() => {
+        setLoading(true)
         getPreOrderInitSettings();
     }, []);
 
     return (
         <div className="activation [&>div>div]:pt-0">
-            <Page fullWidth>
+            {loading === true && <SkeletonActivation title="Activation Area" />}
+
+            {loading === false &&<Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Activation Area
@@ -247,7 +254,7 @@ export default function Activation() {
                     </Button>
                     <Frame>{toastMarkup}</Frame>
                 </div>
-            </Page>
+            </Page>}
         </div>
     );
 }

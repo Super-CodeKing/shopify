@@ -17,8 +17,12 @@ import {
 } from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
+import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 export default function OrderLimit() {
+
     const fetch = useAuthenticatedFetch();
+    const [loading, setLoading] = useState(false);
+
     const [toastActive, setToastActive] = useState(false);
     const [limitSelected, setLimitSelected] = useState(['daily-limit']);
     const handleChoiceListChange = useCallback((value) => setLimitSelected(value),[]);
@@ -80,7 +84,10 @@ export default function OrderLimit() {
                     setPreOrderTotalLimit(Number(settings.total_limit))
                 }
             }
+
+            setLoading(false)
         } else {
+            setLoading(false);
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -111,11 +118,13 @@ export default function OrderLimit() {
     }
 
     useEffect(() => {
+        setLoading(true)
         getPreOrderLimitSettings()
     }, [])
     return (
         <div className="orderlimit [&>div>div]:pt-0">
-            <Page fullWidth>
+            {loading === true && <SkeletonOrderLimit title="Order Limit Settings" />}
+            {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Order Limit
@@ -183,7 +192,7 @@ export default function OrderLimit() {
                     </Button>
                     <Frame>{toastMarkup}</Frame>
                 </div>
-            </Page>
+            </Page>}
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://river-research-pattern-composition.trycloudflare.com"
+application_url = "https://air-paperback-pf-says.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://river-research-pattern-composition.trycloudflare.com/auth/callback",
-  "https://river-research-pattern-composition.trycloudflare.com/auth/shopify/callback",
-  "https://river-research-pattern-composition.trycloudflare.com/api/auth/callback"
+  "https://air-paperback-pf-says.trycloudflare.com/auth/callback",
+  "https://air-paperback-pf-says.trycloudflare.com/auth/shopify/callback",
+  "https://air-paperback-pf-says.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

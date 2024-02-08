@@ -15,9 +15,11 @@ import {
 import { useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import Toaster from "../../components/Toaster";
+import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 
 export default function Schedule() {
     const fetch = useAuthenticatedFetch();
+    const [loading, setLoading] = useState(false);
     const today = new Date();
 
     const [showToast, setShowToast] = useState(false);
@@ -69,8 +71,10 @@ export default function Schedule() {
 
             setNoEndDate(preOrderSchedule.no_end_date);
             setNoRestockDate(preOrderSchedule.no_restock_date);
+            setLoading(false)
 
         } else {
+            setLoading(false)
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -117,12 +121,15 @@ export default function Schedule() {
     }
 
     useEffect(() => {
+        setLoading(true);
         getPreOrderSchedule();
     }, []);
 
     return (
         <div className="schedule [&>div>div]:pt-0">
-            <Page fullWidth>
+            {loading === true && <SkeletonOrderLimit title="Schedule for Pre Order" />}
+    
+            {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Schedule for Pre Order
@@ -218,7 +225,7 @@ export default function Schedule() {
                         isError={isErrorToast}
                     />
                 </div>
-            </Page>
+            </Page>}
         </div>
     );
 }

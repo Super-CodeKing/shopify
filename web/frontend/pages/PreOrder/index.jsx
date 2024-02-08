@@ -25,8 +25,10 @@ import DisplayMessage from "./DisplayMessage";
 import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
+import { useAuthenticatedFetch } from "../../hooks";
 
 export default function PreOrder() {
+    const fetch = useAuthenticatedFetch();
     const primaryAction = { content: "Help", url: "/help" };
 
     const [storeName, setStoreName] = useState('');
@@ -150,17 +152,37 @@ export default function PreOrder() {
         setFlagBadgeDesign(false);
     }
 
+    const getPreOrderInitSettings = async () => {
+        const response = await fetch("/api/preorder/init");
+
+        if (response.ok) {
+            const preOrderInitData = await response.json();
+            console.log("Get Pre Order Init Data ", preOrderInitData);
+            setStoreName(preOrderInitData.shop);
+        
+        } else {
+            console.log("Error in Activaing Pre Order: ", response);
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    };
+
     useEffect(() => {
+
+        getPreOrderInitSettings();
         const urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams);
         const storeName = urlParams.get('shop');
         setStoreName(storeName);
 
-        const mainPart = storeName.split('.');
-        const parts = mainPart[0].split('-');
-        const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
-        const capitalizedUrl = capitalizedParts.join('-');
-
-        setStoreMainPart(capitalizedUrl); 
+        if(storeName)
+        {
+            const mainPart = storeName.split('.');
+            const parts = mainPart[0].split('-');
+            const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
+            const capitalizedUrl = capitalizedParts.join('-');
+    
+            setStoreMainPart(capitalizedUrl);
+        } 
     })
 
     return (

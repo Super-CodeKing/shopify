@@ -12,10 +12,12 @@ import {
 import { Toast } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
+import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
 
 export default function DisplayMessage() {
     const emptyToastProps = { content: null };
     const fetch = useAuthenticatedFetch();
+    const [loading, setLoading] = useState(false);
     
     const displayMessageExample = [
         "📢 10% discount on Pre Order",
@@ -102,16 +104,15 @@ export default function DisplayMessage() {
                 setSelectPosition(positionOptions[0].value);
                 setSelectAlignment(alignmentOptions[0].value);
             }
-            
+            setLoading(false)
         } else {
-            setToastContent("Something went wrong");
-            setIsErrorToast(true);
-            setShowToast(true);
+            setLoading(false);
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
     useEffect(() => {
+        setLoading(true);
         getPreOrderDisplayMessage();
     }, []);
 
@@ -119,7 +120,8 @@ export default function DisplayMessage() {
         <>
             {toastMarkup}
             <div className="display-message [&>div>div]:pt-0">
-                <Page fullWidth>
+                {loading === true && <SkeletonBodyWithDisplay title="Display Message Settings" />}
+                {loading === false && <Page fullWidth>
                     <BlockStack gap="500">
                         <Text variant="headingXl" as="h4">
                             Display Message on Product Page
@@ -271,7 +273,7 @@ export default function DisplayMessage() {
                             Save
                         </Button>
                     </div>
-                </Page>
+                </Page>}
             </div>
         </>
     );
