@@ -1,11 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import settingReducer from "./reducers/PreOrder";
+import preOrderReducer from './reducers/PreOrder'
 
 const reducer = {
-
+  preorder: preOrderReducer
 }
 
 export const store = configureStore({
-  reducer: reducer,
-  devTools: true
+  reducer: reducer
 })

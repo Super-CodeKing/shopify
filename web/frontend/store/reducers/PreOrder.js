@@ -1,14 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const settingSlice = createSlice({
-    name: "PreOrderSettings",
-    initialState: {},
+const initialState = {
+    shopName: ''
+}
+
+export const preOrderSettingSlice = createSlice({
+    name: "preorder",
+    initialState,
     reducers: {
-        setSetting: (state, action) => {
-            return { ...state, ...action.payload };
-        },
+        setShopName: (state, action) => {
+            state.shopName = action.payload
+        }
     },
 });
 
-export const { setSetting } = settingSlice.actions;
-export default settingSlice.reducer;
+export const { setShopName } = preOrderSettingSlice.actions;
+export default preOrderSettingSlice.reducer;

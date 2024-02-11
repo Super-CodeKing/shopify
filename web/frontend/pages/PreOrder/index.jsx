@@ -26,9 +26,15 @@ import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
+import { useSelector, useDispatch } from 'react-redux'
+import { setShopName } from "../../store/reducers/PreOrder";
 
 export default function PreOrder() {
+
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch()
+    
+    const preorder = useSelector((state) => state.preorder.shopName)
     const primaryAction = { content: "Help", url: "/help" };
 
     const [storeName, setStoreName] = useState('');
@@ -164,17 +170,23 @@ export default function PreOrder() {
         }
     }
 
-    const { data } = useAppQuery({
+    const { data: preOrderData } = useAppQuery({
         url: "/api/preorder/init",
         reactQueryOptions: {
-            onSuccess: (data) => {
-                console.log("Use App Query: ");
-                console.log(data);
-                setStoreName(data?.shop);
-                setStoreWithoutShopifySubDomain()
-            },
+          onSuccess: (data) => {
+            console.log("Use App Query: ");
+            console.log(data);
+            dispatch(setShopName(data?.shop));
+          },
         },
     });
+
+    useEffect(() => {
+    if (!preorder && preOrderData?.shop) {
+        dispatch(setShopName(preOrderData.shop));
+    }
+    }, [preorder, preOrderData?.shop]);
+    
 
     return (
         <Page fullWidth>
