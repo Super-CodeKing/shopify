@@ -34,7 +34,7 @@ export default function App() {
                                 },
                                 {
                                     label: "Coming Soon",
-                                    destination: "/coming-soon",
+                                    destination: "/comingsoon",
                                 },
                                 {
                                     label: "Request Stock",
