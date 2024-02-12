@@ -159,8 +159,6 @@ export default function PreOrder() {
     }
 
     const setStoreWithoutShopifySubDomain = () => {
-        console.log("Store Name: ");
-        console.log(storeName);
         if(storeName) {
             const mainPart = storeName.split('.');
             const parts = mainPart[0].split('-');
@@ -170,22 +168,26 @@ export default function PreOrder() {
         }
     }
 
-    const { data: preOrderData } = useAppQuery({
+    const { data } = useAppQuery({
         url: "/api/preorder/init",
         reactQueryOptions: {
-          onSuccess: (data) => {
-            console.log("Use App Query: ");
-            console.log(data);
-            dispatch(setShopName(data?.shop));
-          },
+            enabled: !preorder,
+            onSuccess: (data) => {
+                console.log("From Pre Order Index: ");
+                dispatch(setShopName(data?.shop));
+            },
         },
     });
 
     useEffect(() => {
-    if (!preorder && preOrderData?.shop) {
-        dispatch(setShopName(preOrderData.shop));
-    }
-    }, [preorder, preOrderData?.shop]);
+        if (!preorder) {
+            dispatch(setShopName(preorder));
+        }
+        else {
+            setStoreName(preorder);
+            setStoreWithoutShopifySubDomain();
+        }
+    }, [preorder]);
     
 
     return (

@@ -12,11 +12,16 @@ import {
     TextField,
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
-import { useAuthenticatedFetch } from "../../hooks";
+import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import SkeletonActivation from "./Skeleton/Activation";
+import { useDispatch, useSelector } from "react-redux";
+import { setShopName, setActivation } from "../../store/reducers/PreOrder";
 
 export default function Activation() {
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+    
+    const activation = useSelector((state) => state.preorder.activation)
     const [loading, setLoading] = useState(false);
 
     const [isPreOrderActive, setIsPreOrderActive] = useState(true);
@@ -43,39 +48,64 @@ export default function Activation() {
     ) : null;
 
     const setActivationData = (preOrderInitData) => {
-        let activation = preOrderInitData.active === 1 ? true : false;
-        setIsPreOrderActive(activation);
+        setIsPreOrderActive(preOrderInitData.active);
 
         let poc = preOrderInitData.active_on_collection;
         let pop = preOrderInitData.active_on_product;
 
-        if (poc === 1 && pop === 1) {
+        if (poc && pop ) {
             setCheckedProductPage(true);
             setCheckedCollectionPage(true);
-        } else if (poc === 1 && pop === 0) {
+        } else if (poc && !pop) {
             setCheckedProductPage(false);
             setCheckedCollectionPage(true);
-        } else if (poc === 0 && pop === 1) {
+        } else if (!poc && pop) {
             setCheckedProductPage(true);
             setCheckedCollectionPage(false);
         } else {
             setCheckedProductPage(false);
             setCheckedCollectionPage(false);
         }
+
+        if(preOrderInitData.when_show_pre_order == 1) {
+            setWhenToShow('always')
+        } else if(preOrderInitData.when_show_pre_order == 2) {
+            setWhenToShow('sold-out')
+        } else if(preOrderInitData.when_show_pre_order == 3) {
+            setWhenToShow('specific-inventory')
+            setSpecificInventory(preOrderInitData.specific_inventory)
+        }
     };
 
-    const getPreOrderInitSettings = async () => {
-        const response = await fetch("/api/preorder/init");
+    const { 
+        data,
+        refetch: refetchActivationData
+        } = useAppQuery({
+        url: "/api/preorder/init",
+        reactQueryOptions: {
+          enabled: !activation,
+          onSuccess: (data) => {
+            console.log("Called ......");
+            console.log(data);
+            dispatch(setShopName(data?.shop));
+            dispatch(setActivation({
+                'active': data?.active,
+                'active_on_collection': data?.active_on_collection,
+                'active_on_product': data?.active_on_product,
+                'when_show_pre_order': data?.when_show_pre_order,
+                'specific_inventory': data?.specific_inventory
+            }));
+          },
+        },
+    });
 
-        if (response.ok) {
-            const preOrderInitData = await response.json();
-            console.log("Get Pre Order Init Data ", preOrderInitData);
-            setActivationData(preOrderInitData);
-            setLoading(false)
-        } else {
-            setLoading(false)
-            console.log("Error in Activaing Pre Order: ", response);
-            throw new Error(`HTTP error ${response.status}`);
+    const getPreOrderInitSettings = async () => {
+        console.log("Pre Order Activation Data: ");
+        console.log(activation);
+        setLoading(false)
+
+        if(activation) {
+            setActivationData(activation);
         }
     };
 
@@ -98,7 +128,7 @@ export default function Activation() {
 
         if (response.ok) {
             toggleToastActive(true);
-            getPreOrderInitSettings();
+            await refetchActivationData();
         }
     };
 

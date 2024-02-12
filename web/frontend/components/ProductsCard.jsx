@@ -21,6 +21,7 @@ export function ProductsCard() {
     url: "/api/products/count",
     reactQueryOptions: {
       onSuccess: () => {
+        console.log("Calling Products Card");
         setIsLoading(false);
       },
     },

@@ -5,8 +5,34 @@ import Analytics from "./Dashboard/Analytics.jsx";
 import QuickSetup from "./Dashboard/QuickSetup";
 import AppActivation from "./Dashboard/AppActivation";
 import Plan from "./Dashboard/Plan";
+import { setShopName, setActivation } from "../store/reducers/PreOrder";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function HomePage() {
+    const shopName = useSelector((state) => state.preorder.shopName);
+    const activation = useSelector((state) => state.preorder.activation);
+
+    const dispatch = useDispatch();
+
+    const { data } = useAppQuery({
+        url: "/api/preorder/init",
+        reactQueryOptions: {
+            enabled: !activation,
+            onSuccess: (data) => {
+                console.log("Use App Query from Index: ");
+                console.log(data);
+                dispatch(setShopName(data?.shop));
+                dispatch(setActivation({
+                    'active': data?.active,
+                    'active_on_collection': data?.active_on_collection,
+                    'active_on_product': data?.active_on_product,
+                    'when_show_pre_order': data?.when_show_pre_order,
+                    'specific_inventory': data?.specific_inventory
+                }));
+            },
+        },
+    });
+
     const { t } = useTranslation();
     const helpAction = { content: "Help", url: "/help" };
     return (
