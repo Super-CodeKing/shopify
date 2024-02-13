@@ -22,25 +22,21 @@ export default function Activation() {
     const dispatch = useDispatch();
     
     const activation = useSelector((state) => state.preorder.activation)
+    
     const [loading, setLoading] = useState(false);
-
     const [isPreOrderActive, setIsPreOrderActive] = useState(true);
     const [checkedProductPage, setCheckedProductPage] = useState(true);
     const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
     const [toastActive, setToastActive] = useState(false);
+    const [whenToShow, setWhenToShow] = useState('always');
+    const [specicInventory, setSpecificInventory] = useState(0);
 
     const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
     const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
     const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
-
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
-
-    const [whenToShow, setWhenToShow] = useState('always');
-    const [specicInventory, setSpecificInventory] = useState(0);
-    const handleChange = (newWhenToShowValue) => {
-        console.log(newWhenToShowValue);
-        setWhenToShow(newWhenToShowValue);
-    }
+    
+    const handleChange = (newWhenToShowValue) => {setWhenToShow(newWhenToShowValue)}
     const handleSpecificInventory = useCallback((value) => setSpecificInventory(value),[]);
 
     const toastMarkup = toastActive ? (
@@ -48,7 +44,11 @@ export default function Activation() {
     ) : null;
 
     const setActivationData = (preOrderInitData) => {
-        setIsPreOrderActive(preOrderInitData.active);
+        if(preOrderInitData.active == 1) {
+            setIsPreOrderActive(true)
+        } else if(preOrderInitData.active == 0) {
+            setIsPreOrderActive(false);
+        }
 
         let poc = preOrderInitData.active_on_collection;
         let pop = preOrderInitData.active_on_product;
@@ -85,8 +85,6 @@ export default function Activation() {
         reactQueryOptions: {
           enabled: !activation,
           onSuccess: (data) => {
-            console.log("Called ......");
-            console.log(data);
             dispatch(setShopName(data?.shop));
             dispatch(setActivation({
                 'active': data?.active,
@@ -100,37 +98,47 @@ export default function Activation() {
     });
 
     const getPreOrderInitSettings = async () => {
-        console.log("Pre Order Activation Data: ");
-        console.log(activation);
         setLoading(false)
-
         if(activation) {
             setActivationData(activation);
         }
     };
 
-    const savePreOrderInitActivation = async () => {
+    const savePreOrderInitActivation = useCallback(async () => {
         const formData = new FormData();
+    
         formData.append("active", isPreOrderActive);
         formData.append("active_on_product", checkedProductPage);
         formData.append("active_on_collection", checkedCollectionPage);
         formData.append("when_show_preorder", whenToShow);
-        formData.append("specific_inventory", setSpecificInventory);
-
+        formData.append("specific_inventory", specicInventory);
+    
         const response = await fetch("/api/preorder/save", {
-            method: "POST",
-            body: formData ? formData : JSON.stringify(data),
+          method: "POST",
+          body: formData ? formData : JSON.stringify(data),
         });
-
+    
         if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
+          console.log("Error on Activation.jsx: ");
+          throw new Error(`HTTP error ${response.status}`);
         }
-
+    
         if (response.ok) {
-            toggleToastActive(true);
-            await refetchActivationData();
+          toggleToastActive(true);
+          await refetchActivationData();
         }
-    };
+      }, [
+        isPreOrderActive,
+        checkedProductPage,
+        checkedCollectionPage,
+        whenToShow,
+        specicInventory,
+    ]);
+
+    const isDataChanged = useCallback(() => {
+        let activeRedux = activation.active === 0 ? false : true;
+        return activeRedux !== isPreOrderActive;
+    }, [isPreOrderActive]);
 
     useEffect(() => {
         setLoading(true)
@@ -278,9 +286,10 @@ export default function Activation() {
                     <Button
                         variant="primary"
                         size="large"
+                        disabled={!isDataChanged()}
                         onClick={() => savePreOrderInitActivation()}
                     >
-                        Save
+                    Save
                     </Button>
                     <Frame>{toastMarkup}</Frame>
                 </div>

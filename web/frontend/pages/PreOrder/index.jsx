@@ -25,21 +25,13 @@ import DisplayMessage from "./DisplayMessage";
 import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
-import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
-import { useSelector, useDispatch } from 'react-redux'
-import { setShopName } from "../../store/reducers/PreOrder";
+import { useSelector } from 'react-redux'
 
 export default function PreOrder() {
-
-    const fetch = useAuthenticatedFetch();
-    const dispatch = useDispatch()
-    
-    const preorder = useSelector((state) => state.preorder.shopName)
+    const shopName = useSelector((state) => state.preorder?.shopName);
     const primaryAction = { content: "Help", url: "/help" };
 
-    const [storeName, setStoreName] = useState('');
     const [storeMainPart, setStoreMainPart] = useState('');
-
     const [flagActivation, setFlagActivation] = useState(true);
     const [flagProductSetup, setFlagProductSetup] = useState(false);
     const [flagOrderLimit, setFlagOrderLimit] = useState(false);
@@ -159,8 +151,8 @@ export default function PreOrder() {
     }
 
     const setStoreWithoutShopifySubDomain = () => {
-        if(storeName) {
-            const mainPart = storeName.split('.');
+        if(shopName) {
+            const mainPart = shopName.split('.');
             const parts = mainPart[0].split('-');
             const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
             const capitalizedUrl = capitalizedParts.join('-');
@@ -168,27 +160,9 @@ export default function PreOrder() {
         }
     }
 
-    const { data } = useAppQuery({
-        url: "/api/preorder/init",
-        reactQueryOptions: {
-            enabled: !preorder,
-            onSuccess: (data) => {
-                console.log("From Pre Order Index: ");
-                dispatch(setShopName(data?.shop));
-            },
-        },
-    });
-
     useEffect(() => {
-        if (!preorder) {
-            dispatch(setShopName(preorder));
-        }
-        else {
-            setStoreName(preorder);
-            setStoreWithoutShopifySubDomain();
-        }
-    }, [preorder]);
-    
+        setStoreWithoutShopifySubDomain();
+    }, []);
 
     return (
         <Page fullWidth>
@@ -213,7 +187,7 @@ export default function PreOrder() {
                                 <h3 className="BHLa_">{storeMainPart}</h3>
                                 <p className="MIA9A">
                                     <span className="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
-                                        {storeName}
+                                        {shopName}
                                     </span>
                                 </p>
                             </div>

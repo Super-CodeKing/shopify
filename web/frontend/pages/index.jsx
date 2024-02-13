@@ -7,20 +7,15 @@ import AppActivation from "./Dashboard/AppActivation";
 import Plan from "./Dashboard/Plan";
 import { setShopName, setActivation } from "../store/reducers/PreOrder";
 import { useDispatch, useSelector } from "react-redux";
+import { useAppQuery } from "../hooks/useAppQuery.js";
 
 export default function HomePage() {
-    const shopName = useSelector((state) => state.preorder.shopName);
     const activation = useSelector((state) => state.preorder.activation);
-
     const dispatch = useDispatch();
-
     const { data } = useAppQuery({
         url: "/api/preorder/init",
         reactQueryOptions: {
-            enabled: !activation,
             onSuccess: (data) => {
-                console.log("Use App Query from Index: ");
-                console.log(data);
                 dispatch(setShopName(data?.shop));
                 dispatch(setActivation({
                     'active': data?.active,
@@ -37,20 +32,22 @@ export default function HomePage() {
     const helpAction = { content: "Help", url: "/help" };
     return (
         <Page fullWidth>
-            <TitleBar title={t("HomePage.title")} primaryAction={helpAction} />
-            <div className="pb-3">
-                <Text variant="heading2xl" as="h3">
-                    Welcome to Pre Order of Deque Lab
-                </Text>
-            </div>
-            <Divider />
-            <div className="my-5">
-                <Layout>
-                    <AppActivation />
-                    <Plan />
-                </Layout>
-                <Analytics />
-                <QuickSetup />
+            <div className="container mx-auto">
+                <TitleBar title={t("HomePage.title")} primaryAction={helpAction} />
+                <div className="pb-3">
+                    <Text variant="heading2xl" as="h3">
+                        Welcome to Pre Order of Deque Lab
+                    </Text>
+                </div>
+                <Divider />
+                <div className="my-5">
+                    <Layout>
+                        <AppActivation />
+                        <Plan />
+                    </Layout>
+                    <Analytics />
+                    <QuickSetup />
+                </div>
             </div>
         </Page>
     );
