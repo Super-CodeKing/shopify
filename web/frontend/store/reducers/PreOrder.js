@@ -2,13 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     shopName: '',
-    activation: {
-        active: true,
-        active_on_collection: false,
-        active_on_product: true,
-        when_show_pre_order: 1,
-        specific_inventory: 0
-    }
+    activation: {}
 }
 
 export const preOrderSettingSlice = createSlice({

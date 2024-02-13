@@ -4,7 +4,7 @@ import {
     Icon,
     Avatar,
 } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
+import { TitleBar, useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
 import "../../assets/preorder.css";
 import {
@@ -25,12 +25,17 @@ import DisplayMessage from "./DisplayMessage";
 import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setActivation, setShopName } from "../../store/reducers/PreOrder";
 
 export default function PreOrder() {
+    const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+
     const shopName = useSelector((state) => state.preorder?.shopName);
     const primaryAction = { content: "Help", url: "/help" };
 
+    const [storeName, setStoreName] = useState('');
     const [storeMainPart, setStoreMainPart] = useState('');
     const [flagActivation, setFlagActivation] = useState(true);
     const [flagProductSetup, setFlagProductSetup] = useState(false);
@@ -150,18 +155,35 @@ export default function PreOrder() {
         setFlagBadgeDesign(false);
     }
 
-    const setStoreWithoutShopifySubDomain = () => {
-        if(shopName) {
-            const mainPart = shopName.split('.');
-            const parts = mainPart[0].split('-');
-            const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
-            const capitalizedUrl = capitalizedParts.join('-');
-            setStoreMainPart(capitalizedUrl);
-        }
+    const setStoreWithoutShopifySubDomain = (shop) => {
+        const mainPart = shop.split('.');
+        const parts = mainPart[0].split('-');
+        const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
+        const capitalizedUrl = capitalizedParts.join('-');
+        setStoreMainPart(capitalizedUrl);
     }
 
+    const getShopName = async () => {
+        const response = await fetch("/api/preorder/init");
+        if (response.ok) {
+            const preOrderActivation = await response.json();
+            dispatch(setShopName(preOrderActivation?.shop));
+            dispatch(setActivation({
+                'active' : preOrderActivation.active,
+                'active_on_collection' : preOrderActivation.active_on_collection,
+                'active_on_product' : preOrderActivation.active_on_product,
+                'when_show_pre_order': preOrderActivation.when_show_pre_order,
+                'specific_inventory': preOrderActivation.specific_inventory
+            }))
+            setStoreName(preOrderActivation?.shop)
+            setStoreWithoutShopifySubDomain(preOrderActivation?.shop);
+        } else {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    };
+
     useEffect(() => {
-        setStoreWithoutShopifySubDomain();
+        if(shopName.length === 0) getShopName();
     }, []);
 
     return (

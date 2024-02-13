@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://conditions-meter-org-insulation.trycloudflare.com"
+application_url = "https://mpg-efficiently-beneficial-loops.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://conditions-meter-org-insulation.trycloudflare.com/auth/callback",
-  "https://conditions-meter-org-insulation.trycloudflare.com/auth/shopify/callback",
-  "https://conditions-meter-org-insulation.trycloudflare.com/api/auth/callback"
+  "https://mpg-efficiently-beneficial-loops.trycloudflare.com/auth/callback",
+  "https://mpg-efficiently-beneficial-loops.trycloudflare.com/auth/shopify/callback",
+  "https://mpg-efficiently-beneficial-loops.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

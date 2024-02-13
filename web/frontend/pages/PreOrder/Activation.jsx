@@ -43,7 +43,11 @@ export default function Activation() {
         <Toast content="Activation Data Saved Successfully!" onDismiss={toggleToastActive} />
     ) : null;
 
-    const setActivationData = (preOrderInitData) => {
+    const setActivationData = (passedActivation) => {
+        console.log(passedActivation);
+        const preOrderInitData = Object.keys(activation).length !== 0 ? activation: passedActivation;
+        console.log("Setting Data: ");
+        console.log(preOrderInitData);
         if(preOrderInitData.active == 1) {
             setIsPreOrderActive(true)
         } else if(preOrderInitData.active == 0) {
@@ -77,34 +81,27 @@ export default function Activation() {
         }
     };
 
-    const { 
-        data,
-        refetch: refetchActivationData
-        } = useAppQuery({
-        url: "/api/preorder/init",
-        reactQueryOptions: {
-          enabled: !activation,
-          onSuccess: (data) => {
-            dispatch(setShopName(data?.shop));
-            dispatch(setActivation({
-                'active': data?.active,
-                'active_on_collection': data?.active_on_collection,
-                'active_on_product': data?.active_on_product,
-                'when_show_pre_order': data?.when_show_pre_order,
-                'specific_inventory': data?.specific_inventory
-            }));
-          },
-        },
-    });
-
-    const getPreOrderInitSettings = async () => {
-        setLoading(false)
-        if(activation) {
-            setActivationData(activation);
+    const getPreOrderActivation = async () => {
+        const response = await fetch("/api/preorder/init");
+        if (response.ok) {
+            const preOrderActivation = await response.json();
+            const activationObj = {
+                'active' : preOrderActivation.active,
+                'active_on_collection' : preOrderActivation.active_on_collection,
+                'active_on_product' : preOrderActivation.active_on_product,
+                'when_show_pre_order': preOrderActivation.when_show_pre_order,
+                'specific_inventory': preOrderActivation.specific_inventory
+            }
+            dispatch(setActivation(activationObj))
+            setActivationData(activationObj);
+            setLoading(false);
+        } else {
+            setLoading(false);
+            throw new Error(`HTTP error ${response.status}`);
         }
     };
 
-    const savePreOrderInitActivation = useCallback(async () => {
+    const savePreOrderInitActivation = async () => {
         const formData = new FormData();
     
         formData.append("active", isPreOrderActive);
@@ -125,25 +122,55 @@ export default function Activation() {
     
         if (response.ok) {
           toggleToastActive(true);
-          await refetchActivationData();
+          getPreOrderActivation();
         }
-      }, [
-        isPreOrderActive,
-        checkedProductPage,
-        checkedCollectionPage,
-        whenToShow,
-        specicInventory,
-    ]);
+      };
 
     const isDataChanged = useCallback(() => {
-        let activeRedux = activation.active === 0 ? false : true;
-        return activeRedux !== isPreOrderActive;
-    }, [isPreOrderActive]);
+        let flagActivation = false;
+        let flagWhereToShow = false;
+        let flagWhenToShow = false;
+        let flagSpecificInventory = false;
 
-    useEffect(() => {
-        setLoading(true)
-        getPreOrderInitSettings();
-    }, []);
+        let activeRedux = activation.active === 0 ? false : true;
+        if(activeRedux !== isPreOrderActive) {
+            flagActivation = true;
+        }
+
+        let whereToShowProductRedux = activation.active_on_product === 0 ? false: true;
+        let whereToShowCollectionRedux = activation.active_on_collection === 0 ? false: true;
+
+        if(whereToShowProductRedux !== checkedProductPage || whereToShowCollectionRedux !== checkedCollectionPage) {
+            flagWhereToShow = true;
+        }
+
+        let whenToShowRedux = ''; 
+        if(activation.when_show_pre_order == 1) {
+            whenToShowRedux = 'always'
+        } else if(activation.when_show_pre_order == 2) {
+            whenToShowRedux = 'sold-out';
+        } else if(activation.when_show_pre_order == 3) {
+            whenToShowRedux = 'specific-inventory';
+        }
+
+        if(whenToShowRedux !== whenToShow) {
+            flagWhenToShow = true;
+        }
+
+        if(specicInventory !== activation.specific_inventory) {
+            flagSpecificInventory = true;
+        }
+
+        if(flagActivation || flagWhereToShow || flagWhenToShow || flagSpecificInventory) {
+            return true;
+        }
+        return false;
+    }, [isPreOrderActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow]);
+
+    useEffect( () => {
+        if(Object.keys(activation).length === 0) getPreOrderActivation();
+        else setActivationData()
+    }, [])
 
     return (
         <div className="activation [&>div>div]:pt-0">
