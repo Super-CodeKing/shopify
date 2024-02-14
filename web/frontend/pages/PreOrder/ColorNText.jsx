@@ -21,7 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import "../../assets/preorder.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
-import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
+import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 export default function ColorNText() {
     const fetch = useAuthenticatedFetch();
     const [toastActive, setToastActive] = useState(false);

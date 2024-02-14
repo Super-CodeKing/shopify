@@ -10,7 +10,7 @@ import {
     Page,
     Frame,
 } from "@shopify/polaris";
-import ProductsTableSkeleton from "./ProductsTableSkeleton";
+import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useEffect, useState } from "react";
 

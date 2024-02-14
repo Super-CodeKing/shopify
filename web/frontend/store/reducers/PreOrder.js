@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     shopName: '',
-    activation: {}
+    activation: {},
+    productList: []
 }
 
 export const preOrderSettingSlice = createSlice({
@@ -14,9 +15,12 @@ export const preOrderSettingSlice = createSlice({
         },
         setActivation: (state, action) => {
             state.activation = action.payload
+        },
+        setProductList: (state, action) => {
+            state.productList = action.payload
         }
     },
 });
 
-export const { setShopName, setActivation } = preOrderSettingSlice.actions;
+export const { setShopName, setActivation, setProductList } = preOrderSettingSlice.actions;
 export default preOrderSettingSlice.reducer;

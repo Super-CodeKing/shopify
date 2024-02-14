@@ -21,7 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import '../../assets/preorder.css'
 import ToggleColorActivator from "../../components/ToggleColorActivator";
-import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
+import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 
 export default function BadgeDesign() {
     const emptyToastProps = { content: null };

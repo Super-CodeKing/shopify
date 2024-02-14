@@ -23,12 +23,16 @@ import {
 import { EditMajor, DeleteMajor } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import { useCallback, useEffect, useState } from "react";
-import ProductsTableSkeleton from "./ProductsTableSkeleton";
+import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { setProductList } from "../../store/reducers/PreOrder";
 
 export default function ProductTable() {
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
     const today = new Date();
+    const productListRedux = useSelector((state) => state.preorder.productList)
 
     const [checked, setChecked] = useState(true);
     const [openResourcePicker, setOpenResourcePicker] = useState(false);
@@ -36,20 +40,15 @@ export default function ProductTable() {
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [toastActive, setToastActive] = useState(false);
     const [editModalActive, setEditModalActive] = useState(true);
-    const [initialSelectedProductIds, setInitialSelectedProductIds] = useState(
-        []
-    );
+    const [initialSelectedProductIds, setInitialSelectedProductIds] = useState([]);
     const [toastContent, setToastContent] = useState("");
     const [editProductData, setEditProductData] = useState(null);
     const [visible, setVisible] = useState(false);
     const [editStartDate, setEditStartDate] = useState(today);
-    const [editEndDate, setEditEndDate] = useState(
-        new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
-    );
+    const [editEndDate, setEditEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
     const [editOrderLimit, setEditOrderLimit] = useState(0);
     const [hasEndDate, setHasEndDate] = useState(true);
-    const [editCheckDisplayMessage, setEditCheckDisplayMessage] =
-        useState(false);
+    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState(false);
     const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState(false);
     const [countSaveProduct, setCountSaveProduct] = useState(0);
 
@@ -326,10 +325,12 @@ export default function ProductTable() {
         }
         saveSelectedProducts(mainProductPayloadAfterCuttingSelectedBefore);
     };
+
     const cancelResourcePicker = () => {
         setOpenResourcePicker(false);
         console.log("Cancelled....");
     };
+
     const activeResourcePicker = () => {
         console.log("Active Resource Picker", openResourcePicker);
         setOpenResourcePicker(true);
@@ -366,12 +367,11 @@ export default function ProductTable() {
         setEditModalActive(true);
     };
 
-    const { selectedResources, allResourcesSelected, handleSelectionChange } =
-        useIndexResourceState(preOrderProducts);
+    const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(preOrderProducts);
 
     const resourceName = {
-        singular: "order",
-        plural: "orders",
+        singular: "product",
+        plural: "products",
     };
 
     const rowMarkup = preOrderProducts.map(
@@ -462,6 +462,7 @@ export default function ProductTable() {
             const preOrderProducts = await response.json();
             const products = preOrderProducts.data;
             setPreOrderProducts(products);
+            dispatch(setProductList(products));
             const productIds = products.map((item) => ({
                 id: item.product_id,
             }));
@@ -476,7 +477,15 @@ export default function ProductTable() {
 
     useEffect(() => {
         setIsLoadingProducts(true);
-        getPreOrderProducts();
+        if(productListRedux.length === 0) getPreOrderProducts();
+        else {
+            setPreOrderProducts(productListRedux);
+            const productIds = productListRedux.map((item) => ({
+                id: item.product_id,
+            }));
+            setInitialSelectedProductIds(productIds);
+            setIsLoadingProducts(false);
+        } 
     }, []);
 
     return (

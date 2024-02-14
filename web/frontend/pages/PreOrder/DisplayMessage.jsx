@@ -12,7 +12,7 @@ import {
 import { Toast } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
-import SkeletonBodyWithDisplay from "./SkeletonBodyWithDisplay";
+import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 
 export default function DisplayMessage() {
     const emptyToastProps = { content: null };
