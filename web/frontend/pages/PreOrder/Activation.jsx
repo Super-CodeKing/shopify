@@ -44,18 +44,19 @@ export default function Activation() {
     ) : null;
 
     const setActivationData = (passedActivation) => {
-        console.log(passedActivation);
-        const preOrderInitData = Object.keys(activation).length !== 0 ? activation: passedActivation;
-        console.log("Setting Data: ");
-        console.log(preOrderInitData);
+        let preOrderInitData = activation;
+        if(passedActivation !== null && passedActivation !== undefined) {
+            preOrderInitData = Object.keys(passedActivation).length !== 0 ? passedActivation : activation;
+        }
+        
         if(preOrderInitData.active == 1) {
             setIsPreOrderActive(true)
-        } else if(preOrderInitData.active == 0) {
+        } else if(preOrderInitData?.active == 0) {
             setIsPreOrderActive(false);
         }
 
-        let poc = preOrderInitData.active_on_collection;
-        let pop = preOrderInitData.active_on_product;
+        let poc = preOrderInitData?.active_on_collection;
+        let pop = preOrderInitData?.active_on_product;
 
         if (poc && pop ) {
             setCheckedProductPage(true);
@@ -71,14 +72,16 @@ export default function Activation() {
             setCheckedCollectionPage(false);
         }
 
-        if(preOrderInitData.when_show_pre_order == 1) {
+        if(preOrderInitData?.when_show_pre_order == 1) {
             setWhenToShow('always')
-        } else if(preOrderInitData.when_show_pre_order == 2) {
+        } else if(preOrderInitData?.when_show_pre_order == 2) {
             setWhenToShow('sold-out')
-        } else if(preOrderInitData.when_show_pre_order == 3) {
+        } else if(preOrderInitData?.when_show_pre_order == 3) {
             setWhenToShow('specific-inventory')
-            setSpecificInventory(preOrderInitData.specific_inventory)
+            setSpecificInventory(preOrderInitData?.specific_inventory)
         }
+
+        setLoading(false);
     };
 
     const getPreOrderActivation = async () => {
@@ -102,6 +105,7 @@ export default function Activation() {
     };
 
     const savePreOrderInitActivation = async () => {
+        setLoading(true);
         const formData = new FormData();
     
         formData.append("active", isPreOrderActive);
@@ -116,6 +120,7 @@ export default function Activation() {
         });
     
         if (!response.ok) {
+          setLoading(true);
           console.log("Error on Activation.jsx: ");
           throw new Error(`HTTP error ${response.status}`);
         }
@@ -123,6 +128,7 @@ export default function Activation() {
         if (response.ok) {
           toggleToastActive(true);
           getPreOrderActivation();
+          setLoading(false);
         }
       };
 
@@ -168,8 +174,9 @@ export default function Activation() {
     }, [isPreOrderActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow]);
 
     useEffect( () => {
+        setLoading(true);
         if(Object.keys(activation).length === 0) getPreOrderActivation();
-        else setActivationData()
+        else setActivationData();
     }, [])
 
     return (

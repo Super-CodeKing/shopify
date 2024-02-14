@@ -184,6 +184,7 @@ export default function PreOrder() {
 
     useEffect(() => {
         if(shopName.length === 0) getShopName();
+        else setStoreWithoutShopifySubDomain(shopName);
     }, []);
 
     return (
