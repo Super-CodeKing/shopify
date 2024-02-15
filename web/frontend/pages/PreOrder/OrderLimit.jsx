@@ -18,9 +18,14 @@ import {
 import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
+import { useDispatch, useSelector } from "react-redux";
+import { setPreOrderLimit } from "../../store/reducers/PreOrder";
 export default function OrderLimit() {
 
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+
+    const preOrderLimitRedux = useSelector((state) => state.preorder.preOrderLimit);
     const [loading, setLoading] = useState(false);
 
     const [toastActive, setToastActive] = useState(false);
@@ -68,23 +73,48 @@ export default function OrderLimit() {
         [handleTotalLimitChange, preOrderTotalLimit],
     );
 
+    const setOrderLimitData = (data) => {
+        if(data === "no-limit" ) {
+            setLimitSelected(["no-limit"]);
+            setPreOrderTotalLimit(0)
+        } else {
+            const settings = JSON.parse(data.limit);
+            if(settings.type[0] === 'daily-limit') {
+                setLimitSelected(["daily-limit"]);
+                setPreOrderDailyLimit(Number(settings.daily_limit))
+                setPreOrderTotalLimit(Number(settings.total_limit))
+            } else if(settings.type[0] === 'total-limit') {
+                setLimitSelected(["total-limit"]);
+                setPreOrderDailyLimit(Number(settings.daily_limit))
+                setPreOrderTotalLimit(Number(settings.total_limit))
+            }
+        }
+    }
+
+    const isDataChanged = useCallback(() => {
+        let flagLimitSelected = false;
+        let flagDailyLimit = false;
+        let flagTotalLimit = false;
+
+        if(Object.keys(preOrderLimitRedux).length !== 0)
+        {
+            const settings = JSON.parse(preOrderLimitRedux?.limit);
+            if(limitSelected[0] !== settings.type[0]) flagLimitSelected = true;
+            if(preOrderDailyLimit !== settings.daily_limit) flagDailyLimit = true;
+            if(preOrderTotalLimit !== settings.total_limit) flagTotalLimit = true;
+        }
+        if(flagLimitSelected || flagDailyLimit || flagTotalLimit) {
+            return true;
+        }
+        return false;
+    }, [limitSelected, preOrderDailyLimit, preOrderTotalLimit]);
+
     const getPreOrderLimitSettings = async () => {
         const response = await fetch("/api/preorder/limit");
         if (response.ok) {
             const preOrderLimitSettings = await response.json();
-            if(preOrderLimitSettings === "no-limit" ) {
-                setLimitSelected(["no-limit"]);
-            } else {
-                const settings = JSON.parse(preOrderLimitSettings.limit);
-                if(settings.type[0] === 'daily-limit') {
-                    setLimitSelected(["daily-limit"]);
-                    setPreOrderDailyLimit(Number(settings.daily_limit))
-                } else if(settings.type[0] === 'total-limit') {
-                    setLimitSelected(["total-limit"]);
-                    setPreOrderTotalLimit(Number(settings.total_limit))
-                }
-            }
-
+            dispatch(setPreOrderLimit(preOrderLimitSettings));
+            setOrderLimitData(preOrderLimitSettings);
             setLoading(false)
         } else {
             setLoading(false);
@@ -119,7 +149,11 @@ export default function OrderLimit() {
 
     useEffect(() => {
         setLoading(true)
-        getPreOrderLimitSettings()
+        if(Object.keys(preOrderLimitRedux).length === 0) getPreOrderLimitSettings();
+        else {
+            setOrderLimitData(preOrderLimitRedux);
+            setLoading(false);
+        };
     }, [])
     return (
         <div className="orderlimit [&>div>div]:pt-0">
@@ -186,6 +220,7 @@ export default function OrderLimit() {
                     <Button
                         variant="primary"
                         size="large"
+                        disabled={!isDataChanged()}
                         onClick={() => savePreOrderLimit()}
                     >
                         Save

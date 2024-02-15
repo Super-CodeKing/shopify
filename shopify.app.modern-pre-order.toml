@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://tribute-consider-loading-optimum.trycloudflare.com"
+application_url = "https://camel-gtk-anime-patents.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://tribute-consider-loading-optimum.trycloudflare.com/auth/callback",
-  "https://tribute-consider-loading-optimum.trycloudflare.com/auth/shopify/callback",
-  "https://tribute-consider-loading-optimum.trycloudflare.com/api/auth/callback"
+  "https://camel-gtk-anime-patents.trycloudflare.com/auth/callback",
+  "https://camel-gtk-anime-patents.trycloudflare.com/auth/shopify/callback",
+  "https://camel-gtk-anime-patents.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

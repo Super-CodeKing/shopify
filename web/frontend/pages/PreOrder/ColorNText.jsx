@@ -22,8 +22,16 @@ import { useAuthenticatedFetch } from "../../hooks";
 import "../../assets/preorder.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
+import { useDispatch, useSelector } from "react-redux";
+import { setButtonSettings } from "../../store/reducers/PreOrder";
+
 export default function ColorNText() {
+    
+    const dispatch = useDispatch()
     const fetch = useAuthenticatedFetch();
+    
+    const buttonSettingsRedux = useSelector((state) => state.preorder.buttonSettings);
+
     const [toastActive, setToastActive] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -252,17 +260,22 @@ export default function ColorNText() {
         />
     ) : null;
 
+    const setButtonSettingsData = (data) => {
+        if(data && data['settings'] == null) {
+            setIsInheritFromTheme(true);
+        } else if(data.settings) {
+            const settings = JSON.parse(data.settings);
+            setIsInheritFromTheme(data.inherit_from_theme)
+            setColorNTextSettings(settings);
+        }
+    }
+
     const getPreOrderButtonSettings = async () => {
         const response = await fetch("/api/preorder/colorntext");
         if (response.ok) {
             const preOrderButtonSettings = await response.json();
-            if(preOrderButtonSettings && preOrderButtonSettings['settings'] == null) {
-                setIsInheritFromTheme(true);
-            } else if(preOrderButtonSettings.settings) {
-                const settings = JSON.parse(preOrderButtonSettings.settings);
-                setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme)
-                setColorNTextSettings(settings);
-            }
+            dispatch(setButtonSettings(preOrderButtonSettings));
+            setButtonSettingsData(preOrderButtonSettings);
             setLoading(false)
         } else {
             setLoading(false);
@@ -295,7 +308,11 @@ export default function ColorNText() {
 
     useEffect(() => {
         setLoading(true);
-        getPreOrderButtonSettings();
+        if(Object.keys(buttonSettingsRedux).length === 0) getPreOrderButtonSettings();
+        else {
+            setButtonSettingsData(buttonSettingsRedux);
+            setLoading(false);
+        }
     }, []);
 
     return (

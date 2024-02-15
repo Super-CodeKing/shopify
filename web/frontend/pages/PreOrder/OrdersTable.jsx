@@ -13,9 +13,17 @@ import {
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setOrderList } from "../../store/reducers/PreOrder";
 
 export default function OrdersTable() {
+    
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+
+    const shopName = useSelector((state) => state.preorder.shopName);
+    const orderListRedux = useSelector((state) => state.preorder.orderList);
+
     const [preOrderOrders, setPreOrderOrders] = useState([]);
     const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
@@ -27,15 +35,7 @@ export default function OrdersTable() {
         plural: "orders",
     };
 
-    function getShopName() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('shop');
-        if(name) return name.split('.')[0];
-        else null;
-    }
-
     const getOrderLink = (id) => {
-        let shopName = getShopName();
         if(shopName)
         return `https://admin.shopify.com/store/${shopName}/orders/${id}`
         else
@@ -101,6 +101,7 @@ export default function OrdersTable() {
         if (response.ok) {
             const orders = await response.json();
             setPreOrderOrders(orders.orders);
+            dispatch(setOrderList(orders.orders));
             setIsLoadingOrders(false);
         } else {
             console.log("Error in Activaing Pre Order: ", response);
@@ -113,8 +114,11 @@ export default function OrdersTable() {
 
     useEffect(() => {
         setIsLoadingOrders(true);
-        getPreOrderOrders();
-        getShopName();
+        if(orderListRedux.length === 0) getPreOrderOrders();
+        else {
+            setPreOrderOrders(orderListRedux);
+            setIsLoadingOrders(false);
+        }
     }, []);
 
     return (
