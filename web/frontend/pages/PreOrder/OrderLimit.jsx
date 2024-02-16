@@ -30,7 +30,9 @@ export default function OrderLimit() {
 
     const [toastActive, setToastActive] = useState(false);
     const [limitSelected, setLimitSelected] = useState(['daily-limit']);
-    const handleChoiceListChange = useCallback((value) => setLimitSelected(value),[]);
+    const handleChoiceListChange = useCallback((value) => {
+        setLimitSelected(value);
+    },[]);
     const [preOrderDailyLimit, setPreOrderDailyLimit] = useState(0);
     const [preOrderTotalLimit, setPreOrderTotalLimit] = useState(0);
     const handleDailyLimitChange = useCallback((value) => setPreOrderDailyLimit(value),[]);
@@ -74,20 +76,20 @@ export default function OrderLimit() {
     );
 
     const setOrderLimitData = (data) => {
-        if(data === "no-limit" ) {
+        if(data.type[0] === "no-limit" ) {
             setLimitSelected(["no-limit"]);
+            setPreOrderTotalLimit(0);
+            setPreOrderDailyLimit(0);
+        }
+        else if(data.type[0] === 'daily-limit') {
+            setLimitSelected(["daily-limit"]);
+            setPreOrderDailyLimit(Number(data.daily_limit))
             setPreOrderTotalLimit(0)
-        } else {
-            const settings = JSON.parse(data.limit);
-            if(settings.type[0] === 'daily-limit') {
-                setLimitSelected(["daily-limit"]);
-                setPreOrderDailyLimit(Number(settings.daily_limit))
-                setPreOrderTotalLimit(Number(settings.total_limit))
-            } else if(settings.type[0] === 'total-limit') {
-                setLimitSelected(["total-limit"]);
-                setPreOrderDailyLimit(Number(settings.daily_limit))
-                setPreOrderTotalLimit(Number(settings.total_limit))
-            }
+        }
+        else if(data.type[0] === 'total-limit') {
+            setLimitSelected(["total-limit"]);
+            setPreOrderDailyLimit(0);
+            setPreOrderTotalLimit(Number(data.total_limit))
         }
     }
 
@@ -98,23 +100,27 @@ export default function OrderLimit() {
 
         if(Object.keys(preOrderLimitRedux).length !== 0)
         {
-            const settings = JSON.parse(preOrderLimitRedux?.limit);
-            if(limitSelected[0] !== settings.type[0]) flagLimitSelected = true;
-            if(preOrderDailyLimit !== settings.daily_limit) flagDailyLimit = true;
-            if(preOrderTotalLimit !== settings.total_limit) flagTotalLimit = true;
+            if(limitSelected[0] != preOrderLimitRedux.type[0]) flagLimitSelected = true;
+            if(preOrderDailyLimit != preOrderLimitRedux.daily_limit) flagDailyLimit = true;
+            if(preOrderTotalLimit != preOrderLimitRedux.total_limit) flagTotalLimit = true;
         }
         if(flagLimitSelected || flagDailyLimit || flagTotalLimit) {
             return true;
         }
         return false;
-    }, [limitSelected, preOrderDailyLimit, preOrderTotalLimit]);
+    }, [limitSelected, preOrderDailyLimit, preOrderTotalLimit, preOrderLimitRedux]);
 
     const getPreOrderLimitSettings = async () => {
         const response = await fetch("/api/preorder/limit");
         if (response.ok) {
             const preOrderLimitSettings = await response.json();
-            dispatch(setPreOrderLimit(preOrderLimitSettings));
-            setOrderLimitData(preOrderLimitSettings);
+            const settings = JSON.parse(preOrderLimitSettings?.limit);
+            dispatch(setPreOrderLimit({
+                'type': settings.type,
+                'daily_limit': settings.daily_limit,
+                'total_limit': settings.total_limit
+            }));
+            setOrderLimitData(settings);
             setLoading(false)
         } else {
             setLoading(false);
@@ -124,12 +130,34 @@ export default function OrderLimit() {
     }
 
     const savePreOrderLimit = async () => {
+        setLoading(true);
+
         const formData = new FormData();
-        const limit = JSON.stringify({
-            'type': limitSelected,
-            'daily_limit': preOrderDailyLimit,
-            'total_limit': preOrderTotalLimit
-        })
+        let limit = {};
+
+        if(limitSelected[0] === 'no-limit') {
+            limit = JSON.stringify({
+                'type': ['no-limit'],
+                'daily_limit': 0,
+                'total_limit': 0
+            });
+        }
+
+        else if(limitSelected[0] === 'daily-limit') {
+            limit = JSON.stringify({
+                'type': ['daily-limit'],
+                'daily_limit': preOrderDailyLimit,
+                'total_limit': 0
+            });
+        }
+
+        else if(limitSelected[0] === 'total-limit') {
+            limit = JSON.stringify({
+                'type': ['total-limit'],
+                'daily_limit': 0,
+                'total_limit': preOrderTotalLimit
+            });
+        }
         formData.append("limit", limit);
 
         const response = await fetch("/api/preorder/limit", {
@@ -138,12 +166,14 @@ export default function OrderLimit() {
         });
 
         if (!response.ok) {
+            setLoading(false);
             throw new Error(`HTTP error ${response.status}`);
         }
 
         if (response.ok) {
             toggleToastActive(true);
             getPreOrderLimitSettings();
+            setLoading(false);
         }
     }
 
@@ -151,10 +181,13 @@ export default function OrderLimit() {
         setLoading(true)
         if(Object.keys(preOrderLimitRedux).length === 0) getPreOrderLimitSettings();
         else {
+            console.log("Inside useEffect: ");
+            console.log(preOrderLimitRedux);
             setOrderLimitData(preOrderLimitRedux);
             setLoading(false);
         };
-    }, [])
+    }, []);
+
     return (
         <div className="orderlimit [&>div>div]:pt-0">
             {loading === true && <SkeletonOrderLimit title="Order Limit Settings" />}
