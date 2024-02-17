@@ -79,15 +79,22 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $inherit_from_theme = $request->inherit_from_theme;
         $settings = $request->settings;
 
         $preOrderColorsSettings = PreOrderColorsNText::where(['shop' => $shop])->first();
 
+        $inheritTheme = 0;
+        if($request->inherit_from_theme == false || $request->inherit_from_theme == 'false') {
+            $inheritTheme = 0;
+        }
+        else if($request->inherit_from_theme == true || $request->inherit_from_theme == 'true') {
+            $inheritTheme = 1;
+        }
+
         if (!$preOrderColorsSettings) {
             $createdPreOrderSetup = PreOrderColorsNText::create([
                 'shop' => $shop,
-                'inherit_from_theme' => $inherit_from_theme ? true : false,
+                'inherit_from_theme' => $inheritTheme,
                 'settings' => json_encode($settings)
             ]);
             return response()->json([
@@ -96,7 +103,7 @@ class PreOrderSetupController extends Controller
             ], 201);
         } else {
             $updatedPreOrderColorsSettings = PreOrderColorsNText::where('shop', $shop)->update([
-                'inherit_from_theme' => $inherit_from_theme ? true : false,
+                'inherit_from_theme' => $inheritTheme,
                 'settings' => json_encode($settings)
             ]);
             return response()->json([

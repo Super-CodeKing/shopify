@@ -22,19 +22,23 @@ import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import '../../assets/preorder.css'
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
+import { useDispatch, useSelector } from "react-redux";
+import { setBadgeDesign } from "../../store/reducers/PreOrder";
 
 export default function BadgeDesign() {
     const emptyToastProps = { content: null };
     const fetch = useAuthenticatedFetch();
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
+    const displayBadgeRedux = useSelector((state) => state.preorder.badgeDesign);
+
+    const [loading, setLoading] = useState(false);
     const [toastProps, setToastProps] = useState(emptyToastProps);
     const [ribbonBadgePosition, setRibbonBadgePosition] = useState("top-right");
     const [ribbonBadgeText, setRibbonBadgeText] = useState("Pre Order");
     
     const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
     const [badgeTextColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
-    const [badgeCornerColorPickerActive, setBadgeCornerColorPickerActive] = useState(false);
 
     const [backgroundColor, setBackgroundColor] = useState({
         hue: 120,
@@ -99,6 +103,7 @@ export default function BadgeDesign() {
     );
 
     const savePreOrderBadgeDesign = async () => {
+        setLoading(true)
         const formData = new FormData();
 
         formData.append("text", ribbonBadgeText);
@@ -117,6 +122,7 @@ export default function BadgeDesign() {
                 content: "Something went wrong!",
                 error: true,
             });
+            setLoading(false)
             throw new Error(`HTTP error ${response.status}`);
         }
 
@@ -124,32 +130,61 @@ export default function BadgeDesign() {
             setToastProps({
                 content: "Pre Order Badge Design Saved Successfully!"
             });
+            getPreOrderBadgeDesign();
+            setLoading(false)
         }
     }
 
+    const setPreOrderBadgeDesign = (preOrderBadgeDesign) => {
+        if(Object.keys(preOrderBadgeDesign).length !== 0) {
+            setRibbonBadgeText(preOrderBadgeDesign.text);
+            setRibbonBadgePosition(preOrderBadgeDesign.position);
+            setBackgroundHexColor(preOrderBadgeDesign.bg_color);
+            setBadgeTextHexColor(preOrderBadgeDesign.text_color);
+            setBadgeFontSizeValue(preOrderBadgeDesign.font_size);
+        }
+    }
+
+    const isDataChanged = useCallback(() => {
+        let flagRibbonBadgeText       = false;
+        let flagRibbonBadgePosition   = false;
+        let flagBackgroundHexColor    = false;
+        let flagBadgeTextHexColor     = false;
+        let flagBadgeFontSizeValue    = false;
+
+        if(displayBadgeRedux.text !== ribbonBadgeText) flagRibbonBadgeText = true;
+        if(displayBadgeRedux.position !== ribbonBadgePosition) flagRibbonBadgePosition = true;
+        if(displayBadgeRedux.bg_color !== backgroundHexColor) flagBackgroundHexColor = true;
+        if(displayBadgeRedux.text_color !== badgeTextHexColor) flagBadgeTextHexColor = true;
+        if(displayBadgeRedux.font_size !== badgeFontSizeValue) flagBadgeFontSizeValue = true;
+        
+        if(flagRibbonBadgeText || flagRibbonBadgePosition || flagBackgroundHexColor || flagBadgeTextHexColor || flagBadgeFontSizeValue) {
+            return true;
+        }
+        return false;
+    }, [ribbonBadgeText, ribbonBadgePosition, backgroundHexColor, badgeTextHexColor, badgeFontSizeValue, displayBadgeRedux]);
+
     const getPreOrderBadgeDesign = async () => {
         const response = await fetch("/api/preorder/badge-design");
-
         if (response.ok) {
             const preOrderBadgeDesign = await response.json();
-            console.log("Badge Design: ", preOrderBadgeDesign);
-            if(Object.keys(preOrderBadgeDesign).length !== 0) {
-                setRibbonBadgeText(preOrderBadgeDesign.text);
-                setRibbonBadgePosition(preOrderBadgeDesign.position);
-                setBackgroundHexColor(preOrderBadgeDesign.bg_color);
-                setBadgeTextHexColor(preOrderBadgeDesign.text_color);
-                setBadgeFontSizeValue(preOrderBadgeDesign.font_size);
-            }
-            setLoading(false)
+            setPreOrderBadgeDesign(preOrderBadgeDesign);
+            dispatch(setBadgeDesign(preOrderBadgeDesign));
+            setLoading(false);
         } else {
-            setLoading(false)
+            setLoading(false);
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
     useEffect(() => {
         setLoading(true);
-        getPreOrderBadgeDesign();
+        if(Object.keys(displayBadgeRedux).length === 0) getPreOrderBadgeDesign();
+        else {
+            console.log(displayBadgeRedux);
+            setPreOrderBadgeDesign(displayBadgeRedux);
+            setLoading(false);
+        };
     }, []);
 
     return (
@@ -432,6 +467,7 @@ export default function BadgeDesign() {
                         <Button
                             variant="primary"
                             size="large"
+                            disabled={!isDataChanged()}
                             onClick={() => savePreOrderBadgeDesign()}
                         >
                             Save

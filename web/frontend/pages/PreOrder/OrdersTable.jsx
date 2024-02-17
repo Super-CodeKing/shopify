@@ -110,8 +110,6 @@ export default function OrdersTable() {
         }
     };
 
-    
-
     useEffect(() => {
         setIsLoadingOrders(true);
         if(orderListRedux.length === 0) getPreOrderOrders();

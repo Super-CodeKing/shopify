@@ -12,16 +12,21 @@ import {
     Box,
     List
 } from "@shopify/polaris";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import Toaster from "../../components/Toaster";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
+import { useDispatch, useSelector } from "react-redux";
+import { setPreOrderSchedule } from "../../store/reducers/PreOrder";
 
 export default function Schedule() {
-    const fetch = useAuthenticatedFetch();
-    const [loading, setLoading] = useState(false);
+    
     const today = new Date();
+    const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+    const scheduleRedux = useSelector((state) => state.preorder.schedule);
 
+    const [loading, setLoading] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastContent, setToastContent] = useState('');
     const [isErrorToast, setIsErrorToast] = useState(false);
@@ -37,11 +42,42 @@ export default function Schedule() {
     }
 
     const changeEndDate = (e) => {
-        setEndDate(new Date(e));
+        setEndDate(dateFormatter(e));
     }
 
     const changeRestockDate = (e) => {
-        setRestockDate(new Date(e));
+        setRestockDate(dateFormatter(e));
+    }
+
+    const setScheduleData = (scheduleData) => {
+        if(!scheduleData.start_date) {
+            setStartDate(startDate);
+        } else {
+            setStartDate(dateFormatter(scheduleData.start_date));
+        }
+
+        if(!scheduleData.end_date) {
+            setEndDate(endDate);
+        } else {
+            setEndDate(dateFormatter(scheduleData.end_date));
+        }
+
+        if(!scheduleData.estimated_restock_date) {
+            setRestockDate(restockDate);
+        } else {
+            setRestockDate(dateFormatter(scheduleData.estimated_restock_date));
+        }
+
+        setNoEndDate(scheduleData.no_end_date);
+        setNoRestockDate(scheduleData.no_restock_date);
+
+        if(scheduleData.no_end_date) {
+            setEndDate(null);
+        }
+
+        if(scheduleData.no_restock_date) {
+            setRestockDate(null);
+        }
     }
 
     const getPreOrderSchedule = async () => {
@@ -49,32 +85,14 @@ export default function Schedule() {
 
         if (response.ok) {
             const preOrderSchedule = await response.json();
-            console.log("Schedule Date: ", preOrderSchedule);
-            
-            if(!preOrderSchedule.start_date) {
-                setStartDate(startDate);
-            } else {
-                setStartDate(new Date(preOrderSchedule.start_date));
-            }
-
-            if(!preOrderSchedule.end_date) {
-                setEndDate(endDate);
-            } else {
-                setEndDate(new Date(preOrderSchedule.end_date));
-            }
-
-            if(!preOrderSchedule.restock_date) {
-                setRestockDate(restockDate);
-            } else {
-                setRestockDate(new Date(preOrderSchedule.estimated_restock_date));
-            }
-
-            setNoEndDate(preOrderSchedule.no_end_date);
-            setNoRestockDate(preOrderSchedule.no_restock_date);
-            setLoading(false)
+            console.log("Getting Schedule Data: ");
+            console.log(preOrderSchedule);
+            setScheduleData(preOrderSchedule);
+            dispatch(setPreOrderSchedule(preOrderSchedule));
+            setLoading(false);
 
         } else {
-            setLoading(false)
+            setLoading(false);
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
@@ -84,17 +102,17 @@ export default function Schedule() {
         console.log("Saving Scheduled Data");
         const formData = new FormData();
         
-        let endDateString = endDate.toISOString();
+        let endDateString = dateFormatter(endDate);
         if (noEndDate) {
             endDateString = null;
         }
 
-        let restockDateString = restockDate.toISOString();
+        let restockDateString = dateFormatter(restockDate);
         if(noRestockDate) {
             restockDateString = null;
         }
 
-        formData.append("start_date", startDate.toISOString());
+        formData.append("start_date", dateFormatter(startDate));
         formData.append("end_date", endDateString);
         formData.append("no_end_date", noEndDate == true ? 1 : 0);
         formData.append("restock_date", restockDateString);
@@ -120,15 +138,46 @@ export default function Schedule() {
         }
     }
 
+    const dateFormatter = (date) => {
+        let dateString = new Date(date);
+        const year = dateString.getFullYear();
+        const month = (dateString.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateString.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+
+    const isDataChanged = useCallback(() => {
+        let flagStartDate       = false;
+        let flagEndDate         = false;
+        let flagRestockDate     = false;
+        let flagNoEndDate       = false;
+        let flagNoRestockDate   = false;
+
+        if(dateFormatter(scheduleRedux.start_date) !== dateFormatter(startDate)) flagStartDate = true;
+        if(dateFormatter(scheduleRedux.end_date) !== dateFormatter(endDate)) flagEndDate = true;
+        if(dateFormatter(scheduleRedux.estimated_restock_date) !== dateFormatter(restockDate)) flagRestockDate = true;
+        if(scheduleRedux.no_end_date !== noEndDate) flagNoEndDate = true;
+        if(scheduleRedux.no_restock_date !== noRestockDate) flagNoRestockDate = true;
+        
+        if(flagStartDate || flagEndDate || flagRestockDate || flagNoEndDate || flagNoRestockDate) {
+            return true;
+        }
+        return false;
+    }, [startDate, endDate, restockDate, noEndDate, noRestockDate, scheduleRedux]);
+
     useEffect(() => {
         setLoading(true);
-        getPreOrderSchedule();
+        if(Object.keys(scheduleRedux).length === 0) getPreOrderSchedule();
+        else {
+            setScheduleData(scheduleRedux);
+            setLoading(false);
+        }
     }, []);
 
     return (
         <div className="schedule [&>div>div]:pt-0">
             {loading === true && <SkeletonOrderLimit title="Schedule for Pre Order" />}
-    
             {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
@@ -149,7 +198,7 @@ export default function Schedule() {
                                             <TextField
                                                 label="Start Date"
                                                 type="date"
-                                                value={startDate.toISOString().slice(0, 10)}
+                                                value={startDate}
                                                 onChange={(e) => changeStartDate(e)}
                                             />
                                         </div>
@@ -157,7 +206,7 @@ export default function Schedule() {
                                             <TextField
                                                 label="End Date"
                                                 type="date"
-                                                value={endDate.toISOString().slice(0, 10)}
+                                                value={endDate}
                                                 onChange={(e) => changeEndDate(e)}
                                                 disabled={noEndDate}
                                             />
@@ -173,7 +222,7 @@ export default function Schedule() {
                                             <TextField
                                                 label="Estimated Restock Date"
                                                 type="date"
-                                                value={restockDate.toISOString().slice(0, 10)}
+                                                value={restockDate}
                                                 onChange={(e) => changeRestockDate(e)}
                                                 disabled={noRestockDate}
                                             />
@@ -213,6 +262,7 @@ export default function Schedule() {
                     <Button
                         variant="primary"
                         size="large"
+                        disabled={!isDataChanged()}
                         onClick={() => savePreOrderSchedule()}
                     >
                         Save

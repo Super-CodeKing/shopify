@@ -10,13 +10,18 @@ import {
     Select,
 } from "@shopify/polaris";
 import { Toast } from "@shopify/app-bridge-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
+import { useDispatch, useSelector } from "react-redux";
+import { setDisplayMessage } from "../../store/reducers/PreOrder";
 
 export default function DisplayMessage() {
-    const emptyToastProps = { content: null };
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+    const displayMessageRedux = useSelector((state) => state.preorder.displayMessage);
+
+    const emptyToastProps = { content: null };
     const [loading, setLoading] = useState(false);
     
     const displayMessageExample = [
@@ -38,7 +43,7 @@ export default function DisplayMessage() {
 
     const [toastProps, setToastProps] = useState(emptyToastProps);
     const [selectedMessageIndex, setSelectedMessageIndex] = useState(0);
-    const [displayMessage, setDisplayMessage] = useState("");
+    const [message, setMessage] = useState("");
     const [selectPosition, setSelectPosition] = useState("before-preorder-button");
     const [selectAlignment, setSelectAlignment] = useState("left");
 
@@ -48,11 +53,11 @@ export default function DisplayMessage() {
 
     const handleChangeDisplayMessageExample = (index) => {
         setSelectedMessageIndex(index);
-        setDisplayMessage(displayMessageExample[index]);
+        setMessage(displayMessageExample[index]);
     };
 
     const changeDisplayMessage = (message) => {
-        setDisplayMessage(message);
+        setMessage(message);
     };
 
     const changeMessagePosition = (position) => {
@@ -64,8 +69,9 @@ export default function DisplayMessage() {
     };
 
     const savePreOrderDisplayMessage = async () => {
+        setLoading(true);
         const formData = new FormData();
-        formData.append("message", displayMessage);
+        formData.append("message", message);
         formData.append("position", selectPosition);
         formData.append("alignment", selectAlignment);
 
@@ -79,6 +85,7 @@ export default function DisplayMessage() {
                 content: "Something went wrong!",
                 error: true,
             });
+            setLoading(false);
             throw new Error(`HTTP error ${response.status}`);
         }
 
@@ -86,24 +93,29 @@ export default function DisplayMessage() {
             setToastProps({
                 content: "Pre Order Display Message Saved Successfully!"
             });
+            getPreOrderDisplayMessage();
+            setLoading(false);
+        }
+    }
+
+    const setPreOrderDisplayMessage = (preOrderDisplayMessage) => {
+        if(Object.keys(preOrderDisplayMessage).length !== 0) {
+            setMessage(preOrderDisplayMessage.message);
+            setSelectPosition(preOrderDisplayMessage.position);
+            setSelectAlignment(preOrderDisplayMessage.alignment);
+        } else {
+            setMessage(displayMessageExample[0]);
+            setSelectPosition(positionOptions[0].value);
+            setSelectAlignment(alignmentOptions[0].value);
         }
     }
 
     const getPreOrderDisplayMessage = async () => {
         const response = await fetch("/api/preorder/display-message");
-
         if (response.ok) {
             const preOrderDisplayMessage = await response.json();
-            console.log("Display Message: ", preOrderDisplayMessage);
-            if(Object.keys(preOrderDisplayMessage).length !== 0) {
-                setDisplayMessage(preOrderDisplayMessage.message);
-                setSelectPosition(preOrderDisplayMessage.position);
-                setSelectAlignment(preOrderDisplayMessage.alignment);
-            } else {
-                setDisplayMessage(displayMessageExample[0]);
-                setSelectPosition(positionOptions[0].value);
-                setSelectAlignment(alignmentOptions[0].value);
-            }
+            dispatch(setDisplayMessage(preOrderDisplayMessage));
+            setPreOrderDisplayMessage(preOrderDisplayMessage);
             setLoading(false)
         } else {
             setLoading(false);
@@ -111,9 +123,37 @@ export default function DisplayMessage() {
         }
     };
 
+    const isDataChanged = useCallback(() => {
+        let flagDisplayMessage = false;
+        let flagMessagePosition = false;
+        let flagMessageAllignment = false;
+
+        if(message !== displayMessageRedux.message){
+            flagDisplayMessage = true;
+        }
+
+        if(selectPosition !== displayMessageRedux.position) {
+            flagMessagePosition = true;
+        }
+
+        if(selectAlignment !== displayMessageRedux.alignment) {
+            flagMessageAllignment = true;
+        }
+
+        if(flagDisplayMessage || flagMessagePosition || flagMessageAllignment) {
+            return true;
+        }
+        return false;
+    }, [message, selectPosition, selectAlignment, displayMessageRedux]);
+
     useEffect(() => {
         setLoading(true);
-        getPreOrderDisplayMessage();
+        if(Object.keys(displayMessageRedux).length === 0) getPreOrderDisplayMessage();
+        else {
+            setPreOrderDisplayMessage(displayMessageRedux);
+            console.log(displayMessageRedux);
+            setLoading(false);
+        };
     }, []);
 
     return (
@@ -169,7 +209,7 @@ export default function DisplayMessage() {
 
                                     <TextField
                                         label="Edit selected template"
-                                        value={displayMessage}
+                                        value={message}
                                         onChange={(e) => changeDisplayMessage(e)}
                                         multiline={4}
                                         autoComplete="off"
@@ -232,7 +272,7 @@ export default function DisplayMessage() {
                                                                 : "left",
                                                     }}
                                                 >
-                                                    {displayMessage}
+                                                    {message}
                                                 </p>
                                             )}
                                             <button
@@ -254,7 +294,7 @@ export default function DisplayMessage() {
                                                                 : "left",
                                                     }}
                                                 >
-                                                    {displayMessage}
+                                                    {message}
                                                 </p>
                                             )}
                                         </div>
@@ -268,6 +308,7 @@ export default function DisplayMessage() {
                         <Button
                             variant="primary"
                             size="large"
+                            disabled={!isDataChanged()}
                             onClick={() => savePreOrderDisplayMessage()}
                         >
                             Save

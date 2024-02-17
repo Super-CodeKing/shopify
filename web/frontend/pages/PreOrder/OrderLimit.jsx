@@ -181,8 +181,6 @@ export default function OrderLimit() {
         setLoading(true)
         if(Object.keys(preOrderLimitRedux).length === 0) getPreOrderLimitSettings();
         else {
-            console.log("Inside useEffect: ");
-            console.log(preOrderLimitRedux);
             setOrderLimitData(preOrderLimitRedux);
             setLoading(false);
         };

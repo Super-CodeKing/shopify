@@ -6,7 +6,11 @@ const initialState = {
     productList: [],
     orderList: [],
     buttonSettings: {},
-    preOrderLimit: {}
+    inheritFromTheme: null,
+    preOrderLimit: {},
+    schedule: {},
+    displayMessage: {},
+    badgeDesign: {}
 }
 
 export const preOrderSettingSlice = createSlice({
@@ -30,6 +34,18 @@ export const preOrderSettingSlice = createSlice({
         },
         setPreOrderLimit: (state, action) => {
             state.preOrderLimit = action.payload
+        },
+        setPreOrderSchedule: (state, action) => {
+            state.schedule = action.payload
+        },
+        setDisplayMessage: (state, action) => {
+            state.displayMessage = action.payload
+        },
+        setBadgeDesign: (state, action) => {
+            state.badgeDesign = action.payload
+        },
+        setInheritFromTheme: (state, action) => {
+            state.inheritFromTheme = action.payload;
         }
     },
 });
@@ -40,6 +56,10 @@ export const {
     setProductList, 
     setOrderList,
     setButtonSettings,
-    setPreOrderLimit
+    setPreOrderLimit,
+    setPreOrderSchedule,
+    setDisplayMessage,
+    setBadgeDesign,
+    setInheritFromTheme
 } = preOrderSettingSlice.actions;
 export default preOrderSettingSlice.reducer;

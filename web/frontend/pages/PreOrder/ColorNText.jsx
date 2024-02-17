@@ -23,7 +23,7 @@ import "../../assets/preorder.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { setButtonSettings } from "../../store/reducers/PreOrder";
+import { setButtonSettings, setInheritFromTheme } from "../../store/reducers/PreOrder";
 
 export default function ColorNText() {
     
@@ -31,6 +31,7 @@ export default function ColorNText() {
     const fetch = useAuthenticatedFetch();
     
     const buttonSettingsRedux = useSelector((state) => state.preorder.buttonSettings);
+    const inheritFromThemeRedux = useSelector((state) => state.preorder.inheritFromTheme);
 
     const [toastActive, setToastActive] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -253,6 +254,110 @@ export default function ColorNText() {
         setButtonFontSizeValue(settings.button_font_size);
     }
 
+    const isDataChanged = useCallback(() => {
+        let flagInheritFromTheme = false;
+        let flagPreOrderButtonText = false;
+        let flagBackgroundHexColor = false;
+        let flagBackgroundHoverHexColor = false;
+        let flagTextHexColor = false;
+        let flagTextHoverHexColor = false;
+        let flagBorderHexColor = false;
+        let flagBorderHoverHexColor = false;
+        let flagBorderWidth = false;
+        let flagButtonHeight = false;
+        let flagButtonWidth = false;
+        let flagButtonRadiusValue = false;
+        let flagButtonFontSizeValue = false;
+
+        if(inheritFromThemeRedux !== isInheritFromTheme) {
+            flagInheritFromTheme = true;
+        }
+
+        if (buttonSettingsRedux.button_text !== preOrderButtonText) {
+            flagPreOrderButtonText = true;
+        }
+        
+        if (buttonSettingsRedux.button_bg_color !== backgroundHexColor) {
+            flagBackgroundHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_bg_hover_color !== backgroundHoverHexColor) {
+            flagBackgroundHoverHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_border_hex_color !== borderHexColor) {
+            flagBorderHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_border_hover_hex_color !== borderHoverHexColor) {
+            flagBorderHoverHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_border_radius != buttonRadiusValue) {
+            flagButtonRadiusValue = true;
+        }
+        
+        if (buttonSettingsRedux.button_border_width != borderWidth) {
+            flagBorderWidth = true;
+        }
+        
+        if (buttonSettingsRedux.button_font_size != buttonFontSizeValue) {
+            flagButtonFontSizeValue = true;
+        }
+        
+        if (buttonSettingsRedux.button_height != buttonHeight) {
+            flagButtonHeight = true;
+        }
+        
+        if (buttonSettingsRedux.button_text_color !== textHexColor) {
+            flagTextHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_text_hover_color !== textHoverHexColor) {
+            flagTextHoverHexColor = true;
+        }
+        
+        if (buttonSettingsRedux.button_width != buttonWidth) {
+            flagButtonWidth = true;
+        }
+
+        if (
+            flagPreOrderButtonText || 
+            flagBackgroundHexColor || 
+            flagBackgroundHoverHexColor || 
+            flagTextHexColor || 
+            flagTextHoverHexColor || 
+            flagBorderHexColor || 
+            flagBorderHoverHexColor || 
+            flagBorderWidth || 
+            flagButtonHeight || 
+            flagButtonWidth || 
+            flagButtonRadiusValue || 
+            flagButtonFontSizeValue ||
+            flagInheritFromTheme
+        )  {
+            return true;
+        }
+        return false;
+    }, [
+        preOrderButtonText, 
+        backgroundHexColor, 
+        backgroundHoverHexColor, 
+        textHexColor, 
+        textHoverHexColor, 
+        borderHexColor, 
+        borderHoverHexColor,
+        borderWidth,
+        buttonHeight,
+        buttonWidth,
+        buttonRadiusValue,
+        buttonFontSizeValue,
+        buttonSettingsRedux,
+        isInheritFromTheme,
+        inheritFromThemeRedux
+    ]);
+
+
     const toastMarkup = toastActive ? (
         <Toast
             content="Button Text and Color Settings Saved Successfully!"
@@ -260,23 +365,18 @@ export default function ColorNText() {
         />
     ) : null;
 
-    const setButtonSettingsData = (data) => {
-        if(data && data['settings'] == null) {
-            setIsInheritFromTheme(true);
-        } else if(data.settings) {
-            const settings = JSON.parse(data.settings);
-            setIsInheritFromTheme(data.inherit_from_theme)
-            setColorNTextSettings(settings);
-        }
-    }
-
     const getPreOrderButtonSettings = async () => {
         const response = await fetch("/api/preorder/colorntext");
         if (response.ok) {
             const preOrderButtonSettings = await response.json();
-            dispatch(setButtonSettings(preOrderButtonSettings));
-            setButtonSettingsData(preOrderButtonSettings);
-            setLoading(false)
+            
+            dispatch(setButtonSettings(JSON.parse(preOrderButtonSettings.settings)));
+            dispatch(setInheritFromTheme(preOrderButtonSettings.inherit_from_theme));
+            
+            setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme);
+            setColorNTextSettings(JSON.parse(preOrderButtonSettings.settings));
+            
+            setLoading(false);
         } else {
             setLoading(false);
             console.log("Error in Activaing Pre Order: ", response);
@@ -285,10 +385,10 @@ export default function ColorNText() {
     }
 
     const savePreOrderButtonNTextColor = async () => {
+        setLoading(true);
         let colorNTextSettings = makeColorNTextSettings();
-
-        console.log("Settings: ", colorNTextSettings);
         const formData = new FormData();
+        
         formData.append("inherit_from_theme", isInheritFromTheme);
         formData.append("settings", colorNTextSettings);
 
@@ -298,11 +398,14 @@ export default function ColorNText() {
         });
 
         if (!response.ok) {
+            setLoading(false);
             throw new Error(`HTTP error ${response.status}`);
         }
 
         if (response.ok) {
             toggleToastActive(true);
+            getPreOrderButtonSettings();
+            setLoading(false);
         }
     };
 
@@ -310,7 +413,8 @@ export default function ColorNText() {
         setLoading(true);
         if(Object.keys(buttonSettingsRedux).length === 0) getPreOrderButtonSettings();
         else {
-            setButtonSettingsData(buttonSettingsRedux);
+            setColorNTextSettings(buttonSettingsRedux);
+            setIsInheritFromTheme(inheritFromThemeRedux);
             setLoading(false);
         }
     }, []);
@@ -659,6 +763,7 @@ export default function ColorNText() {
                         <Button
                             variant="primary"
                             size="large"
+                            disabled={!isDataChanged()}
                             onClick={() => savePreOrderButtonNTextColor()}
                         >
                             Save

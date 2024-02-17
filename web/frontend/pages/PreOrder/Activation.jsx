@@ -17,11 +17,11 @@ import SkeletonActivation from "./Skeleton/Activation";
 import { useDispatch, useSelector } from "react-redux";
 import { setShopName, setActivation } from "../../store/reducers/PreOrder";
 
-export default function Activation() {
+export default function Activation() 
+{
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
-    
-    const activation = useSelector((state) => state.preorder.activation)
+    const activation = useSelector((state) => state.preorder.activation);
     
     const [loading, setLoading] = useState(false);
     const [isPreOrderActive, setIsPreOrderActive] = useState(true);
@@ -171,7 +171,7 @@ export default function Activation() {
             return true;
         }
         return false;
-    }, [isPreOrderActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow]);
+    }, [isPreOrderActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow, activation]);
 
     useEffect( () => {
         setLoading(true);
