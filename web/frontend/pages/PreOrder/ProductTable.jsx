@@ -20,7 +20,7 @@ import {
     Popover,
     DatePicker,
 } from "@shopify/polaris";
-import { EditMajor, DeleteMajor } from "@shopify/polaris-icons";
+import { EditIcon, DeleteIcon } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import { useCallback, useEffect, useState } from "react";
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
@@ -441,14 +441,14 @@ export default function ProductTable() {
                                 })
                             }
                         >
-                            <Icon source={EditMajor} tone="base" />
+                            <Icon source={EditIcon} tone="base" />
                         </Button>
                         <Button
                             onClick={() =>
                                 deleteProductFromPreOrderList(id, product_id)
                             }
                         >
-                            <Icon source={DeleteMajor} tone="base" />
+                            <Icon source={DeleteIcon} tone="base" />
                         </Button>
                     </div>
                 </IndexTable.Cell>

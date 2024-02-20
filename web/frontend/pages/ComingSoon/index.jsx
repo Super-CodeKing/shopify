@@ -1,25 +1,97 @@
-import { TitleBar } from "@shopify/app-bridge-react";
+import { TitleBar, useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import { Page, Icon, Text } from "@shopify/polaris"
-import { useState } from "react";
-import {
-    ChatMajor,
-    StatusActiveMajor,
-    ProductsMajor,
-    OrdersFilledMinor,
-    CalendarTimeMinor,
-    DiscountsMajor,
-    ColorsMajor,
-    OrdersMinor
+import { useEffect, useState } from "react";
+import { 
+    StatusActiveIcon, 
+    ProductIcon, 
+    ColorIcon, 
+    CalendarTimeIcon,
+    ChatIcon,
+    DiscountIcon
 } from "@shopify/polaris-icons";
-
+import { useDispatch, useSelector } from 'react-redux'
+import Activation from "./Activation";
+import { setShopName } from "../../store/reducers/ComingSoon";
 
 export default function ComingSoon() {
+
+    const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
+
     const primaryAction = { content: "Help", url: "/help" };
-
-    const [storeName, setStoreName] = useState('');
+    const shopName = useSelector((state) => state.preorder?.shopName);
     const [storeMainPart, setStoreMainPart] = useState('');
+    const [storeName, setStoreName] = useState('');
 
-    const [flagActivation, setFlagActivation] = useState(true);
+    const flags = [
+        { name: 'Activation', icon: StatusActiveIcon },
+        { name: 'Product Setup', icon: ProductIcon },
+        { name: 'Colors & Text', icon: ColorIcon },
+        { name: 'Restock Schedule', icon: CalendarTimeIcon },
+        { name: 'Display Message', icon: ChatIcon },
+        { name: 'Badge Design', icon: DiscountIcon }
+    ];
+
+    const [activeFlag, setActiveFlag] = useState('Activation');
+
+    const handleFlagClick = (flagName) => {
+        setActiveFlag(flagName);
+    };
+
+    const FlagItem = ({ flag, isActive }) => {
+        const bgColor = isActive ? 'bg-slate-200' : 'bg-white';
+        return (
+          <li
+            className="cursor-pointer rounded-lg py-1 px-2"
+            key={flag.name}
+            onClick={() => handleFlagClick(flag.name)}
+          >
+            <div className={`rounded-lg py-1 px-2 ${bgColor}`}>
+              <div className="flex justify-start">
+                <Icon source={flag.icon} />
+                <div className="ml-2 flex-1">
+                  <Text>{flag.name}</Text>
+                </div>
+              </div>
+            </div>
+          </li>
+        );
+    };
+
+    const setStoreWithoutShopifySubDomain = (shop) => {
+        let store = '';
+        if(storeName) {
+            store = storeName;
+        } else if(shop) {
+            store = shop;
+            setStoreName(shop);
+        }
+        const mainPart = store.split('.');
+        const parts = mainPart[0].split('-');
+        const capitalizedParts = parts.map(part => part.charAt(0).toUpperCase() + part.slice(1));
+        const capitalizedUrl = capitalizedParts.join('-');
+        setStoreMainPart(capitalizedUrl);
+    }
+
+    const getShopName = async () => {
+        const response = await fetch("/api/preorder/init");
+        if (response.ok) {
+            const comingSoonActivation = await response.json();
+            console.log("Coming Soon: ", comingSoonActivation);
+            dispatch(setShopName(comingSoonActivation?.shop));
+            setStoreName(comingSoonActivation?.shop);
+            setStoreWithoutShopifySubDomain(comingSoonActivation?.shop);
+        } else {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    };
+
+    useEffect(() => {
+        console.log("Shop Name: ", shopName);
+        if(shopName.length === 0) getShopName();
+        else setStoreWithoutShopifySubDomain(shopName);
+    }, []);
+
     return (
         <Page fullWidth>
             <TitleBar
@@ -49,28 +121,14 @@ export default function ComingSoon() {
                             </div>
                         </div>
                         <ul className="space-y-1.5 mt-3 px-2">
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeActivation()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagActivation
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={StatusActiveMajor} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Activation</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
+                            {flags.map((flag) => (
+                                <FlagItem key={flag.name} flag={flag} isActive={flag.name === activeFlag} />
+                            ))}
                         </ul>
                     </nav>
+                </div>
+                <div className="flex-1">
+                    {activeFlag === 'Activation' && <Activation />}
                 </div>
             </div>
         </Page>

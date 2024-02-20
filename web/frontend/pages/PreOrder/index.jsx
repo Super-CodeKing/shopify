@@ -8,14 +8,14 @@ import { TitleBar, useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import { useEffect, useState } from "react";
 import "../../assets/preorder.css";
 import {
-    ChatMajor,
-    StatusActiveMajor,
-    ProductsMajor,
-    OrdersFilledMinor,
-    CalendarTimeMinor,
-    DiscountsMajor,
-    ColorsMajor,
-    OrdersMinor
+    ChatIcon,
+    StatusActiveIcon,
+    ProductIcon,
+    OrderIcon,
+    CalendarTimeIcon,
+    DiscountIcon,
+    ColorIcon,
+    OrderRepeatIcon
 } from "@shopify/polaris-icons";
 import Activation from "./Activation";
 import ProductTable from "./ProductTable";
@@ -229,7 +229,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={StatusActiveMajor} />
+                                        <Icon source={StatusActiveIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Activation</Text>
                                         </div>
@@ -250,7 +250,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={ProductsMajor} />
+                                        <Icon source={ProductIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Product Setup</Text>
                                         </div>
@@ -271,7 +271,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={OrdersMinor} />
+                                        <Icon source={OrderRepeatIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Pre Orders</Text>
                                         </div>
@@ -292,7 +292,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={ColorsMajor} />
+                                        <Icon source={ColorIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Colors & Text</Text>
                                         </div>
@@ -313,7 +313,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={OrdersFilledMinor} />
+                                        <Icon source={OrderIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Order Limit</Text>
                                         </div>
@@ -334,7 +334,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={CalendarTimeMinor} />
+                                        <Icon source={CalendarTimeIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Set Schedule</Text>
                                         </div>
@@ -355,7 +355,7 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={ChatMajor} />
+                                        <Icon source={ChatIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Display Message</Text>
                                         </div>
@@ -376,34 +376,13 @@ export default function PreOrder() {
                                     }
                                 >
                                     <div className="flex justify-start">
-                                        <Icon source={DiscountsMajor} />
+                                        <Icon source={DiscountIcon} />
                                         <div className="ml-2 flex-1">
                                             <Text>Badge Design</Text>
                                         </div>
                                     </div>
                                 </div>
                             </li>
-
-                            {/* <li
-                                className="cursor-pointer"
-                                onClick={() => activeCustomCoding()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagCustomCoding
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={CodeMajor} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Custom CSS</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li> */}
                         </ul>
                     </nav>
                 </div>

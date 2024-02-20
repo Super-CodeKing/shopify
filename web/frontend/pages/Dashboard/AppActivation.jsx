@@ -9,7 +9,7 @@ import {
     Divider,
     ButtonGroup,
 } from "@shopify/polaris";
-import { ChevronDownMinor, TickMinor } from "@shopify/polaris-icons";
+import { CheckIcon } from "@shopify/polaris-icons";
 import { useCallback, useState } from "react";
 export default function AppActivation() {
     const [open, setOpen] = useState(false);
@@ -49,7 +49,7 @@ export default function AppActivation() {
                 <Divider />
                 <div className="pt-3 flex flex-col items-start">
                     <div className="flex mb-2 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
-                        <Icon source={TickMinor} />
+                        <Icon source={CheckIcon} />
                         <p>
                             Enable the theme extension. Theme extension MUST be
                             active for preorder button to display.
@@ -57,7 +57,7 @@ export default function AppActivation() {
                     </div>
 
                     <div className="flex mb-2 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
-                        <Icon source={TickMinor} />
+                        <Icon source={CheckIcon} />
                         <p>
                             Add products to the preorder list on the 'preorders'
                             page.
@@ -65,7 +65,7 @@ export default function AppActivation() {
                     </div>
 
                     <div className="flex [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
-                        <Icon source={TickMinor} />
+                        <Icon source={CheckIcon} />
                         <p>Manage your preorders on the 'orders' page.</p>
                     </div>
                 </div>
