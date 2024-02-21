@@ -74,10 +74,9 @@ export default function ComingSoon() {
     }
 
     const getShopName = async () => {
-        const response = await fetch("/api/preorder/init");
+        const response = await fetch("/api/coming-soon/init");
         if (response.ok) {
             const comingSoonActivation = await response.json();
-            console.log("Coming Soon: ", comingSoonActivation);
             dispatch(setShopName(comingSoonActivation?.shop));
             setStoreName(comingSoonActivation?.shop);
             setStoreWithoutShopifySubDomain(comingSoonActivation?.shop);
@@ -87,7 +86,6 @@ export default function ComingSoon() {
     };
 
     useEffect(() => {
-        console.log("Shop Name: ", shopName);
         if(shopName.length === 0) getShopName();
         else setStoreWithoutShopifySubDomain(shopName);
     }, []);
@@ -120,7 +118,7 @@ export default function ComingSoon() {
                                 </p>
                             </div>
                         </div>
-                        <ul className="space-y-1.5 mt-3 px-2">
+                        <ul className="space-y-1.5 mt-3">
                             {flags.map((flag) => (
                                 <FlagItem key={flag.name} flag={flag} isActive={flag.name === activeFlag} />
                             ))}

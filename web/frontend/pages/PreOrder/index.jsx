@@ -15,7 +15,8 @@ import {
     CalendarTimeIcon,
     DiscountIcon,
     ColorIcon,
-    OrderRepeatIcon
+    OrderRepeatIcon,
+    ProductListIcon
 } from "@shopify/polaris-icons";
 import Activation from "./Activation";
 import ProductTable from "./ProductTable";
@@ -37,123 +38,43 @@ export default function PreOrder() {
 
     const [storeName, setStoreName] = useState('');
     const [storeMainPart, setStoreMainPart] = useState('');
-    const [flagActivation, setFlagActivation] = useState(true);
-    const [flagProductSetup, setFlagProductSetup] = useState(false);
-    const [flagOrderLimit, setFlagOrderLimit] = useState(false);
-    const [flagOrderSchedule, setFlagOrderSchedule] = useState(false);
-    const [flagDisplayMessage, setFlagDisplayMessage] = useState(false);
-    const [flagBadgeDesign, setFlagBadgeDesign] = useState(false);
-    const [flagColorNText, setFlagColorNText] = useState(false);
-    const [flagCustomCoding, setFlagCustomCoding] = useState(false);
-    const [flagPreOrderList, setFlagPreOrderList] = useState(false);
 
-    function activeActivation() {
-        setFlagActivation(true);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
-        setFlagBadgeDesign(false);
-    }
+    const flags = [
+        { name: 'Activation', icon: StatusActiveIcon },
+        { name: 'Product Setup', icon: ProductIcon },
+        { name: 'Pre Orders', icon: OrderRepeatIcon },
+        { name: 'Colors & Text', icon: ColorIcon },
+        { name: 'Order Limit', icon: OrderIcon},
+        { name: 'Set Schedule', icon: CalendarTimeIcon },
+        { name: 'Display Message', icon: ChatIcon },
+        { name: 'Badge Design', icon: DiscountIcon }
+    ];
 
-    function activeProductSetup() {
-        setFlagActivation(false);
-        setFlagProductSetup(true);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
-        setFlagBadgeDesign(false);
-    }
+    const [activeFlag, setActiveFlag] = useState('Activation');
 
-    function activeOrderLimit() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(true);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
-        setFlagBadgeDesign(false);
-    }
+    const handleFlagClick = (flagName) => {
+        setActiveFlag(flagName);
+    };
 
-    function activeOrderSchedule() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(true);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
-        setFlagBadgeDesign(false);
-    }
-
-    function activeOrderDisplayMessage() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(true);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false)
-        setFlagBadgeDesign(false);
-    }
-
-    function activeColorNText() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(true);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false);
-        setFlagBadgeDesign(false);
-    }
-
-    function activeBadgeDesign() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(false);
-        setFlagBadgeDesign(true);
-    }
-
-    function activeCustomCoding() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(true);
-        setFlagPreOrderList(false);
-        setFlagBadgeDesign(false);
-    }
-
-    function activePreOrderList() {
-        setFlagActivation(false);
-        setFlagProductSetup(false);
-        setFlagOrderLimit(false);
-        setFlagOrderSchedule(false);
-        setFlagDisplayMessage(false);
-        setFlagColorNText(false);
-        setFlagCustomCoding(false);
-        setFlagPreOrderList(true);
-        setFlagBadgeDesign(false);
-    }
+    const FlagItem = ({ flag, isActive }) => {
+        const bgColor = isActive ? 'bg-slate-200' : 'bg-white';
+        return (
+          <li
+            className="cursor-pointer rounded-lg py-1 px-2"
+            key={flag.name}
+            onClick={() => handleFlagClick(flag.name)}
+          >
+            <div className={`rounded-lg py-1 px-2 ${bgColor}`}>
+              <div className="flex justify-start">
+                <Icon source={flag.icon} />
+                <div className="ml-2 flex-1">
+                  <Text>{flag.name}</Text>
+                </div>
+              </div>
+            </div>
+          </li>
+        );
+    };
 
     const setStoreWithoutShopifySubDomain = (shop) => {
         const mainPart = shop.split('.');
@@ -215,186 +136,22 @@ export default function PreOrder() {
                                 </p>
                             </div>
                         </div>
-                        <ul className="space-y-1.5 mt-3 px-2">
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeActivation()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagActivation
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={StatusActiveIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Activation</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeProductSetup()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagProductSetup
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={ProductIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Product Setup</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activePreOrderList()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagPreOrderList
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={OrderRepeatIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Pre Orders</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeColorNText()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagColorNText
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={ColorIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Colors & Text</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeOrderLimit()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagOrderLimit
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={OrderIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Order Limit</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeOrderSchedule()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagOrderSchedule
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={CalendarTimeIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Set Schedule</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeOrderDisplayMessage()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagDisplayMessage
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={ChatIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Display Message</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li
-                                className="cursor-pointer"
-                                onClick={() => activeBadgeDesign()}
-                            >
-                                <div
-                                    className={
-                                        "rounded-lg py-1 px-2 " +
-                                        (flagBadgeDesign
-                                            ? "bg-slate-200"
-                                            : "bg-white")
-                                    }
-                                >
-                                    <div className="flex justify-start">
-                                        <Icon source={DiscountIcon} />
-                                        <div className="ml-2 flex-1">
-                                            <Text>Badge Design</Text>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
+                        <ul className="space-y-1.5 mt-3">
+                            {flags.map((flag) => (
+                                <FlagItem key={flag.name} flag={flag} isActive={flag.name === activeFlag} />
+                            ))}
                         </ul>
                     </nav>
                 </div>
                 <div className="flex-1">
-                    {flagActivation && <Activation />}
-                    {flagProductSetup && <ProductTable />}
-                    {flagPreOrderList && <OrdersTable />}
-                    {flagOrderLimit && <OrderLimit />}
-                    {flagOrderSchedule && <Schedule />}
-                    {flagDisplayMessage && <DisplayMessage />}
-                    {flagBadgeDesign && <BadgeDesign />}
-                    {flagColorNText && <ColorNText />}
+                    {activeFlag === 'Activation' && <Activation />}
+                    {activeFlag === 'Product Setup' && <ProductTable />}
+                    {activeFlag === 'Pre Orders' && <OrdersTable />}
+                    {activeFlag === 'Order Limit' && <OrderLimit />}
+                    {activeFlag === 'Set Schedule' && <Schedule />}
+                    {activeFlag === 'Display Message' && <DisplayMessage />}
+                    {activeFlag === 'Badge Design' && <BadgeDesign />}
+                    {activeFlag === 'Colors & Text' && <ColorNText />}
                 </div>
             </div>
         </Page>

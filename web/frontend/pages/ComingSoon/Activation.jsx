@@ -15,23 +15,23 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import SkeletonActivation from "./Skeleton/Activation";
 import { useDispatch, useSelector } from "react-redux";
-import { setShopName, setActivation } from "../../store/reducers/PreOrder";
+import { setShopName, setActivation } from "../../store/reducers/ComingSoon";
 
 export default function Activation() 
 {
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
-    const activation = useSelector((state) => state.preorder.activation);
+    const activation = useSelector((state) => state.comingsoon.activation);
     
     const [loading, setLoading] = useState(false);
-    const [isPreOrderActive, setIsPreOrderActive] = useState(true);
+    const [isComingSoonActive, setIsComingSoonActive] = useState(true);
     const [checkedProductPage, setCheckedProductPage] = useState(true);
     const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
     const [toastActive, setToastActive] = useState(false);
     const [whenToShow, setWhenToShow] = useState('always');
     const [specicInventory, setSpecificInventory] = useState(0);
 
-    const changePreOrderStatus = () => setIsPreOrderActive(!isPreOrderActive);
+    const changeComingSoonStatus = () => setIsComingSoonActive(!isComingSoonActive);
     const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
     const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
@@ -44,19 +44,19 @@ export default function Activation()
     ) : null;
 
     const setActivationData = (passedActivation) => {
-        let preOrderInitData = activation;
+        let comingSoonInitData = activation;
         if(passedActivation !== null && passedActivation !== undefined) {
-            preOrderInitData = Object.keys(passedActivation).length !== 0 ? passedActivation : activation;
+            comingSoonInitData = Object.keys(passedActivation).length !== 0 ? passedActivation : activation;
         }
         
-        if(preOrderInitData.active == 1) {
-            setIsPreOrderActive(true)
-        } else if(preOrderInitData?.active == 0) {
-            setIsPreOrderActive(false);
+        if(comingSoonInitData.active == 1) {
+            setIsComingSoonActive(true)
+        } else if(comingSoonInitData?.active == 0) {
+            setIsComingSoonActive(false);
         }
 
-        let poc = preOrderInitData?.active_on_collection;
-        let pop = preOrderInitData?.active_on_product;
+        let poc = comingSoonInitData?.active_on_collection;
+        let pop = comingSoonInitData?.active_on_product;
 
         if (poc && pop ) {
             setCheckedProductPage(true);
@@ -72,30 +72,32 @@ export default function Activation()
             setCheckedCollectionPage(false);
         }
 
-        if(preOrderInitData?.when_show_pre_order == 1) {
+        if(comingSoonInitData?.when_show_coming_soon == 1) {
             setWhenToShow('always')
-        } else if(preOrderInitData?.when_show_pre_order == 2) {
+        } else if(comingSoonInitData?.when_show_coming_soon == 2) {
             setWhenToShow('sold-out')
-        } else if(preOrderInitData?.when_show_pre_order == 3) {
+        } else if(comingSoonInitData?.when_show_coming_soon == 3) {
             setWhenToShow('specific-inventory')
-            setSpecificInventory(preOrderInitData?.specific_inventory)
+            setSpecificInventory(comingSoonInitData?.specific_inventory)
         }
 
         setLoading(false);
     };
 
-    const getPreOrderActivation = async () => {
-        const response = await fetch("/api/preorder/init");
+    const getComingSoonActivation = async () => {
+        const response = await fetch("/api/coming-soon/init");
         if (response.ok) {
-            const preOrderActivation = await response.json();
+            const comingSoonActivation = await response.json();
+            const activationData = comingSoonActivation?.activation;
             const activationObj = {
-                'active' : preOrderActivation.active,
-                'active_on_collection' : preOrderActivation.active_on_collection,
-                'active_on_product' : preOrderActivation.active_on_product,
-                'when_show_pre_order': preOrderActivation.when_show_pre_order,
-                'specific_inventory': preOrderActivation.specific_inventory
+                'active' : activationData.active,
+                'active_on_collection' : activationData.active_on_collection,
+                'active_on_product' : activationData.active_on_product,
+                'when_show_coming_soon': activationData.when_show_coming_soon,
+                'specific_inventory': activationData.specific_inventory
             }
-            dispatch(setActivation(activationObj))
+            dispatch(setShopName(activationData?.shop));
+            dispatch(setActivation(activationObj));
             setActivationData(activationObj);
             setLoading(false);
         } else {
@@ -108,13 +110,13 @@ export default function Activation()
         setLoading(true);
         const formData = new FormData();
     
-        formData.append("active", isPreOrderActive);
+        formData.append("active", isComingSoonActive);
         formData.append("active_on_product", checkedProductPage);
         formData.append("active_on_collection", checkedCollectionPage);
-        formData.append("when_show_preorder", whenToShow);
+        formData.append("when_show_coming_soon", whenToShow);
         formData.append("specific_inventory", specicInventory);
     
-        const response = await fetch("/api/preorder/save", {
+        const response = await fetch("/api/coming-soon/save", {
           method: "POST",
           body: formData ? formData : JSON.stringify(data),
         });
@@ -127,7 +129,7 @@ export default function Activation()
     
         if (response.ok) {
           toggleToastActive(true);
-          getPreOrderActivation();
+          getComingSoonActivation();
           setLoading(false);
         }
       };
@@ -138,32 +140,32 @@ export default function Activation()
         let flagWhenToShow = false;
         let flagSpecificInventory = false;
 
-        let activeRedux = activation.active === 0 ? false : true;
-        if(activeRedux !== isPreOrderActive) {
+        let activeRedux = activation.active == 0 ? false : true;
+        if(activeRedux !== isComingSoonActive) {
             flagActivation = true;
         }
 
-        let whereToShowProductRedux = activation.active_on_product === 0 ? false: true;
-        let whereToShowCollectionRedux = activation.active_on_collection === 0 ? false: true;
+        let whereToShowProductRedux = activation.active_on_product == 0 ? false: true;
+        let whereToShowCollectionRedux = activation.active_on_collection == 0 ? false: true;
 
-        if(whereToShowProductRedux !== checkedProductPage || whereToShowCollectionRedux !== checkedCollectionPage) {
+        if(whereToShowProductRedux != checkedProductPage || whereToShowCollectionRedux != checkedCollectionPage) {
             flagWhereToShow = true;
         }
 
         let whenToShowRedux = ''; 
-        if(activation.when_show_pre_order == 1) {
+        if(activation.when_show_coming_soon == 1) {
             whenToShowRedux = 'always'
-        } else if(activation.when_show_pre_order == 2) {
+        } else if(activation.when_show_coming_soon == 2) {
             whenToShowRedux = 'sold-out';
-        } else if(activation.when_show_pre_order == 3) {
+        } else if(activation.when_show_coming_soon == 3) {
             whenToShowRedux = 'specific-inventory';
         }
 
-        if(whenToShowRedux !== whenToShow) {
+        if(whenToShowRedux != whenToShow) {
             flagWhenToShow = true;
         }
 
-        if(specicInventory !== activation.specific_inventory) {
+        if(specicInventory != activation.specific_inventory) {
             flagSpecificInventory = true;
         }
 
@@ -171,11 +173,11 @@ export default function Activation()
             return true;
         }
         return false;
-    }, [isPreOrderActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow, activation]);
+    }, [isComingSoonActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow, activation]);
 
     useEffect( () => {
         setLoading(true);
-        if(Object.keys(activation).length === 0) getPreOrderActivation();
+        if(Object.keys(activation).length === 0) getComingSoonActivation();
         else setActivationData();
     }, [])
 
@@ -197,12 +199,12 @@ export default function Activation()
                                 </Text>
                                 <p>
                                     Current Status:{" "}
-                                    {isPreOrderActive && (
+                                    {isComingSoonActive && (
                                         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 ml-1">
                                             On
                                         </span>
                                     )}
-                                    {!isPreOrderActive && (
+                                    {!isComingSoonActive && (
                                         <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ml-1">
                                             Off
                                         </span>
@@ -210,19 +212,19 @@ export default function Activation()
                                 </p>
                             </div>
                             <div className="ml-auto">
-                                {isPreOrderActive && (
+                                {isComingSoonActive && (
                                     <Button
                                         variant="primary"
                                         tone="critical"
-                                        onClick={() => changePreOrderStatus()}
+                                        onClick={() => changeComingSoonStatus()}
                                     >
                                         Deactive
                                     </Button>
                                 )}
-                                {!isPreOrderActive && (
+                                {!isComingSoonActive && (
                                     <Button
                                         variant="primary"
-                                        onClick={() => changePreOrderStatus()}
+                                        onClick={() => changeComingSoonStatus()}
                                     >
                                         Active
                                     </Button>

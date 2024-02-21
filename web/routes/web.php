@@ -21,6 +21,7 @@ use Shopify\Exception\InvalidWebhookException;
 use Shopify\Utils;
 use Shopify\Webhooks\Registry;
 use Shopify\Webhooks\Topics;
+require base_path('routes/coming-soon.php');
 
 /*
 |--------------------------------------------------------------------------
