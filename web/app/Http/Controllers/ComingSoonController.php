@@ -39,40 +39,40 @@ class ComingSoonController extends Controller
         $activation = $request->active == 'true' ? 1 : 0;
         $activation_product = $request->active_on_product == 'true' ? 1 : 0;
         $activation_collection = $request->active_on_collection == 'true' ? 1 : 0;
-        $whenToShowPreOrderButton = 2;
-        $specificInventoryToShowPreOrderButton = 0;
+        $whenToShowComingSoonButton = 2;
+        $specificInventoryToShowComingSoonButton = 0;
         if($request->when_show_preorder == 'always') {
-            $whenToShowPreOrderButton = 1;
+            $whenToShowComingSoonButton = 1;
         } else if($request->when_show_preorder == 'specific-inventory') {
-            $whenToShowPreOrderButton = 3;
-            $specificInventoryToShowPreOrderButton = (int)$request->specific_inventory;
+            $whenToShowComingSoonButton = 3;
+            $specificInventoryToShowComingSoonButton = (int)$request->specific_inventory;
         }
 
-        $preOrderInitSettings = Setup::where(['shop' => $shop])->first();
-        if (!$preOrderInitSettings) {
-            $createdPreOrderSetup = Setup::create([
+        $comingSoonInitSettings = Setup::where(['shop' => $shop])->first();
+        if (!$comingSoonInitSettings) {
+            $createdComingSoonSetup = Setup::create([
                 'shop'                  => $shop,
                 'active'                => $activation,
                 'active_on_product'     => $activation_product,
                 'active_on_collection'  => $activation_collection,
-                'when_show_pre_order'   => $whenToShowPreOrderButton,
-                'specific_inventory'    => $specificInventoryToShowPreOrderButton  
+                'when_show_coming_soon' => $whenToShowComingSoonButton,
+                'specific_inventory'    => $specificInventoryToShowComingSoonButton  
             ]);
             return response()->json([
-                'message' => 'Pre Order Initial Data Saved Successfully.',
-                'data' => $createdPreOrderSetup
+                'message' => 'Coming Soon Initial Data Saved Successfully.',
+                'data' => $createdComingSoonSetup
             ], 201);
         } else {
-            $updatedPreOrderSetup = Setup::where('shop', $shop)->update([
+            $updatedComingSoonSetup = Setup::where('shop', $shop)->update([
                 'active'                => $activation,
                 'active_on_product'     => $activation_product,
                 'active_on_collection'  => $activation_collection,
-                'when_show_pre_order'   => $whenToShowPreOrderButton,
-                'specific_inventory'    => $specificInventoryToShowPreOrderButton
+                'when_show_coming_soon' => $whenToShowComingSoonButton,
+                'specific_inventory'    => $specificInventoryToShowComingSoonButton
             ]);
             return response()->json([
-                'message' => 'Pre Order Initial Data Updated Successfully.',
-                'data' => $updatedPreOrderSetup
+                'message' => 'Coming Soon Initial Data Updated Successfully.',
+                'data' => $updatedComingSoonSetup
             ], 200);
         }
     }

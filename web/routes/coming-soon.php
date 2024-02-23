@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ComingSoonController;
+use App\Http\Controllers\ComingSoonProductsController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -14,5 +15,15 @@ use Illuminate\Support\Facades\Route;
  * 7. Custom CSS and Js
  */
 
- Route::get('/api/coming-soon/init', [ComingSoonController::class, 'init'])->middleware('shopify.auth');
- Route::post('/api/coming-soon/save', [ComingSoonController::class, 'save'])->middleware('shopify.auth');
+ Route::group([
+    'prefix' => 'api/coming-soon/',
+    'middleware' => 'shopify.auth',
+], function () {
+    Route::get('init', [ComingSoonController::class, 'init']);
+    Route::post('save', [ComingSoonController::class, 'save']);
+
+    Route::get('products', [ComingSoonProductsController::class, 'index']);
+    Route::post('products/store', [ComingSoonProductsController::class, 'store']);
+    Route::post('products/update', [ComingSoonProductsController::class, 'update']);
+    Route::post('products/destroy', [ComingSoonProductsController::class, 'destroy']);
+});

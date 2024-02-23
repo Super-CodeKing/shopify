@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://sys-medicaid-offering-blow.trycloudflare.com"
+application_url = "https://reduce-emirates-fabric-pamela.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://sys-medicaid-offering-blow.trycloudflare.com/auth/callback",
-  "https://sys-medicaid-offering-blow.trycloudflare.com/auth/shopify/callback",
-  "https://sys-medicaid-offering-blow.trycloudflare.com/api/auth/callback"
+  "https://reduce-emirates-fabric-pamela.trycloudflare.com/auth/callback",
+  "https://reduce-emirates-fabric-pamela.trycloudflare.com/auth/shopify/callback",
+  "https://reduce-emirates-fabric-pamela.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

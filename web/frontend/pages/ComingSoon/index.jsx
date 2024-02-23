@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import Activation from "./Activation";
 import { setShopName } from "../../store/reducers/ComingSoon";
+import ProductTable from "./Products";
 
 export default function ComingSoon() {
 
@@ -127,6 +128,7 @@ export default function ComingSoon() {
                 </div>
                 <div className="flex-1">
                     {activeFlag === 'Activation' && <Activation />}
+                    {activeFlag === 'Product Setup' && <ProductTable />}
                 </div>
             </div>
         </Page>

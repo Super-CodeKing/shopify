@@ -58,7 +58,7 @@ class PreOrderProductsController extends Controller
             }
 
             $singleProductData['order_limit'] = $orderLimit;
-            $singleProductData['display_message'] = $singleProductData['order_limit'] == 1 ? 1 : 0;
+            $singleProductData['display_message'] = $singleProductData['display_message'] == 1 ? 1 : 0;
             $singleProductData['display_badge'] = $singleProductData['display_badge'] == 1 ? 1 : 0;
 
             array_push($makeData, $singleProductData);
