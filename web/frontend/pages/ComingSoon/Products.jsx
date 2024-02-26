@@ -8,26 +8,22 @@ import {
     Divider,
     Button,
     Checkbox,
-    Modal,
     Page,
     Toast,
     Frame,
-    Form,
-    FormLayout,
-    TextField,
 } from "@shopify/polaris";
 import { EditIcon, DeleteIcon } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { setProductList } from "../../store/reducers/ComingSoon";
+import EditProductFormModal from "./Modal/EditProduct";
 
 export default function ProductTable() {
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
-    const today = new Date();
     const productListRedux = useSelector((state) => state.comingsoon.productList)
 
     const [checked, setChecked] = useState(true);
@@ -38,203 +34,14 @@ export default function ProductTable() {
     const [editModalActive, setEditModalActive] = useState(true);
     const [initialSelectedProductIds, setInitialSelectedProductIds] = useState([]);
     const [toastContent, setToastContent] = useState("");
-    
     const [editProductData, setEditProductData] = useState(null);
-    const [editStartDate, setEditStartDate] = useState(today);
-    const [editEndDate, setEditEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
-    const [editHasEndDate, setEditHasEndDate] = useState(true);
-    const [editRestockDate, setEditRestockDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
-    const [editHasRestockDate, setEditHasRestockDate] = useState(true);
-    const [editCheckDisplayMessage, setEditCheckDisplayMessage] = useState(false);
-    const [editCheckDisplayBadge, setEditCheckDisplayBadge] = useState(false);
 
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
-
-    const changeEditStartDate = (e) => {
-        setEditStartDate(new Date(e));
-    };
-
-    const changeEditEndDate = (e) => {
-        setEditEndDate(new Date(e));
-    };
-
-    const changeEditRestockDate = (event) => {
-        setEditRestockDate(new Date(event));
-    };
-
-    const changeEditDisplayMessage = () => {
-        setEditCheckDisplayMessage(!editCheckDisplayMessage);
-    };
-
-    const changeEditDisplayBadge = () => {
-        setEditCheckDisplayBadge(!editCheckDisplayBadge);
-    };
-
-    const updateEditProductData = async () => {
-        const formData = new FormData();
-
-        let endDate = null;
-        let restockDate = null; 
-
-        if(editHasEndDate) {
-            endDate = null;
-        } else {
-            endDate = editEndDate.toISOString();
-        }
-
-        if(editHasRestockDate) {
-            restockDate = null;
-        } else {
-            restockDate = editRestockDate.toISOString();
-        }
-
-        let displayMessage = editCheckDisplayMessage;
-        if (editCheckDisplayMessage) {
-            displayMessage = 1;
-        } else {
-            displayMessage = 0;
-        }
-
-        let displayBadge = editCheckDisplayBadge;
-        if (editCheckDisplayBadge) {
-            displayBadge = 1;
-        } else {
-            displayBadge = 0;
-        }
-
-        formData.append("id", editProductData.id);
-        formData.append("product_id", editProductData.product_id);
-        formData.append("variant_id", editProductData.variant_id);
-        formData.append("title", editProductData.title);
-        formData.append("start_date", editStartDate.toISOString());
-        formData.append("end_date", endDate);
-        formData.append("has_end_date", editHasEndDate)
-        formData.append("restock_date", restockDate);
-        formData.append("has_restock_date", editHasRestockDate);
-        formData.append("display_message", displayMessage);
-        formData.append("display_badge", displayBadge);
-
-        const response = await fetch("/api/coming-soon/products/update", {
-            method: "POST",
-            body: formData ? formData : JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-        if (response.ok) {
-            setToastContent("Product Updated Successfully.");
-            toggleToastActive(true);
-            getComingSoonProducts();
-            setEditModalActive(false);
-        }
-    };
-
-    const dateFormatForEdit = (date) => {
-        return date == null? null: editStartDate.toISOString().slice(0, 10)
-    }
 
     const toastMarkup = toastActive ? (
         <Toast content={toastContent} onDismiss={toggleToastActive} />
     ) : null;
-
-    function EditProductFormModal() {
-        return (
-            <div style={{ height: "500px" }} className="absolute">
-                <Frame>
-                    <Modal
-                        open={editModalActive}
-                        onClose={() => setEditModalActive(false)}
-                        title="Edit Coming Soon Product Settings"
-                        primaryAction={{
-                            content: "Close",
-                            onAction: () => setEditModalActive(false),
-                        }}
-                        secondaryActions={{
-                            content: "Submit",
-                            onAction: () => updateEditProductData(),
-                        }}
-                    >
-                        <Modal.Section>
-                            <Form>
-                                <FormLayout>
-                                    <TextField
-                                        label="Product Title"
-                                        type="text"
-                                        value={editProductData.title}
-                                        readOnly
-                                    />
-
-                                    <div className="flex">
-                                        <div className="flex-1 mr-3">
-                                            <TextField
-                                                label="Start Date"
-                                                type="date"
-                                                value={dateFormatForEdit(editStartDate)}
-                                                onChange={(e) =>
-                                                    changeEditStartDate(e)
-                                                }
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <TextField
-                                                label="End Date"
-                                                type="date"
-                                                value={dateFormatForEdit(editEndDate)}
-                                                onChange={(e) => changeEditEndDate(e)}
-                                                disabled={editHasEndDate}
-                                            />
-                                            <Checkbox
-                                                label="No End Date"
-                                                checked={editHasEndDate}
-                                                onChange={() => setEditHasEndDate(!editHasEndDate)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-end">
-                                        <div className="flex-1 mr-3">
-                                            <TextField
-                                                label="Restock Date"
-                                                type="date"
-                                                value={dateFormatForEdit(editRestockDate)}
-                                                disabled={editHasRestockDate}
-                                                onChange={changeEditRestockDate}
-                                            />
-                                            <Checkbox
-                                                label="No Restock Date"
-                                                checked={editHasRestockDate}
-                                                onChange={() => setEditHasRestockDate(!editHasRestockDate) }
-                                            />
-                                        </div>
-
-                                        <div className="flex-1 flex flex-col">
-                                            <div className="flex-1 mr-3">
-                                                <Checkbox
-                                                    label="Display Message"
-                                                    checked={editCheckDisplayMessage}
-                                                    onChange={() => changeEditDisplayMessage()}
-                                                />
-                                            </div>
-
-                                            <div className="flex-1">
-                                                <Checkbox
-                                                    label="Display Badge"
-                                                    checked={ editCheckDisplayBadge}
-                                                    onChange={() => changeEditDisplayBadge()}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </FormLayout>
-                            </Form>
-                        </Modal.Section>
-                    </Modal>
-                </Frame>
-            </div>
-        );
-    }
 
     const handleChange = () => {
         setChecked(!checked);
@@ -261,7 +68,6 @@ export default function ProductTable() {
     };
 
     const saveSelectedProducts = async (data) => {
-        console.log(data);
         const processedComingSoonProductData = comingSoonDataProcess(data);
         const response = await fetch("/api/coming-soon/products/store", {
             method: "POST",
@@ -344,55 +150,16 @@ export default function ProductTable() {
     };
 
     const editProductFromComingSoonList = (productData) => {
-        console.log(productData);
         setEditProductData(productData);
-
-
-        if (productData.start_date) {
-            setEditStartDate(new Date(productData.start_date));
-        }
-
-        if(productData.has_end_date == 0) {
-            setEditHasEndDate(false);
-        } else {
-            setEditHasEndDate(true);
-        }
-
-        if (productData.end_date && productData.has_end_date) {
-            setEditEndDate(new Date(productData.end_date));
-        } else if(productData.end_date && productData.has_end_date) {
-            setEditEndDate(null);
-        } else if(!productData.end_date) {
-            setEditEndDate(null);
-        }
-
-        if(productData.has_restock_date == 0) {
-            setEditHasRestockDate(false);
-        } else {
-            setEditHasRestockDate(true);
-        }
-
-        if (productData.display_message) {
-            setEditCheckDisplayMessage(productData.display_message);
-        }
-
-        if (productData.display_badge) {
-            setEditCheckDisplayBadge(productData.display_badge);
-        }
-
-        if (productData.restock_date && productData.has_restock_date == 0) {
-            setEditRestockDate(new Date(productData.restock_date));
-        } else if(productData.restock_date && productData.has_restock_date == 1) {
-            setEditRestockDate(null);
-        } else if(!productData.restock_date) {
-            setEditRestockDate(null);
-        }
-
         toggleModal();
     };
 
     const toggleModal = () => {
         setEditModalActive(true);
+    };
+
+    const handleCloseProductEditModal = () => {
+        setEditModalActive(false);
     };
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(comingSoonProducts);
@@ -512,7 +279,11 @@ export default function ProductTable() {
 
     return (
         <>
-            {editProductData != null && <EditProductFormModal />}
+            {editProductData != null && <EditProductFormModal 
+                active={editModalActive} 
+                onClose={handleCloseProductEditModal}
+                product={editProductData}
+            />}
             <Frame>
                 {toastMarkup}
                 {isLoadingProducts && (
