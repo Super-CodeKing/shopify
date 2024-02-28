@@ -13,10 +13,13 @@ import { CalendarIcon } from "@shopify/polaris-icons";
 export default function TextFieldWithDatePicker({
     label,
     initialDate,
-    setDate
+    setDate,
+    isDisabled
   }) {
 
     // Initial Value of Incoming Date format will be like this: 2024-03-02 00:00:00
+
+    const datePickerRef = useRef(null);
 
     const dateToString = (date) => {
         if(date == null) return null;
@@ -49,11 +52,10 @@ export default function TextFieldWithDatePicker({
     }
 
     const [visible, setVisible] = useState(false);
-    const [formattedDateForInputField, setFormattedDateForInputField] = useState(initialDate ? dateToString(initialDate) : null);
-    const [formattedDateForDatePicker, setFormattedDateForDatePicker] = useState(dateToDatePicker(initialDate));
+    const [formattedDateForInputField, setFormattedDateForInputField] = useState('');
+    const [formattedDateForDatePicker, setFormattedDateForDatePicker] = useState('');
     const [month, setMonth] = useState(getPassedMonth());
     const [year, setYear] = useState(getPassedYear()); 
-    const datePickerRef = useRef(null);
 
     const changeDatePicker = (e) => {
         setFormattedDateForDatePicker(e);
@@ -71,9 +73,33 @@ export default function TextFieldWithDatePicker({
         setVisible(false);
     }
 
+    useEffect( () => {
+        if(initialDate != null) {
+            setFormattedDateForInputField(dateToString(initialDate)); 
+            setFormattedDateForDatePicker(dateToDatePicker(initialDate));
+
+            if(formattedDateForDatePicker)
+            {
+                setMonth(getPassedMonth());
+                setYear(getPassedYear());
+            }
+        }
+        else
+        {
+            setFormattedDateForInputField('');
+            setFormattedDateForDatePicker(dateToDatePicker((new Date()).toLocaleDateString('en-US')));
+
+            if(formattedDateForDatePicker)
+            {
+                setMonth(getPassedMonth());
+                setYear(getPassedYear());
+            }
+        }
+    }, [initialDate])
+
     return (
-        <BlockStack inlineAlign="center" gap="400">
-            <Box minWidth="276px" padding={{ xs: 200 }}>
+        <BlockStack inlineAlign="left">
+            <Box minWidth="276px">
                 <Popover
                     active={visible}
                     autofocusTarget="none"
@@ -91,6 +117,7 @@ export default function TextFieldWithDatePicker({
                             value={formattedDateForInputField}
                             onFocus={() => setVisible(true)}
                             autoComplete="off"
+                            disabled={isDisabled}
                         />
                     }
                 >

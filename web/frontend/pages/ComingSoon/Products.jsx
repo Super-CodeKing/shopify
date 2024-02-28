@@ -36,7 +36,6 @@ export default function ProductTable() {
     const [toastContent, setToastContent] = useState("");
     const [editProductData, setEditProductData] = useState(null);
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
 
     const toastMarkup = toastActive ? (
@@ -149,16 +148,14 @@ export default function ProductTable() {
         setOpenResourcePicker(true);
     };
 
-    const editProductFromComingSoonList = (productData) => {
+    function editProductFormComingSoonList(productData) {
         setEditProductData(productData);
-        toggleModal();
-    };
-
-    const toggleModal = () => {
-        setEditModalActive(true);
-    };
+        if(productData != null) setEditModalActive(true);
+    }
 
     const handleCloseProductEditModal = () => {
+        console.log("Closing-------------------");
+        setEditProductData(null);
         setEditModalActive(false);
     };
 
@@ -169,22 +166,18 @@ export default function ProductTable() {
         plural: "products",
     };
 
-    const rowMarkup = comingSoonProducts.map(
-        (
-            {
-                id,
-                product_id,
-                title,
-                start_date,
-                end_date,
-                has_end_date,
-                restock_date,
-                has_restock_date,
-                display_message,
-                display_badge,
-            },
-            index
-        ) => (
+    const rowMarkup = comingSoonProducts.map(({
+            id,
+            product_id,
+            title,
+            start_date,
+            end_date,
+            has_end_date,
+            restock_date,
+            has_restock_date,
+            display_message,
+            display_badge,
+        },index) => (
             <IndexTable.Row
                 id={id}
                 key={id}
@@ -216,18 +209,7 @@ export default function ProductTable() {
                     <div className="flex space-x-1">
                         <Button
                             onClick={() =>
-                                editProductFromComingSoonList({
-                                    id: id,
-                                    product_id: product_id,
-                                    title: title,
-                                    start_date: start_date,
-                                    end_date: end_date,
-                                    has_end_date: has_end_date,
-                                    restock_date: restock_date,
-                                    has_restock_date: has_restock_date,
-                                    display_message: display_message,
-                                    display_badge: display_badge,
-                                })
+                                editProductFormComingSoonList(comingSoonProducts[index])
                             }
                         >
                             <Icon source={EditIcon} tone="base" />

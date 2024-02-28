@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextFieldWithDatePicker from "../../../components/TextFieldWithDatePicker";
 import { 
     Frame, 
@@ -10,18 +10,25 @@ import {
 } from "@shopify/polaris";
 
 export default function EditProductFormModal({active, onClose, product}) {
-    console.log("Edit Product Details: ", product);
-    const [startDate, setStartDate] = useState(product?.start_date);
-    const [endDate, setEndDate] = useState(product?.end_date);
-    const [hasEndDate, setHasEndDate] = useState(product?.has_end_date);
-    const [restockDate, setRestockDate] = useState(product?.restock_date);
-    const [hasRestockDate, setHasRestockDate] = useState(product?.has_restock_date);
-    const [checkDisplayMessage, setCheckDisplayMessage] = useState(product?.display_message);
-    const [checkDisplayBadge, setCheckDisplayBadge] = useState(product?.display_badge);
+    
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [hasEndDate, setHasEndDate] = useState(0);
+    const [restockDate, setRestockDate] = useState('');
+    const [hasRestockDate, setHasRestockDate] = useState(0);
+    const [checkDisplayMessage, setCheckDisplayMessage] = useState(0);
+    const [checkDisplayBadge, setCheckDisplayBadge] = useState(0);
 
     const updateEditProductData = async () => {
-        console.log("New Value: ", restockDate);
-        // const formData = new FormData();
+        const formData = new FormData();
+
+        formData.append("id", product?.id);
+        formData.append("product_id", product?.product_id);
+        formData.append("variant_id", product?.variant_id);
+        formData.append("title", product?.title);
+
+        console.log("Start Date: ", startDate);
+        console.log("Start Date Type: ", typeof startDate);
 
         // let endDate = null;
         // let restockDate = null; 
@@ -52,10 +59,7 @@ export default function EditProductFormModal({active, onClose, product}) {
         //     displayBadge = 0;
         // }
 
-        // formData.append("id", editProductData.id);
-        // formData.append("product_id", editProductData.product_id);
-        // formData.append("variant_id", editProductData.variant_id);
-        // formData.append("title", editProductData.title);
+        
         // formData.append("start_date", editStartDate.toISOString());
         // formData.append("end_date", endDate);
         // formData.append("has_end_date", editHasEndDate)
@@ -85,6 +89,20 @@ export default function EditProductFormModal({active, onClose, product}) {
         onClose();
     };
 
+    const setEditProductData = () => {
+        setStartDate(product?.start_date);
+        setEndDate(product?.end_date);
+        setHasEndDate(product?.has_end_date);
+        setRestockDate(product?.restock_date);
+        setHasRestockDate(product?.has_restock_date);
+        setCheckDisplayMessage(product?.display_message);
+        setCheckDisplayBadge(product?.display_badge);
+    }
+
+    useEffect(() => {
+        setEditProductData();
+    })
+
     return (
         <div style={{ height: "500px" }} className="absolute">
             <Frame>
@@ -102,71 +120,75 @@ export default function EditProductFormModal({active, onClose, product}) {
                     }}
                 >
                     <Modal.Section>
-                        <Form>
-                            <FormLayout>
-                                <TextField
-                                    label="Product Title"
-                                    type="text"
-                                    value={product.title}
-                                    readOnly
-                                />
+                        <div className="mx-2">
+                            <Form>
+                                <FormLayout>
+                                    <TextField
+                                        label="Product Title"
+                                        type="text"
+                                        value={product.title}
+                                        readOnly
+                                    />
 
-                                <div className="flex">
-                                    <div className="flex-1 mr-3">
-                                        <TextFieldWithDatePicker
-                                            label={"Start Date"}
-                                            initialDate={startDate}
-                                            setDate={setStartDate}
-                                        />
-                                    </div>
-                                    <div className="flex-1">
-                                        <TextFieldWithDatePicker
-                                            label={"End Date"}
-                                            initialDate={endDate}
-                                            setDate={setEndDate}
-                                        />
-                                        <Checkbox
-                                            label="No End Date"
-                                            checked={hasEndDate}
-                                            onChange={() => setHasEndDate(!hasEndDate)}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex items-end">
-                                    <div className="flex-1 mr-3">
-                                        <TextFieldWithDatePicker
-                                            label={"Restock Date"}
-                                            initialDate={restockDate}
-                                            setDate={setRestockDate}
-                                        />
-                                        <Checkbox
-                                            label="No Restock Date"
-                                            checked={hasRestockDate}
-                                            onChange={() => setHasRestockDate(!hasRestockDate)}
-                                        />
-                                    </div>
-
-                                    <div className="flex-1 flex flex-col">
+                                    <div className="flex">
                                         <div className="flex-1 mr-3">
-                                            <Checkbox
-                                                label="Display Message"
-                                                checked={checkDisplayMessage}
-                                                onChange={() => changeEditDisplayMessage()}
+                                            <TextFieldWithDatePicker
+                                                label={"Start Date"}
+                                                initialDate={startDate}
+                                                setDate={setStartDate}
                                             />
                                         </div>
-
                                         <div className="flex-1">
+                                            <TextFieldWithDatePicker
+                                                label={"End Date"}
+                                                initialDate={endDate}
+                                                setDate={setEndDate}
+                                                isDisabled={hasEndDate}
+                                            />
                                             <Checkbox
-                                                label="Display Badge"
-                                                checked={checkDisplayBadge}
-                                                onChange={() => changeEditDisplayBadge()}
+                                                label="No End Date"
+                                                checked={hasEndDate}
+                                                onChange={() => setHasEndDate(!hasEndDate)}
                                             />
                                         </div>
                                     </div>
-                                </div>
-                            </FormLayout>
-                        </Form>
+
+                                    <div className="flex items-end">
+                                        <div className="flex-1 mr-3">
+                                            <TextFieldWithDatePicker
+                                                label={"Restock Date"}
+                                                initialDate={restockDate}
+                                                setDate={setRestockDate}
+                                                isDisabled={hasRestockDate}
+                                            />
+                                            <Checkbox
+                                                label="No Restock Date"
+                                                checked={hasRestockDate}
+                                                onChange={() => setHasRestockDate(!hasRestockDate)}
+                                            />
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col">
+                                            <div className="flex-1 mr-3">
+                                                <Checkbox
+                                                    label="Display Message"
+                                                    checked={checkDisplayMessage}
+                                                    onChange={() => setCheckDisplayMessage(!checkDisplayMessage)}
+                                                />
+                                            </div>
+
+                                            <div className="flex-1">
+                                                <Checkbox
+                                                    label="Display Badge"
+                                                    checked={checkDisplayBadge}
+                                                    onChange={() => setCheckDisplayBadge(!checkDisplayBadge)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </FormLayout>
+                            </Form>
+                        </div>
                     </Modal.Section>
                 </Modal>
             </Frame>
