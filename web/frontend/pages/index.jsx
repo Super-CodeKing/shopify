@@ -1,4 +1,4 @@
-import { Page, Layout, Text, Divider } from "@shopify/polaris";
+import { Page, Layout, Text, Divider, Card } from "@shopify/polaris";
 import { TitleBar, useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import { useTranslation, Trans } from "react-i18next";
 import Analytics from "./Dashboard/Analytics.jsx";
@@ -43,22 +43,32 @@ export default function HomePage() {
     }, []);
 
     return (
-        <Page fullWidth>
+        <Page>
             <div className="container mx-auto">
                 <TitleBar title={t("HomePage.title")} primaryAction={helpAction} />
-                <div className="pb-3">
+                {/* <div className="pb-3">
                     <Text variant="heading2xl" as="h3">
                         Welcome to Pre Order of Deque Lab
                     </Text>
+                    <Text>
+                        Pre order, coming soon, request for order these features will be available at a time. Choose which you need actually.
+                    </Text>
                 </div>
-                <Divider />
+                <Divider /> */}
                 <div className="my-5">
                     <Layout>
                         <AppActivation />
-                        <Plan />
                     </Layout>
                     <Analytics />
-                    <QuickSetup />
+                    <div className="my-5">
+                    <Card background="bg-surface-secondary">
+                        <QuickSetup />
+                    </Card>
+                    </div>
+                    <Layout>
+                        <Plan />
+                    </Layout>
+                    
                 </div>
             </div>
         </Page>

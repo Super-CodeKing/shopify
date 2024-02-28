@@ -4,21 +4,21 @@ import { Card, Button, Grid, Page, LegacyCard, Text } from "@shopify/polaris";
 export default function QuickSetup() {
     return (
         <>
-            <div className="mb-3 pt-7">
+            <div className="mb-3">
                 <Text variant="headingLg" as="h5">
                     Quick Start
                 </Text>
             </div>
             <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card>
+                    <Card background="bg-surface-secondary">
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">
                                     Pre Order
                                 </Text>
                             </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -32,6 +32,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -46,7 +48,7 @@ export default function QuickSetup() {
                                     </label>
                                 </div>
                             </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -60,6 +62,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
                                     <Button fullWidth>
                                         Go to Details Settings
@@ -70,14 +74,14 @@ export default function QuickSetup() {
                     </Card>
                 </Grid.Cell>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card>
+                    <Card background="bg-surface-secondary">
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">
                                     Coming Soon
                                 </Text>
                             </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -91,6 +95,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -105,7 +111,7 @@ export default function QuickSetup() {
                                     </label>
                                 </div>
                             </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -119,6 +125,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
                                     <Button fullWidth>
                                         Go to Details Settings
@@ -130,14 +138,14 @@ export default function QuickSetup() {
                 </Grid.Cell>
 
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card>
+                    <Card background="bg-surface-secondary">
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">
                                     Request Stock
                                 </Text>
                                 </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -151,6 +159,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -165,7 +175,7 @@ export default function QuickSetup() {
                                     </label>
                                 </div>
                             </div>
-                            <div className="flex mt-5 items-center">
+                            <div className="flex mt-2 items-center">
                                 <div className="flex-1">
                                     <label className="relative inline-flex items-center cursor-pointer">
                                         <input
@@ -179,6 +189,8 @@ export default function QuickSetup() {
                                         </span>
                                     </label>
                                 </div>
+                                </div>
+                                <div className="mt-2">
                                 <div className="flex-1 ml-auto">
                                     <Button fullWidth>
                                         Go to Details Settings
@@ -188,7 +200,7 @@ export default function QuickSetup() {
                         </div>
                     </Card>
                 </Grid.Cell>
-                <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
+                {/* <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
                     <Card>
                         <div className="flex">
                             <div className="flex w-full items-center">
@@ -229,7 +241,7 @@ export default function QuickSetup() {
                             </div>
                         </div>
                     </Card>
-                </Grid.Cell>
+                </Grid.Cell> */}
             </Grid>
         </>
     );
