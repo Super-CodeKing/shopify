@@ -62,19 +62,12 @@ class ComingSoonProductsController extends Controller
         $start_date = $request->start_date != "null" ? date('Y-m-d H:i:s', strtotime($request->start_date)) : null;
         $end_date = $request->end_date != "null" ? date('Y-m-d H:i:s', strtotime($request->end_date)) : null;
         $restock_date = $request->restock_date != "null" ? date('Y-m-d H:i:s', strtotime($request->restock_date)) : null;
-        
-        $hasEndDate = 1;
-        if($request->has_end_date == "true" || $request->has_end_date == true || $request->has_end_date == 1)
-        $hasEndDate =  1;
-        else $hasEndDate = 0;
 
-        $hasRestockDate = 1;
-        if($request->has_restock_date == "true" || $request->has_restock_date == true || $request->has_restock_date == 1)
-        $hasRestockDate =  1;
-        else $hasRestockDate = 0;
+        $hasEndDate = $this->formatFalsyValue($request->has_end_date);
+        $hasRestockDate = $this->formatFalsyValue($request->has_restock_date);
 
         $displayMessage = $request->display_message == 1 ? 1 : 0;
-        $displayBadge = $request->display_badge == 1 ? 1 : 0;
+        $displayBadge = $request->display_badge == 1 ? 1 : 0; 
 
         $preOrderProduct = Products::where('shop', $shop)
             ->where('id', $request->id)
@@ -104,5 +97,21 @@ class ComingSoonProductsController extends Controller
             $formattedDate = date('Y-m-d H:i:s', strtotime($date));
         }
         return $formattedDate;
+    }
+
+    private function formatFalsyValue($falsyValue)
+    {
+        $falsyTo_0_1 = 1;
+        
+        if($falsyValue == "true" || $falsyValue == true || $falsyValue == 1)
+        {
+            $falsyTo_0_1 =  1;
+        }
+        else if($falsyValue == "false" || $falsyValue == false || $falsyValue == 0)
+        {
+            $falsyTo_0_1 = 0;
+        }
+        
+        return $falsyTo_0_1;
     }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TextFieldWithDatePicker from "../../../components/TextFieldWithDatePicker";
 import { 
     Frame, 
@@ -6,11 +6,16 @@ import {
     Form,
     FormLayout,
     TextField,
-    Checkbox
+    Checkbox,
+    Toast
 } from "@shopify/polaris";
+import { useAuthenticatedFetch } from "../../../hooks";
 
-export default function EditProductFormModal({active, onClose, product}) {
-    
+export default function EditProductFormModal({active, onSuccess, onClose, product}) {
+    const fetch = useAuthenticatedFetch();
+
+    const [toastActive, setToastActive] = useState(false);
+    const [toastContent, setToastContent] = useState("");
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [hasEndDate, setHasEndDate] = useState(0);
@@ -19,70 +24,46 @@ export default function EditProductFormModal({active, onClose, product}) {
     const [checkDisplayMessage, setCheckDisplayMessage] = useState(0);
     const [checkDisplayBadge, setCheckDisplayBadge] = useState(0);
 
+    const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
+
+    const toastMarkup = toastActive ? (
+        <Toast content={toastContent} onDismiss={toggleToastActive} />
+    ) : null;
+
     const updateEditProductData = async () => {
         const formData = new FormData();
+
+        let hasRestockDateModifed = 0;
+        if(hasRestockDate == false || hasRestockDate == 'false') hasRestockDateModifed = 0;
+        else hasRestockDateModifed = 1;
 
         formData.append("id", product?.id);
         formData.append("product_id", product?.product_id);
         formData.append("variant_id", product?.variant_id);
         formData.append("title", product?.title);
+        formData.append("start_date", startDate);
+        formData.append("end_date", endDate);
+        formData.append("has_end_date", hasEndDate);
+        formData.append("restock_date", restockDate);
+        formData.append("has_restock_date", hasRestockDateModifed);
+        formData.append("display_message", checkDisplayMessage);
+        formData.append("display_badge", checkDisplayBadge);
 
-        console.log("Start Date: ", startDate);
-        console.log("Start Date Type: ", typeof startDate);
+        const response = await fetch("/api/coming-soon/products/update", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
 
-        // let endDate = null;
-        // let restockDate = null; 
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
 
-        // if(editHasEndDate) {
-        //     endDate = null;
-        // } else {
-        //     endDate = editEndDate.toISOString();
-        // }
-
-        // if(editHasRestockDate) {
-        //     restockDate = null;
-        // } else {
-        //     restockDate = editRestockDate.toISOString();
-        // }
-
-        // let displayMessage = editCheckDisplayMessage;
-        // if (editCheckDisplayMessage) {
-        //     displayMessage = 1;
-        // } else {
-        //     displayMessage = 0;
-        // }
-
-        // let displayBadge = editCheckDisplayBadge;
-        // if (editCheckDisplayBadge) {
-        //     displayBadge = 1;
-        // } else {
-        //     displayBadge = 0;
-        // }
-
-        
-        // formData.append("start_date", editStartDate.toISOString());
-        // formData.append("end_date", endDate);
-        // formData.append("has_end_date", editHasEndDate)
-        // formData.append("restock_date", restockDate);
-        // formData.append("has_restock_date", editHasRestockDate);
-        // formData.append("display_message", displayMessage);
-        // formData.append("display_badge", displayBadge);
-
-        // const response = await fetch("/api/coming-soon/products/update", {
-        //     method: "POST",
-        //     body: formData ? formData : JSON.stringify(data),
-        // });
-
-        // if (!response.ok) {
-        //     throw new Error(`HTTP error ${response.status}`);
-        // }
-
-        // if (response.ok) {
-        //     setToastContent("Product Updated Successfully.");
-        //     toggleToastActive(true);
-        //     getComingSoonProducts();
-        //     setEditModalActive(false);
-        // }
+        if (response.ok) {
+            setToastContent("Product Updated Successfully.");
+            toggleToastActive(true);
+            onSuccess();
+            handleClose();
+        }
     };
 
     const handleClose = () => {
@@ -101,11 +82,12 @@ export default function EditProductFormModal({active, onClose, product}) {
 
     useEffect(() => {
         setEditProductData();
-    })
+    }, [])
 
     return (
         <div style={{ height: "500px" }} className="absolute">
             <Frame>
+                {toastMarkup}
                 <Modal
                     open={active}
                     onClose={() => handleClose() }

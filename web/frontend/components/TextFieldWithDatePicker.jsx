@@ -18,8 +18,7 @@ export default function TextFieldWithDatePicker({
   }) {
 
     // Initial Value of Incoming Date format will be like this: 2024-03-02 00:00:00
-
-    const datePickerRef = useRef(null);
+    const todayDateString = (new Date()).toLocaleDateString('en-US');
 
     const dateToString = (date) => {
         if(date == null) return null;
@@ -29,7 +28,7 @@ export default function TextFieldWithDatePicker({
         const month = String(dateObject.getMonth() + 1).padStart(2, '0');
         const year = dateObject.getFullYear();
 
-        return `${day}/${month}/${year}`;
+        return `${month}/${day}/${year}`;
     }
 
     const dateToDatePicker = (date) => {
@@ -41,13 +40,15 @@ export default function TextFieldWithDatePicker({
         return datePickerObject;
     }
 
-    const getPassedMonth = () => {
-        const dateObject = new Date(initialDate);
+    const getPassedMonth = (passedMonth = null) => {
+        let dateObject = new Date(initialDate);
+        if(passedMonth != null) dateObject = new Date(passedMonth);
         return Number(String(dateObject.getMonth()).padStart(2, '0'));
     }
 
-    const getPassedYear = () => {
-        const dateObject = new Date(initialDate);
+    const getPassedYear = (passedYear = null) => {
+        let dateObject = new Date(initialDate);
+        if(passedYear != null) dateObject = new Date(passedYear);
         return dateObject.getFullYear();
     }
 
@@ -74,26 +75,15 @@ export default function TextFieldWithDatePicker({
     }
 
     useEffect( () => {
-        if(initialDate != null) {
-            setFormattedDateForInputField(dateToString(initialDate)); 
-            setFormattedDateForDatePicker(dateToDatePicker(initialDate));
+        if(initialDate == null) initialDate = todayDateString;
 
-            if(formattedDateForDatePicker)
-            {
-                setMonth(getPassedMonth());
-                setYear(getPassedYear());
-            }
-        }
-        else
+        setFormattedDateForInputField(dateToString(initialDate)); 
+        setFormattedDateForDatePicker(dateToDatePicker(initialDate));
+
+        if(formattedDateForDatePicker)
         {
-            setFormattedDateForInputField('');
-            setFormattedDateForDatePicker(dateToDatePicker((new Date()).toLocaleDateString('en-US')));
-
-            if(formattedDateForDatePicker)
-            {
-                setMonth(getPassedMonth());
-                setYear(getPassedYear());
-            }
+            setMonth(getPassedMonth());
+            setYear(getPassedYear());
         }
     }, [initialDate])
 
@@ -121,7 +111,7 @@ export default function TextFieldWithDatePicker({
                         />
                     }
                 >
-                    <Card ref={datePickerRef}>
+                    <Card>
                         <DatePicker
                             month={month}
                             year={year}

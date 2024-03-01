@@ -14,7 +14,7 @@ import {
 } from "@shopify/polaris";
 import { EditIcon, DeleteIcon } from "@shopify/polaris-icons";
 import { ResourcePicker } from "@shopify/app-bridge-react";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
@@ -262,7 +262,8 @@ export default function ProductTable() {
     return (
         <>
             {editProductData != null && <EditProductFormModal 
-                active={editModalActive} 
+                active={editModalActive}
+                onSuccess={getComingSoonProducts}
                 onClose={handleCloseProductEditModal}
                 product={editProductData}
             />}
