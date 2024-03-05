@@ -87,14 +87,13 @@ export default function Activation()
     const getComingSoonActivation = async () => {
         const response = await fetch("/api/coming-soon/init");
         if (response.ok) {
-            const comingSoonActivation = await response.json();
-            const activationData = comingSoonActivation?.activation;
+            const activationData = await response.json();
             const activationObj = {
                 'active' : activationData.active,
-                'active_on_collection' : activationData.active_on_collection,
-                'active_on_product' : activationData.active_on_product,
-                'when_show_coming_soon': activationData.when_show_coming_soon,
-                'specific_inventory': activationData.specific_inventory
+                'active_on_collection' : activationData?.active_on_collection,
+                'active_on_product' : activationData?.active_on_product,
+                'when_show_coming_soon': activationData?.when_show_coming_soon,
+                'specific_inventory': activationData?.specific_inventory
             }
             dispatch(setShopName(activationData?.shop));
             dispatch(setActivation(activationObj));

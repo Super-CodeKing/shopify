@@ -20,6 +20,7 @@ import { useAuthenticatedFetch } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { setProductList } from "../../store/reducers/ComingSoon";
 import EditProductFormModal from "./Modal/EditProduct";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function ProductTable() {
     const fetch = useAuthenticatedFetch();
@@ -27,6 +28,7 @@ export default function ProductTable() {
     const productListRedux = useSelector((state) => state.comingsoon.productList)
 
     const [checked, setChecked] = useState(true);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [openResourcePicker, setOpenResourcePicker] = useState(false);
     const [comingSoonProducts, setComingSoonProducts] = useState([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
@@ -35,12 +37,12 @@ export default function ProductTable() {
     const [initialSelectedProductIds, setInitialSelectedProductIds] = useState([]);
     const [toastContent, setToastContent] = useState("");
     const [editProductData, setEditProductData] = useState(null);
+    const [deleteProductId, setDeleteProductId] = useState(null);
+    const [deleteId, setDeleteId] = useState(null);
 
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
 
-    const toastMarkup = toastActive ? (
-        <Toast content={toastContent} onDismiss={toggleToastActive} />
-    ) : null;
+    const toastMarkup = toastActive ? (<Toast content={toastContent} onDismiss={toggleToastActive} />):null;
 
     const handleChange = () => {
         setChecked(!checked);
@@ -98,7 +100,7 @@ export default function ProductTable() {
         formData.append("id", id);
         formData.append("product_id", product_id);
 
-        const response = await fetch("/api/preorder/products/destroy", {
+        const response = await fetch("/api/coming-soon/products/destroy", {
             method: "POST",
             body: formData ? formData : JSON.stringify(data),
         });
@@ -112,7 +114,6 @@ export default function ProductTable() {
             toggleToastActive(true);
             getComingSoonProducts();
         }
-        console.log(id + " " + product_id);
     };
 
     const selectProduct = (SelectPayload) => {
@@ -148,14 +149,27 @@ export default function ProductTable() {
         setOpenResourcePicker(true);
     };
 
+    const handleDeleteClick = (id, product_id) => {
+        setDeleteId(id);
+        setDeleteProductId(product_id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteProductFromPreOrderList(deleteId, deleteProductId);
+    };
+
     function editProductFormComingSoonList(productData) {
         setEditProductData(productData);
         if(productData != null) setEditModalActive(true);
     }
 
-    const handleCloseProductEditModal = () => {
-        console.log("Closing-------------------");
+    const handleCloseProductEditModal = (notFromSubmit) => {
         setEditProductData(null);
+        if(notFromSubmit == 2) {
+            setToastContent("Product edited successfully.");
+            setToastActive(true);
+        }
         setEditModalActive(false);
     };
 
@@ -207,18 +221,11 @@ export default function ProductTable() {
                 </IndexTable.Cell>
                 <IndexTable.Cell>
                     <div className="flex space-x-1">
-                        <Button
-                            onClick={() =>
-                                editProductFormComingSoonList(comingSoonProducts[index])
-                            }
-                        >
+                        <Button onClick={() => editProductFormComingSoonList(comingSoonProducts[index])}>
                             <Icon source={EditIcon} tone="base" />
                         </Button>
-                        <Button
-                            onClick={() =>
-                                deleteProductFromPreOrderList(id, product_id)
-                            }
-                        >
+
+                        <Button onClick={() => handleDeleteClick(id, product_id)}>
                             <Icon source={DeleteIcon} tone="base" />
                         </Button>
                     </div>
@@ -261,6 +268,14 @@ export default function ProductTable() {
 
     return (
         <>
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Confirm deletion"
+                message="Are you sure you want to delete this item? This action cannot be undone."
+                confirmButtonLabel="Delete"
+            />
             {editProductData != null && <EditProductFormModal 
                 active={editModalActive}
                 onSuccess={getComingSoonProducts}

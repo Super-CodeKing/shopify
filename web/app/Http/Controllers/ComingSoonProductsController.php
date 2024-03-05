@@ -88,6 +88,16 @@ class ComingSoonProductsController extends Controller
         ], 200);
     }
 
+    public function destroy(Request $request)
+    {
+        $product = Products::find($request->id);
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product Deleted Successfully'
+        ], 200);
+    }
+
     private function formatDate($date)
     {
         $formattedDate = '';

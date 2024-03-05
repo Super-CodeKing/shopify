@@ -26,16 +26,15 @@ export default function EditProductFormModal({active, onSuccess, onClose, produc
 
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
 
-    const toastMarkup = toastActive ? (
-        <Toast content={toastContent} onDismiss={toggleToastActive} />
-    ) : null;
+    const falsyValueModifier = (value) => {
+        let hasValue = 0;
+        if(value == false || value == 'false') hasValue = 0;
+        else hasValue = 1;
+        return hasValue;
+    }
 
     const updateEditProductData = async () => {
         const formData = new FormData();
-
-        let hasRestockDateModifed = 0;
-        if(hasRestockDate == false || hasRestockDate == 'false') hasRestockDateModifed = 0;
-        else hasRestockDateModifed = 1;
 
         formData.append("id", product?.id);
         formData.append("product_id", product?.product_id);
@@ -43,11 +42,11 @@ export default function EditProductFormModal({active, onSuccess, onClose, produc
         formData.append("title", product?.title);
         formData.append("start_date", startDate);
         formData.append("end_date", endDate);
-        formData.append("has_end_date", hasEndDate);
+        formData.append("has_end_date", falsyValueModifier(hasEndDate));
         formData.append("restock_date", restockDate);
-        formData.append("has_restock_date", hasRestockDateModifed);
-        formData.append("display_message", checkDisplayMessage);
-        formData.append("display_badge", checkDisplayBadge);
+        formData.append("has_restock_date", falsyValueModifier(hasRestockDate));
+        formData.append("display_message", falsyValueModifier(checkDisplayMessage));
+        formData.append("display_badge", falsyValueModifier(checkDisplayBadge));
 
         const response = await fetch("/api/coming-soon/products/update", {
             method: "POST",
@@ -62,12 +61,16 @@ export default function EditProductFormModal({active, onSuccess, onClose, produc
             setToastContent("Product Updated Successfully.");
             toggleToastActive(true);
             onSuccess();
-            handleClose();
+            handleClose(2);
         }
     };
 
-    const handleClose = () => {
-        onClose();
+    const toastMarkup = toastActive ? (
+        <Toast content={toastContent} onDismiss={toggleToastActive} />
+    ) : null;
+
+    const handleClose = (notFromSubmit = 1) => {
+        onClose(notFromSubmit);
     };
 
     const setEditProductData = () => {
