@@ -11,7 +11,7 @@ export default function QuickSetup() {
             </div>
             <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card background="bg-surface-secondary">
+                    <Card>
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">
@@ -74,7 +74,7 @@ export default function QuickSetup() {
                     </Card>
                 </Grid.Cell>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card background="bg-surface-secondary">
+                    <Card>
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">
@@ -138,7 +138,7 @@ export default function QuickSetup() {
                 </Grid.Cell>
 
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card background="bg-surface-secondary">
+                    <Card>
                         <div className="flex flex-col">
                             <div className="flex w-full items-center">
                                 <Text variant="headingMd" as="h2">

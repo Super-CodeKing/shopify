@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Activation from "./Activation";
 import { setShopName } from "../../store/reducers/ComingSoon";
 import ProductTable from "./Products";
+import ColorNText from "./ColorNText";
 
 export default function ComingSoon() {
 
@@ -97,11 +98,8 @@ export default function ComingSoon() {
                 title="Coming Soon: Settings"
                 primaryAction={primaryAction}
             />
-
             <div className="flex">
-                <div
-                    className="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700"
-                >
+                <div className="self-start preorder-nav mx-3 hs-overlay hs-overlay-open:translate-x-0 w-64 bg-white -translate-x-full transition-all duration-300 transform hidden z-[60] border-e border-gray-200 overflow-y-auto lg:block lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-slate-700 dark:[&::-webkit-scrollbar-thumb]:bg-slate-500 dark:bg-gray-800 dark:border-gray-700">
                     <nav
                         className="hs-accordion-group pb-3 w-full flex flex-col flex-wrap"
                         data-hs-accordion-always-open
@@ -129,6 +127,7 @@ export default function ComingSoon() {
                 <div className="flex-1">
                     {activeFlag === 'Activation' && <Activation />}
                     {activeFlag === 'Product Setup' && <ProductTable />}
+                    {activeFlag === 'Colors & Text' && <ColorNText />}
                 </div>
             </div>
         </Page>

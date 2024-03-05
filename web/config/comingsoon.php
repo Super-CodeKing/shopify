@@ -7,7 +7,7 @@ return [
     "when_show_coming_soon"         =>    2,
     "specific_inventory"            =>    0,
     "button_settings"               =>    [
-        "inherit_from_theme"        =>    true,
+        "inherit_from_theme"        =>    false,
         "settings"                  =>    null
     ],
     "schedule"                      =>    [

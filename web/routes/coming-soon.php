@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ComingSoonController;
 use App\Http\Controllers\ComingSoonProductsController;
+use App\Http\Controllers\ComingSoonSettingsController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -26,4 +27,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('products/store', [ComingSoonProductsController::class, 'store']);
     Route::post('products/update', [ComingSoonProductsController::class, 'update']);
     Route::post('products/destroy', [ComingSoonProductsController::class, 'destroy']);
+
+    Route::get('colorntext', [ComingSoonSettingsController::class, 'getColorNTextSettings']);
+    Route::post('colorntext', [ComingSoonSettingsController::class, 'colorNText']);
 });
