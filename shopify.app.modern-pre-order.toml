@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://oriental-startup-catherine-doors.trycloudflare.com"
+application_url = "https://imaging-he-online-grows.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://oriental-startup-catherine-doors.trycloudflare.com/auth/callback",
-  "https://oriental-startup-catherine-doors.trycloudflare.com/auth/shopify/callback",
-  "https://oriental-startup-catherine-doors.trycloudflare.com/api/auth/callback"
+  "https://imaging-he-online-grows.trycloudflare.com/auth/callback",
+  "https://imaging-he-online-grows.trycloudflare.com/auth/shopify/callback",
+  "https://imaging-he-online-grows.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -30,4 +30,8 @@ use Illuminate\Support\Facades\Route;
 
     Route::get('colorntext', [ComingSoonSettingsController::class, 'getColorNTextSettings']);
     Route::post('colorntext', [ComingSoonSettingsController::class, 'colorNText']);
+
+    // Schedule
+    Route::get('schedule', [ComingSoonSettingsController::class, 'getComingSoonSchedule']);
+    Route::post('schedule', [ComingSoonSettingsController::class, 'storeComingSoonSchedule']);
 });

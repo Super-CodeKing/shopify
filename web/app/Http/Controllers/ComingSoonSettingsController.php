@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ComingSoon\ColorsNText;
+use App\Models\ComingSoon\Schedule;
 use Illuminate\Http\Request;
 
 class ComingSoonSettingsController extends Controller
@@ -59,5 +60,58 @@ class ComingSoonSettingsController extends Controller
                 'data' => $updatedComingSoonColorsSettings
             ], 200);
         }
+    }
+
+    public function getComingSoonSchedule(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $comingSoonSchedule = Schedule::where(['shop' => $shop])->first();
+
+        if (!$comingSoonSchedule) {
+            return response()->json(config('comingsoon')['schedule']);
+        }
+
+        $comingSoonSchedule = json_decode($comingSoonSchedule, true);
+        return response()->json($comingSoonSchedule);
+    }
+
+    public function storeComingSoonSchedule(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $startDate      = dateFormatToStore($request->start_date);
+        $endDate        = dateFormatToStore($request->end_date);
+        $noEndDate      = boolFormatToStore($request->no_end_date);
+        $restockDate    = dateFormatToStore($request->restock_date);
+        $noRestokDate   = boolFormatToStore($request->no_restock_date);
+
+        $schedule = Schedule::where('shop', $shop)->first();
+
+        if ($schedule) {
+            $comingSoonSchedule = Schedule::where('shop', $shop)->update([
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'no_end_date' => $noEndDate,
+                'estimated_restock_date' => $restockDate,
+                'no_restock_date' => $noRestokDate
+            ]);
+        } else {
+            $comingSoonSchedule = Schedule::create([
+                'shop' => $shop,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'no_end_date' => $noEndDate,
+                'estimated_restock_date' => $restockDate,
+                'no_restock_date' => $noRestokDate
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Pre Order Schedule Saved Successfully.',
+            'data' => $comingSoonSchedule
+        ], 200);
     }
 }
