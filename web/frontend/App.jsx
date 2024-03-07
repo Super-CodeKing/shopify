@@ -38,20 +38,20 @@ export default function App() {
                                 },
                                 {
                                     label: "Request Stock",
-                                    destination: "/request-stock",
+                                    destination: "/requeststock",
                                 },
-                                {
-                                    label: "Stock Counter",
-                                    destination: "/stock-counter",
-                                },
-                                {
-                                    label: "Get a Quote",
-                                    destination: "/get-quote",
-                                },
-                                {
-                                    label: t("NavigationMenu.pageName"),
-                                    destination: "/pagename",
-                                },
+                                // {
+                                //     label: "Stock Counter",
+                                //     destination: "/stock-counter",
+                                // },
+                                // {
+                                //     label: "Get a Quote",
+                                //     destination: "/get-quote",
+                                // },
+                                // {
+                                //     label: t("NavigationMenu.pageName"),
+                                //     destination: "/pagename",
+                                // },
                             ]}
                         />
                         <Routes pages={pages} />
