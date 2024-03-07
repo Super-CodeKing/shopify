@@ -34,4 +34,8 @@ use Illuminate\Support\Facades\Route;
     // Schedule
     Route::get('schedule', [ComingSoonSettingsController::class, 'getComingSoonSchedule']);
     Route::post('schedule', [ComingSoonSettingsController::class, 'storeComingSoonSchedule']);
+
+    // Display Message
+    Route::get('display-message', [ComingSoonSettingsController::class, 'getDisplayMessage']);
+    Route::post('display-message', [ComingSoonSettingsController::class, 'storeDisplayMessage']);
 });

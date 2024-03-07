@@ -15,6 +15,7 @@ import { setShopName } from "../../store/reducers/ComingSoon";
 import ProductTable from "./Products";
 import ColorNText from "./ColorNText";
 import Schedule from "./Schedule";
+import DisplayMessage from "./DisplayMessage";
 
 export default function ComingSoon() {
 
@@ -130,6 +131,7 @@ export default function ComingSoon() {
                     {activeFlag === 'Product Setup' && <ProductTable />}
                     {activeFlag === 'Colors & Text' && <ColorNText />}
                     {activeFlag === 'Restock Schedule' && <Schedule />}
+                    {activeFlag === 'Display Message' && <DisplayMessage />}
                 </div>
             </div>
         </Page>

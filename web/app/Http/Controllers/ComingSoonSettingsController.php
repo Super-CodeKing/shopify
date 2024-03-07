@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ComingSoon\ColorsNText;
+use App\Models\ComingSoon\DisplayMessage;
 use App\Models\ComingSoon\Schedule;
 use Illuminate\Http\Request;
 
@@ -110,8 +111,50 @@ class ComingSoonSettingsController extends Controller
         }
 
         return response()->json([
-            'message' => 'Pre Order Schedule Saved Successfully.',
+            'message' => 'Coming Soon Schedule Saved Successfully.',
             'data' => $comingSoonSchedule
         ], 200);
+    }
+
+    public function storeDisplayMessage(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $displayMessage = DisplayMessage::where('shop', $shop)->first();
+
+        if ($displayMessage) {
+            $comingSoonMessage = DisplayMessage::where('shop', $shop)->update([
+                'message' => $request->message,
+                'position' => $request->position,
+                'alignment' => $request->alignment
+            ]);
+        } else {
+            $comingSoonMessage = DisplayMessage::create([
+                'shop' => $shop,
+                'message' => $request->message,
+                'position' => $request->position,
+                'alignment' => $request->alignment
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Coming Soon Display Message Saved Successfully.',
+            'data' => $comingSoonMessage
+        ], 200);
+    }
+
+    public function getDisplayMessage(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $comingSoonDisplayMessage = DisplayMessage::where('shop', $shop)->first();
+        if (!$comingSoonDisplayMessage) {
+            return response()->json(config('comingsoon')['display_message']);
+        }
+        $comingSoonDisplayMessage = json_decode($comingSoonDisplayMessage, true);
+        
+        return response()->json($comingSoonDisplayMessage);
     }
 }

@@ -132,18 +132,29 @@ export default function Schedule() {
         let flagNoEndDate       = false;
         let flagNoRestockDate   = false;
 
-        let startDateNull = null;
-        if(scheduleRedux?.start_date == null) startDateNull = new Date(); 
+        const formattedStartDate = dateFormatter(startDate ?? today);
+        const formattedEndDate = dateFormatter(endDate ?? today);
+        const formattedRestockDate = dateFormatter(restockDate ?? today); 
 
-        if(dateFormatter(startDateNull) !== dateFormatter(startDate)) flagStartDate = true;
-        if(dateFormatter(scheduleRedux.end_date) !== dateFormatter(endDate)) flagEndDate = true;
-        if(dateFormatter(scheduleRedux.estimated_restock_date) !== dateFormatter(restockDate)) flagRestockDate = true;
+        if (formattedStartDate !== dateFormatter(scheduleRedux.start_date ?? today)) {
+            flagStartDate = true;
+        }
+
+        if (formattedEndDate !== dateFormatter(scheduleRedux.end_date ?? today)) {
+            flagEndDate = true;
+        }
+
+        if (formattedRestockDate !== dateFormatter(scheduleRedux.estimated_restock_date ?? today)) {
+            flagRestockDate = true;
+        }
+
         if(scheduleRedux.no_end_date !== noEndDate) flagNoEndDate = true;
         if(scheduleRedux.no_restock_date !== noRestockDate) flagNoRestockDate = true;
         
         if(flagStartDate || flagEndDate || flagRestockDate || flagNoEndDate || flagNoRestockDate) {
             return true;
         }
+
         return false;
     }, [startDate, endDate, restockDate, noEndDate, noRestockDate, scheduleRedux]);
 
