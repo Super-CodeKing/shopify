@@ -38,4 +38,8 @@ use Illuminate\Support\Facades\Route;
     // Display Message
     Route::get('display-message', [ComingSoonSettingsController::class, 'getDisplayMessage']);
     Route::post('display-message', [ComingSoonSettingsController::class, 'storeDisplayMessage']);
+
+    // Badge Design
+    Route::get('badge-design', [ComingSoonSettingsController::class, 'getBadgeDesign']);
+    Route::post('badge-design', [ComingSoonSettingsController::class, 'storeBadgeDesign']);
 });

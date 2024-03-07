@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ComingSoon\Badge;
 use App\Models\ComingSoon\ColorsNText;
 use App\Models\ComingSoon\DisplayMessage;
 use App\Models\ComingSoon\Schedule;
@@ -156,5 +157,52 @@ class ComingSoonSettingsController extends Controller
         $comingSoonDisplayMessage = json_decode($comingSoonDisplayMessage, true);
         
         return response()->json($comingSoonDisplayMessage);
+    }
+
+    public function getBadgeDesign(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $comingSoonBadgeDesign = Badge::where('shop', $shop)->first();
+
+        if (!$comingSoonBadgeDesign) {
+            return response()->json(config('comingsoon')['badge_design']);
+        }
+
+        $comingSoonBadgeDesign = json_decode($comingSoonBadgeDesign, true);
+        return response()->json($comingSoonBadgeDesign);
+    }
+
+    public function storeBadgeDesign(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $badgeDesign = Badge::where('shop', $shop)->first();
+
+        if ($badgeDesign) {
+            $badgeDesign = Badge::where('shop', $shop)->update([
+                'text'          => $request->text,
+                'position'      => $request->position,
+                'bg_color'      => $request->bg_color,
+                'text_color'    => $request->text_color,
+                'font_size'     => $request->font_size
+            ]);
+        } else {
+            $badgeDesign = Badge::create([
+                'shop'          => $shop,
+                'text'          => $request->text,
+                'position'      => $request->position,
+                'bg_color'      => $request->bg_color,
+                'text_color'    => $request->text_color,
+                'font_size'     => $request->font_size
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Coming Soon Badge Design Saved Successfully.',
+            'data'    => $badgeDesign
+        ], 200);
     }
 }

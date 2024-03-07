@@ -16,6 +16,7 @@ import ProductTable from "./Products";
 import ColorNText from "./ColorNText";
 import Schedule from "./Schedule";
 import DisplayMessage from "./DisplayMessage";
+import BadgeDesign from "./BadgeDesign";
 
 export default function ComingSoon() {
 
@@ -132,6 +133,7 @@ export default function ComingSoon() {
                     {activeFlag === 'Colors & Text' && <ColorNText />}
                     {activeFlag === 'Restock Schedule' && <Schedule />}
                     {activeFlag === 'Display Message' && <DisplayMessage />}
+                    {activeFlag === 'Badge Design' && <BadgeDesign />}
                 </div>
             </div>
         </Page>

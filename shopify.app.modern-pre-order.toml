@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://holdem-continuously-value-essays.trycloudflare.com"
+application_url = "https://states-pioneer-retrieve-ala.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://holdem-continuously-value-essays.trycloudflare.com/auth/callback",
-  "https://holdem-continuously-value-essays.trycloudflare.com/auth/shopify/callback",
-  "https://holdem-continuously-value-essays.trycloudflare.com/api/auth/callback"
+  "https://states-pioneer-retrieve-ala.trycloudflare.com/auth/callback",
+  "https://states-pioneer-retrieve-ala.trycloudflare.com/auth/shopify/callback",
+  "https://states-pioneer-retrieve-ala.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

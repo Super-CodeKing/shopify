@@ -19,14 +19,14 @@ return [
     ],
     "display_message"               => [
         'message'                   => 'Stock will be available soon.',
-        'position'                  => 'before-preorder-button',
+        'position'                  => 'before-comingsoon-button',
         'alignment'                 => 'left'
     ],
     "badge_design"                  => [
-        'text'                      => 'Pre Order',
+        'text'                      => 'Coming Soon',
         'position'                  => 'top-right',
         'bg_color'                  => '#000000',
         'text_color'                => '#ffffff',
-        'font_size'                 => 16
+        'font_size'                 => 13
     ]
 ];
