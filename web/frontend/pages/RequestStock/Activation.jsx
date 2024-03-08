@@ -15,23 +15,23 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import SkeletonActivation from "./Skeleton/Activation";
 import { useDispatch, useSelector } from "react-redux";
-import { setShopName, setActivation } from "../../store/reducers/ComingSoon";
+import { setShopName, setActivation } from "../../store/reducers/RequestStock";
 
 export default function Activation() 
 {
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
-    const activation = useSelector((state) => state.comingsoon.activation);
+    const activation = useSelector((state) => state.requeststock.activation);
     
     const [loading, setLoading] = useState(false);
-    const [isComingSoonActive, setIsComingSoonActive] = useState(true);
+    const [isRequestStockActive, setIsRequestStockActive] = useState(false);
     const [checkedProductPage, setCheckedProductPage] = useState(true);
     const [checkedCollectionPage, setCheckedCollectionPage] = useState(false);
     const [toastActive, setToastActive] = useState(false);
     const [whenToShow, setWhenToShow] = useState('always');
     const [specicInventory, setSpecificInventory] = useState(0);
 
-    const changeComingSoonStatus = () => setIsComingSoonActive(!isComingSoonActive);
+    const changeRequestStockStatus = () => setIsRequestStockActive(!isRequestStockActive);
     const activeOnProductPage = () => setCheckedProductPage(!checkedProductPage);
     const activeOnCollectionPage = () => setCheckedCollectionPage(!checkedCollectionPage);
     const toggleToastActive = useCallback(() => setToastActive((toastActive) => !toastActive),[]);
@@ -44,19 +44,19 @@ export default function Activation()
     ) : null;
 
     const setActivationData = (passedActivation) => {
-        let comingSoonInitData = activation;
+        let requestStockInitData = activation;
         if(passedActivation !== null && passedActivation !== undefined) {
-            comingSoonInitData = Object.keys(passedActivation).length !== 0 ? passedActivation : activation;
+            requestStockInitData = Object.keys(passedActivation).length !== 0 ? passedActivation : activation;
         }
         
-        if(comingSoonInitData.active == 1) {
-            setIsComingSoonActive(true)
-        } else if(comingSoonInitData?.active == 0) {
-            setIsComingSoonActive(false);
+        if(requestStockInitData.active == 1) {
+            setIsRequestStockActive(true)
+        } else if(requestStockInitData?.active == 0) {
+            setIsRequestStockActive(false);
         }
 
-        let poc = comingSoonInitData?.active_on_collection;
-        let pop = comingSoonInitData?.active_on_product;
+        let poc = requestStockInitData?.active_on_collection;
+        let pop = requestStockInitData?.active_on_product;
 
         if (poc && pop ) {
             setCheckedProductPage(true);
@@ -72,27 +72,28 @@ export default function Activation()
             setCheckedCollectionPage(false);
         }
 
-        if(comingSoonInitData?.when_show_coming_soon == 1) {
+        if(requestStockInitData?.when_show_request_stock == 1) {
             setWhenToShow('always')
-        } else if(comingSoonInitData?.when_show_coming_soon == 2) {
+        } else if(requestStockInitData?.when_show_request_stock == 2) {
             setWhenToShow('sold-out')
-        } else if(comingSoonInitData?.when_show_coming_soon == 3) {
+        } else if(requestStockInitData?.when_show_request_stock == 3) {
             setWhenToShow('specific-inventory')
-            setSpecificInventory(comingSoonInitData?.specific_inventory)
+            setSpecificInventory(requestStockInitData?.specific_inventory)
         }
 
         setLoading(false);
     };
 
-    const getComingSoonActivation = async () => {
-        const response = await fetch("/api/coming-soon/init");
+    const getRequestStockActivation = async () => {
+        const response = await fetch("/api/request-stock/activate");
         if (response.ok) {
             const activationData = await response.json();
+            console.log(activationData);
             const activationObj = {
                 'active' : activationData.active,
                 'active_on_collection' : activationData?.active_on_collection,
                 'active_on_product' : activationData?.active_on_product,
-                'when_show_coming_soon': activationData?.when_show_coming_soon,
+                'when_show_request_stock': activationData?.when_show_request_stock,
                 'specific_inventory': activationData?.specific_inventory
             }
             dispatch(setShopName(activationData?.shop));
@@ -105,17 +106,17 @@ export default function Activation()
         }
     };
 
-    const savePreOrderInitActivation = async () => {
+    const saveRequestStockActivation = async () => {
         setLoading(true);
         const formData = new FormData();
     
-        formData.append("active", isComingSoonActive);
+        formData.append("active", isRequestStockActive);
         formData.append("active_on_product", checkedProductPage);
         formData.append("active_on_collection", checkedCollectionPage);
-        formData.append("when_show_coming_soon", whenToShow);
+        formData.append("when_show_request_stock", whenToShow);
         formData.append("specific_inventory", specicInventory);
     
-        const response = await fetch("/api/coming-soon/save", {
+        const response = await fetch("/api/request-stock/activate", {
           method: "POST",
           body: formData ? formData : JSON.stringify(data),
         });
@@ -128,35 +129,35 @@ export default function Activation()
     
         if (response.ok) {
           toggleToastActive(true);
-          getComingSoonActivation();
+          getRequestStockActivation();
           setLoading(false);
         }
       };
 
     const isDataChanged = useCallback(() => {
-        let flagActivation = false;
-        let flagWhereToShow = false;
-        let flagWhenToShow = false;
-        let flagSpecificInventory = false;
+        console.log(activation);
+        let flagActivation          = false;
+        let flagWhereToShow         = false;
+        let flagWhenToShow          = false;
+        let flagSpecificInventory   = false;
 
         let activeRedux = activation.active == 0 ? false : true;
-        if(activeRedux !== isComingSoonActive) {
+        if(activeRedux !== isRequestStockActive) {
             flagActivation = true;
         }
 
         let whereToShowProductRedux = activation.active_on_product == 0 ? false: true;
-        let whereToShowCollectionRedux = activation.active_on_collection == 0 ? false: true;
 
-        if(whereToShowProductRedux != checkedProductPage || whereToShowCollectionRedux != checkedCollectionPage) {
+        if(whereToShowProductRedux != checkedProductPage) {
             flagWhereToShow = true;
         }
 
         let whenToShowRedux = ''; 
-        if(activation.when_show_coming_soon == 1) {
+        if(activation.when_show_request_stock == 1) {
             whenToShowRedux = 'always'
-        } else if(activation.when_show_coming_soon == 2) {
+        } else if(activation.when_show_request_stock == 2) {
             whenToShowRedux = 'sold-out';
-        } else if(activation.when_show_coming_soon == 3) {
+        } else if(activation.when_show_request_stock == 3) {
             whenToShowRedux = 'specific-inventory';
         }
 
@@ -172,11 +173,11 @@ export default function Activation()
             return true;
         }
         return false;
-    }, [isComingSoonActive, checkedProductPage, checkedCollectionPage, specicInventory, whenToShow, activation]);
+    }, [isRequestStockActive, checkedProductPage, specicInventory, whenToShow, activation]);
 
     useEffect( () => {
         setLoading(true);
-        if(Object.keys(activation).length === 0) getComingSoonActivation();
+        if(Object.keys(activation).length === 0) getRequestStockActivation();
         else setActivationData();
     }, [])
 
@@ -198,12 +199,12 @@ export default function Activation()
                                 </Text>
                                 <p>
                                     Current Status:{" "}
-                                    {isComingSoonActive && (
+                                    {isRequestStockActive && (
                                         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 ml-1">
                                             On
                                         </span>
                                     )}
-                                    {!isComingSoonActive && (
+                                    {!isRequestStockActive && (
                                         <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 ml-1">
                                             Off
                                         </span>
@@ -211,19 +212,19 @@ export default function Activation()
                                 </p>
                             </div>
                             <div className="ml-auto">
-                                {isComingSoonActive && (
+                                {isRequestStockActive && (
                                     <Button
                                         variant="primary"
                                         tone="critical"
-                                        onClick={() => changeComingSoonStatus()}
+                                        onClick={() => changeRequestStockStatus()}
                                     >
                                         Deactive
                                     </Button>
                                 )}
-                                {!isComingSoonActive && (
+                                {!isRequestStockActive && (
                                     <Button
                                         variant="primary"
-                                        onClick={() => changeComingSoonStatus()}
+                                        onClick={() => changeRequestStockStatus()}
                                     >
                                         Active
                                     </Button>
@@ -239,8 +240,8 @@ export default function Activation()
                                         Where to show
                                     </Text>
                                     <Text>
-                                        You will be able to active this on Product
-                                        page and Collection page.{" "}
+                                        You will be able to active this only on Product
+                                        page.{" "}
                                     </Text>
                                     <div className="mt-3 mb-2">
                                         <Divider borderColor="border" />
@@ -255,11 +256,11 @@ export default function Activation()
                                         />
                                     </div>
 
-                                    <Checkbox
+                                    {/* <Checkbox
                                         label="Collection Page"
                                         checked={checkedCollectionPage}
                                         onChange={() => activeOnCollectionPage()}
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </div>
@@ -272,7 +273,7 @@ export default function Activation()
                                         When to show
                                     </Text>
                                     <Text>
-                                        When you want to show the Pre Order button 
+                                        When you want to show the Request Stock button 
                                         on your product page.{" "}
                                     </Text>
                                     <div className="mt-3 mb-2">
@@ -282,22 +283,22 @@ export default function Activation()
                                 <div className="mt-1 flex flex-col">
                                     <RadioButton
                                         label="Always"
-                                        helpText="Add to cart button will be always replaced by Pre Order Button"
+                                        helpText="Add to cart button will be always replaced by Request Stock Button"
                                         checked={whenToShow === 'always'}
-                                        name="preorder-whenToShow"
+                                        name="requeststock-whenToShow"
                                         onChange={() => handleChange('always')}
                                     />
                                     <RadioButton
                                         label="Inventory Zero"
-                                        helpText="When inventory will zero then SOLD Out button comes, Replace that Sold Out button with Pre Order Button"
-                                        name="preorder-whenToShow"
+                                        helpText="When inventory will zero then SOLD Out button comes, Replace that Sold Out button with Request Stock Button"
+                                        name="requeststock-whenToShow"
                                         checked={whenToShow === 'sold-out'}
                                         onChange={() => handleChange('sold-out')}
                                     />
                                     <RadioButton
                                         label="After Specific Inventory"
-                                        helpText="When inventory will reach out a specific number then Pre Order Button will come."
-                                        name="preorder-whenToShow"
+                                        helpText="When inventory will reach out a specific number then Request Stock Button will come."
+                                        name="requeststock-whenToShow"
                                         checked={whenToShow === 'specific-inventory'}
                                         onChange={() => handleChange('specific-inventory')}
                                     />
@@ -322,7 +323,7 @@ export default function Activation()
                         variant="primary"
                         size="large"
                         disabled={!isDataChanged()}
-                        onClick={() => savePreOrderInitActivation()}
+                        onClick={() => saveRequestStockActivation()}
                     >
                     Save
                     </Button>
