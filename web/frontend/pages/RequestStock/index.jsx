@@ -21,6 +21,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { setShopName } from "../../store/reducers/PreOrder";
 import Activation from "./Activation";
+import ProductTable from "./Products";
 
 export default function PreOrder() {
     const fetch = useAuthenticatedFetch();
@@ -134,6 +135,7 @@ export default function PreOrder() {
                 </div>
                 <div className="flex-1">
                     {activeFlag === 'Activation' && <Activation />}
+                    {activeFlag === 'Product Setup' && <ProductTable />}
                 </div>
             </div>
         </Page>

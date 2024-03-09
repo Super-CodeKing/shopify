@@ -21,3 +21,30 @@ function boolFormatToStore($requestBool)
     }
     return $value;
 }
+
+function formatDate($date)
+{
+    $formattedDate = '';
+    if($date == "null" || $date == NULL) {
+        $formattedDate = NULL;
+    } else {
+        $formattedDate = date('Y-m-d H:i:s', strtotime($date));
+    }
+    return $formattedDate;
+}
+
+function formatFalsyValue($falsyValue)
+{
+    $falsyTo_0_1 = 1;
+    
+    if($falsyValue == "true" || $falsyValue == true || $falsyValue == 1 || $falsyValue == "1")
+    {
+        $falsyTo_0_1 =  1;
+    }
+    else if($falsyValue == "false" || $falsyValue == false || $falsyValue == 0 || $falsyValue == "0")
+    {
+        $falsyTo_0_1 = 0;
+    }
+    
+    return $falsyTo_0_1;
+}
