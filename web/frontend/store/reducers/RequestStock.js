@@ -4,6 +4,7 @@ const initialState = {
     shopName: '',
     activation: {},
     productList: [],
+    requestedProducts: [],
     buttonSettings: {},
     inheritFromTheme: null,
     schedule: {},
@@ -23,6 +24,9 @@ export const requestStockSettingSlice = createSlice({
         },
         setProductList: (state, action) => {
             state.productList = action.payload
+        },
+        setRequestedProducts: (state, action) => {
+            state.requestedProducts = action.payload
         },
         setButtonSettings: (state, action) => {
             state.buttonSettings = action.payload
@@ -45,7 +49,8 @@ export const requestStockSettingSlice = createSlice({
 export const { 
     setShopName, 
     setActivation, 
-    setProductList, 
+    setProductList,
+    setRequestedProducts,
     setButtonSettings,
     setSchedule,
     setDisplayMessage,

@@ -185,7 +185,7 @@ export default function Activation()
         <div className="activation [&>div>div]:pt-0">
             {loading === true && <SkeletonActivation title="Activation Area" />}
 
-            {loading === false &&<Page fullWidth>
+            {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Activation Area

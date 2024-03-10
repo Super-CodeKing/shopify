@@ -16,12 +16,13 @@ import {
     DiscountIcon,
     ColorIcon,
     OrderRepeatIcon,
-    ProductListIcon
+    IncomingIcon
 } from "@shopify/polaris-icons";
 import { useDispatch, useSelector } from 'react-redux'
 import { setShopName } from "../../store/reducers/PreOrder";
 import Activation from "./Activation";
 import ProductTable from "./Products";
+import RequestedProducts from "./RequestedProducts";
 
 export default function PreOrder() {
     const fetch = useAuthenticatedFetch();
@@ -37,7 +38,7 @@ export default function PreOrder() {
     const flags = [
         { name: 'Activation', icon: StatusActiveIcon },
         { name: 'Product Setup', icon: ProductIcon },
-        { name: 'Pre Orders', icon: OrderRepeatIcon },
+        { name: 'Requested Products', icon: IncomingIcon },
         { name: 'Colors & Text', icon: ColorIcon },
         { name: 'Order Limit', icon: OrderIcon},
         { name: 'Set Schedule', icon: CalendarTimeIcon },
@@ -136,6 +137,7 @@ export default function PreOrder() {
                 <div className="flex-1">
                     {activeFlag === 'Activation' && <Activation />}
                     {activeFlag === 'Product Setup' && <ProductTable />}
+                    {activeFlag === 'Requested Products' && <RequestedProducts />}
                 </div>
             </div>
         </Page>
