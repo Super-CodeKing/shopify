@@ -14,4 +14,5 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
     Route::post('products/destroy', [ProductsController::class, 'destroy']);
 
     Route::get('requested-products', [RequestedProductsController::class, 'index']);
+    Route::get('requested-products/count', [RequestedProductsController::class, 'product_count']);
 });

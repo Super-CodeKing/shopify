@@ -15,8 +15,9 @@ class CreateRequestedProductsTable extends Migration
     {
         Schema::create('requested_products', function (Blueprint $table) {
             $table->id();
+            $table->string('shop');
             $table->string('product_id');
-            $table->string('variant_id');
+            $table->string('variant_id')->nullable();
             $table->string('product_title')->index();
             $table->integer('product_quantity')->default(1);
             $table->string('customer_id')->nullable();
