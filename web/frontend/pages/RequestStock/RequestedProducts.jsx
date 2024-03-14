@@ -9,8 +9,9 @@ import {
     Button,
     Page,
     Frame,
+    TextField
 } from "@shopify/polaris";
-import { DeleteIcon } from "@shopify/polaris-icons";
+import { DeleteIcon, ChevronRightIcon, ChevronLeftIcon, SearchIcon } from "@shopify/polaris-icons";
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useEffect, useState } from "react";
@@ -27,26 +28,17 @@ export default function RequestedProducts() {
 
     const shopName = useSelector((state) => state.requeststock.shopName);
     const requestedProductsRedux = useSelector((state) => state.requeststock.requestedProducts);
-    const countRequestedProducts = useSelector((state) => state.requeststock.requestedProductsCount)
+    const countRequestedProducts = useSelector((state) => state.requeststock.requestedProductsCount);
+    
     const [take, setTake] = useState(5);
     const [requestedProducts, setRequestedProducts] = useState([]);
     const [requestedProductsCount, setRequestedProductsCount] = useState(0);
-    const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+    const [isLoadingRequestedProducts, setIsLoadingRequestedProducts] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const updatePagination = (currentPage, totalCount) => {
-        const hasNext = currentPage * take < totalCount;
-        const hasPrevious = currentPage > 1;
-      
-        return {
-          hasNext,
-          onNext: hasNext ? () => getPreOrderOrders(currentPage + 1) : null,
-          hasPrevious,
-          onPrevious: hasPrevious ? () => getPreOrderOrders(currentPage - 1) : null,
-        };
-      };
-
-    
-    const [pagination, setPagination] = useState(updatePagination(currentPage, requestedProductsCount)); // Initial pagination state
+    const totalPages = Number(Math.ceil(countRequestedProducts/take));
+    const [showingFrom, setShowingFrom] = useState(1);
+    const [showingTo, setShowingTo] = useState(5);
+    const [searchWithProductTitle, setSearchWithProductTitle] = useState('');
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(requestedProducts);
@@ -132,17 +124,17 @@ export default function RequestedProducts() {
     );
     
 
-    const getPreOrderOrders = async (page = 1, take = 5) => {
+    const getRequestedProducts = async (page = 1, take = 5) => {
+        console.log(page);
         const response = await fetch(`/api/request-stock/requested-products?page=${page}&take=${take}`);
         if (response.ok) {
           const products = await response.json();
-          getRequestedProductsCount(); // Assuming this function handles total count
           setRequestedProducts(products);
           dispatch(setRequestedProductsRedux(products));
-          setIsLoadingOrders(false);
+          setIsLoadingRequestedProducts(false);
         } else {
           console.log("Error in Activating Pre Order: ", response);
-          setIsLoadingOrders(false);
+          setIsLoadingRequestedProducts(false);
           throw new Error(`HTTP error ${response.status}`);
         }
       };
@@ -151,52 +143,48 @@ export default function RequestedProducts() {
         const response = await fetch("/api/request-stock/requested-products/count");
         if (response.ok) {
             const productsCount = await response.json();
-            console.log(productsCount);
             setRequestedProductsCount(productsCount);
             dispatch(setRequestedProductsCountRedux(productsCount));
-            setIsLoadingOrders(false);
+            setIsLoadingRequestedProducts(false);
         } else {
             console.log("Error in Activaing Pre Order: ", response);
-            setIsLoadingOrders(false);
+            setIsLoadingRequestedProducts(false);
             throw new Error(`HTTP error ${response.status}`);
         }
     };
 
-    
+    const fetchData = (pageNumber) => {
+        setIsLoadingRequestedProducts(true)
+        setCurrentPage(pageNumber);
+        setShowingFrom(((currentPage-1)*take) == 0 ? 1 : ((currentPage-1)*take));
+        setShowingTo(((currentPage-1)*take) + take);
+        getRequestedProducts(currentPage, take);
+    }
 
-    const handleNext = () => {
-        if (pagination.hasNext) {
-          setCurrentPage(currentPage + 1);
-          getPreOrderOrders(currentPage + 1); // Fetch data for next page
-          setPagination(updatePagination(currentPage + 1, totalCount));
-        }
-      };
-    
-      const handlePrevious = () => {
-        if (pagination.hasPrevious) {
-          setCurrentPage(currentPage - 1);
-          getPreOrderOrders(currentPage - 1); // Fetch data for previous page
-          setPagination(updatePagination(currentPage - 1, totalCount));
-        }
-      };
+    const searchOnRequestedProducts = (e) => {
+        console.log(e);
+    }
 
     useEffect(() => {
-        setIsLoadingOrders(true);
-        if(requestedProductsRedux?.length === 0) getPreOrderOrders();
+        setIsLoadingRequestedProducts(true);
+        if(requestedProductsRedux?.length === 0) {
+            getRequestedProducts();
+            getRequestedProductsCount();
+        }
         else {
             setRequestedProducts(requestedProductsRedux);
             setRequestedProductsCount(countRequestedProducts)
-            setIsLoadingOrders(false);
+            setIsLoadingRequestedProducts(false);
         }
     }, []);
 
     return (
         <div className="orders [&>div>div]:pt-0">
             <Frame>
-                {isLoadingOrders && (
+                {isLoadingRequestedProducts && (
                     <ProductsTableSkeleton title={"Requested Products"} />
                 )}
-                {!isLoadingOrders && (
+                {!isLoadingRequestedProducts && (
                     <div className="[&>div>div]:pt-0">
                         <Page fullWidth>
                             <BlockStack gap="500">
@@ -216,6 +204,15 @@ export default function RequestedProducts() {
 
                                 <Divider borderColor="border" />
                                 <Card>
+                                    <div className="pb-3">
+                                        <TextField
+                                            onChange={searchOnRequestedProducts}
+                                            value={searchWithProductTitle}
+                                            prefix={<Icon source={SearchIcon} tone="base" />}
+                                            placeholder="Search"
+                                            autoComplete="off"
+                                        />
+                                    </div>
                                     <IndexTable
                                         resourceName={resourceName}
                                         itemCount={requestedProducts?.length}
@@ -237,26 +234,43 @@ export default function RequestedProducts() {
                                             { title: "Message" },
                                             { title: "Actions"}
                                         ]}
-                                        // pagination={{
-                                        //     hasNext: true,
-                                        //     onNext: () => {},
-                                        //     hasPrevious: true,
-                                        //     onPrevious: () => {}
-                                        // }}
                                     >
                                         {requestedProducts?.length > 0 && rowMarkup}
                                         {requestedProducts?.length === 0 && (
                                             <p>Empty</p>
                                         )}
                                     </IndexTable>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <Button onClick={handlePrevious} disabled={!pagination.hasPrevious}>
-                                        Previous
-                                        </Button>
-                                        <Button onClick={handleNext} disabled={!pagination.hasNext}>
-                                        Next
-                                        </Button>
-                                    </div>
+                                    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                        <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                                            Showing 
+                                            <span class="font-semibold text-gray-500 dark:text-white">
+                                                <span>{' ' + showingFrom}</span>
+                                                <span> - </span>
+                                                <span>{showingTo + ' '}</span>
+                                            </span>
+                                            of <span class="font-semibold text-gray-500 dark:text-white" x-text="linkCount">{countRequestedProducts}</span>
+                                        </span>
+                                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                            <li>
+                                                <button 
+                                                    onClick={() => fetchData(currentPage > 1 ? currentPage-1: currentPage)} 
+                                                    class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+                                                ><Icon
+                                                    source={ChevronLeftIcon}
+                                                    tone="base"
+                                                /></button>
+                                            </li>
+                                            <li>
+                                                <button 
+                                                    onClick={() => fetchData(currentPage < totalPages ? currentPage+1 : currentPage)}
+                                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+                                                ><Icon
+                                                    source={ChevronRightIcon}
+                                                    tone="base"
+                                                /></button>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </Card>
                             </BlockStack>
                         </Page>
