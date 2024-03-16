@@ -9,17 +9,22 @@ import {
     Button,
     Page,
     Frame,
-    TextField
+    TextField,
+    Select,
+    Tag,
+    Toast
 } from "@shopify/polaris";
 import { DeleteIcon, ChevronRightIcon, ChevronLeftIcon, SearchIcon } from "@shopify/polaris-icons";
 import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import '../../assets/requested-stock.css'
 import { 
     setRequestedProducts as setRequestedProductsRedux, 
     setRequestedProductsCount as setRequestedProductsCountRedux
 } from "../../store/reducers/RequestStock";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 
 export default function RequestedProducts() {
     
@@ -30,15 +35,30 @@ export default function RequestedProducts() {
     const requestedProductsRedux = useSelector((state) => state.requeststock.requestedProducts);
     const countRequestedProducts = useSelector((state) => state.requeststock.requestedProductsCount);
     
-    const [take, setTake] = useState(5);
     const [requestedProducts, setRequestedProducts] = useState([]);
+    const [filteredRequestedProducts, setFilteredRequestedProducts] = useState([]);
     const [requestedProductsCount, setRequestedProductsCount] = useState(0);
     const [isLoadingRequestedProducts, setIsLoadingRequestedProducts] = useState(false);
+    
+    const [itemsPerPage, setItemsPerPage] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Number(Math.ceil(countRequestedProducts/take));
-    const [showingFrom, setShowingFrom] = useState(1);
-    const [showingTo, setShowingTo] = useState(5);
-    const [searchWithProductTitle, setSearchWithProductTitle] = useState('');
+    const [searchText, setSearchText] = useState('');
+    const [searchCategory, setSearchCategory] = useState('product_title');
+
+    const [deleteProductId, setDeleteProductId] = useState(null);
+    const [deleteId, setDeleteId] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, filteredRequestedProducts.length);
+    const paginatedData = filteredRequestedProducts.slice(startIndex, endIndex);
+
+    const [toastContent, setToastContent] = useState("");
+    const [toastActive, setToastActive] = useState(false);
+    const toggleToastActive = () => setToastActive((toastActive) => !toastActive);
+    const toastMarkup = toastActive ? (<Toast content={toastContent} onDismiss={toggleToastActive} />):null;
+
+    const [buttonLoading, setButtonLoading] = useState(false);
 
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(requestedProducts);
@@ -65,10 +85,22 @@ export default function RequestedProducts() {
         }, []);
     }
 
-    const rowMarkup = requestedProducts?.map(
+    const handleDeleteClick = (id, product_id) => {
+        setDeleteId(id);
+        setDeleteProductId(product_id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        setIsLoadingRequestedProducts(true);
+        deleteProductFromPreOrderList(deleteId, deleteProductId);
+    };
+
+    const rowMarkup = paginatedData?.map(
         (
             {
                 id,
+                product_id,
                 variant_id,
                 product_title,
                 product_quantity,
@@ -114,7 +146,7 @@ export default function RequestedProducts() {
                 <IndexTable.Cell><Text as="span">{message}</Text></IndexTable.Cell>
                 <IndexTable.Cell className="float-right">
                     <div class="flex items-end">
-                        <Button variant="plain">
+                        <Button variant="plain"  onClick={() => handleDeleteClick(id, product_id)}>
                         <Icon source={DeleteIcon} tone="critical" />
                         </Button>
                     </div>
@@ -122,14 +154,29 @@ export default function RequestedProducts() {
             </IndexTable.Row>
         )
     );
-    
 
-    const getRequestedProducts = async (page = 1, take = 5) => {
-        console.log(page);
-        const response = await fetch(`/api/request-stock/requested-products?page=${page}&take=${take}`);
+    const handleSearchBySelectChange = (value) => setSearchCategory(value)
+
+    const searchByOptions = [
+        {label: 'Product Title', value: 'product_title'},
+        {label: 'Customer Name', value: 'customer_name'},
+        {label: 'Customer Email', value: 'customer_email'},
+        {label: 'Customer Phone', value: 'customer_phone'},
+      ];
+      
+    const rowsPerPage = [
+        {label: '5', value: 5},
+        {label: '10', value: 10},
+        {label: '20', value: 20},
+        {label: '50', value: 50},
+    ]; 
+    
+    const getRequestedProducts = async () => {
+        const response = await fetch(`/api/request-stock/requested-products`);
         if (response.ok) {
           const products = await response.json();
           setRequestedProducts(products);
+          setFilteredRequestedProducts(products);
           dispatch(setRequestedProductsRedux(products));
           setIsLoadingRequestedProducts(false);
         } else {
@@ -153,17 +200,67 @@ export default function RequestedProducts() {
         }
     };
 
-    const fetchData = (pageNumber) => {
-        setIsLoadingRequestedProducts(true)
+    const deleteProductFromPreOrderList = async (id, product_id) => {
+        const formData = new FormData();
+
+        formData.append("id", id);
+        formData.append("product_id", product_id);
+
+        const response = await fetch("/api/request-stock/requested-products/destroy", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        if (response.ok) {
+            setToastContent("Product Deleted from List Successfully.");
+            setToastActive(true);
+            console.log(toastActive);
+            getRequestedProducts();
+        }
+
+        setIsLoadingRequestedProducts(false);
+    };
+
+    const handleExport = async () => {
+        setButtonLoading(true)
+        await fetch("/api/request-stock/requested-products/export", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'text/csv'
+            }
+        }).then(response => {
+            return response.blob();
+          }).then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Requested_Products.csv';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            setButtonLoading(false)
+          })
+          .catch(error => {
+            setButtonLoading(false)
+            console.error('Error exporting data:', error);
+          });
+      };
+
+    const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
-        setShowingFrom(((currentPage-1)*take) == 0 ? 1 : ((currentPage-1)*take));
-        setShowingTo(((currentPage-1)*take) + take);
-        getRequestedProducts(currentPage, take);
     }
 
-    const searchOnRequestedProducts = (e) => {
-        console.log(e);
-    }
+    const handleSearch = (term) => {
+        setSearchText(term);
+        const filtered = requestedProducts.filter((item) =>
+          Object.values(item).join(' ').toLowerCase().includes(term.toLowerCase())
+        );
+        setFilteredRequestedProducts(filtered);
+    };
 
     useEffect(() => {
         setIsLoadingRequestedProducts(true);
@@ -173,6 +270,7 @@ export default function RequestedProducts() {
         }
         else {
             setRequestedProducts(requestedProductsRedux);
+            setFilteredRequestedProducts(requestedProductsRedux)
             setRequestedProductsCount(countRequestedProducts)
             setIsLoadingRequestedProducts(false);
         }
@@ -181,6 +279,15 @@ export default function RequestedProducts() {
     return (
         <div className="orders [&>div>div]:pt-0">
             <Frame>
+                <DeleteConfirmationModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}
+                    onConfirm={handleConfirmDelete}
+                    title="Confirm deletion"
+                    message="Are you sure you want to delete this item? This action cannot be undone."
+                    confirmButtonLabel="Delete"
+                />
+                {toastMarkup}
                 {isLoadingRequestedProducts && (
                     <ProductsTableSkeleton title={"Requested Products"} />
                 )}
@@ -195,7 +302,8 @@ export default function RequestedProducts() {
                                     <div className="ml-auto">
                                         <Button
                                             variant="primary"
-                                            onClick={() => activeResourcePicker()}
+                                            loading={buttonLoading}
+                                            onClick={() => handleExport()}
                                         >
                                             Export
                                         </Button>
@@ -205,13 +313,30 @@ export default function RequestedProducts() {
                                 <Divider borderColor="border" />
                                 <Card>
                                     <div className="pb-3">
-                                        <TextField
-                                            onChange={searchOnRequestedProducts}
-                                            value={searchWithProductTitle}
-                                            prefix={<Icon source={SearchIcon} tone="base" />}
-                                            placeholder="Search"
-                                            autoComplete="off"
-                                        />
+                                        <div className="flex pb-2">
+                                            <div className="flex-1 mr-2">
+                                                <TextField
+                                                    onChange={handleSearch}
+                                                    value={searchText}
+                                                    prefix={<Icon source={SearchIcon} tone="base" />}
+                                                    placeholder="Search"
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                            <Select
+                                                label="Search by"
+                                                labelInline
+                                                options={searchByOptions}
+                                                onChange={handleSearchBySelectChange}
+                                                value={searchCategory}
+                                            />
+                                            
+                                        </div>
+                                        <Divider />
+                                        <div className="py-1">
+                                            <Tag>{`Selected: ${searchByOptions.find(option => option.value === searchCategory)?.label}`}</Tag>
+                                        </div>
+                                        <Divider />
                                     </div>
                                     <IndexTable
                                         resourceName={resourceName}
@@ -236,24 +361,33 @@ export default function RequestedProducts() {
                                         ]}
                                     >
                                         {requestedProducts?.length > 0 && rowMarkup}
-                                        {requestedProducts?.length === 0 && (
+                                        {isLoadingRequestedProducts == false && requestedProducts?.length === 0 && (
                                             <p>Empty</p>
                                         )}
                                     </IndexTable>
-                                    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-                                        <span class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+                                    <nav class="flex items-center flex-column flex-wrap md:flex-row pt-4" aria-label="Table navigation">
+                                        
+                                        <span class="text-sm font-normal mr-auto text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
                                             Showing 
-                                            <span class="font-semibold text-gray-500 dark:text-white">
-                                                <span>{' ' + showingFrom}</span>
+                                            <span class="font-semibold text-gray-500 dark:text-white mx-1">
+                                                <span>{startIndex + 1}</span>
                                                 <span> - </span>
-                                                <span>{showingTo + ' '}</span>
+                                                <span>{endIndex}</span>
                                             </span>
                                             of <span class="font-semibold text-gray-500 dark:text-white" x-text="linkCount">{countRequestedProducts}</span>
                                         </span>
-                                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                        <Select
+                                            label="Rows Per Page"
+                                            labelInline
+                                            options={rowsPerPage}
+                                            onChange={(e) => setItemsPerPage(parseInt(e))}
+                                            value={itemsPerPage}
+                                        />
+                                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8 ml-3">
                                             <li>
-                                                <button 
-                                                    onClick={() => fetchData(currentPage > 1 ? currentPage-1: currentPage)} 
+                                                <button
+                                                    disabled={currentPage === 1}
+                                                    onClick={() => handlePageChange(currentPage - 1)}
                                                     class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
                                                 ><Icon
                                                     source={ChevronLeftIcon}
@@ -261,8 +395,9 @@ export default function RequestedProducts() {
                                                 /></button>
                                             </li>
                                             <li>
-                                                <button 
-                                                    onClick={() => fetchData(currentPage < totalPages ? currentPage+1 : currentPage)}
+                                                <button
+                                                    disabled={Math.ceil(filteredRequestedProducts.length/itemsPerPage) === currentPage}
+                                                    onClick={() => handlePageChange(currentPage + 1)}
                                                     class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
                                                 ><Icon
                                                     source={ChevronRightIcon}

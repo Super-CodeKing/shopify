@@ -26,9 +26,14 @@ abstract class Repository implements RepositoryInterface
         return $this->model->find($id);
     }
 
-    public function getByShop($shop, $skip = 0, $take = 5)
+    public function getFirstByIdNShop($shop, $id): ?Model
     {
-        return $this->model->where('shop', $shop)->skip($skip)->take($take)->get();
+        return $this->model->where('shop', $shop)->first($id);
+    }
+
+    public function getByShop($shop)
+    {
+        return $this->model->where('shop', $shop)->get();
     }
 
     /** @return Collection|array<Model> */
@@ -75,5 +80,18 @@ abstract class Repository implements RepositoryInterface
     public function getAllWithRelationAndPaginaion($relation, $skip = 0, $take = 5)
     {
         return $this->model->with($relation)->skip($skip)->take($take)->get();
+    }
+
+    private function getSearchWithCategory($query, $searchText, $searchCategory)
+    {
+        if($searchCategory == 'product_title') {
+            return $query->where('product_title', 'LIKE', "%{$searchText}%");
+        } else if($searchCategory == 'customer_name') {
+            return $query->where('customer_name', 'LIKE', "%{$searchText}%");
+        } else if($searchCategory == 'customer_email') {
+            return $query->where('customer_email', 'LIKE', "%{$searchText}%");
+        } else if($searchCategory == 'customer_phone') {
+            return $query->where('customer_phone', 'LIKE', "%{$searchText}%");
+        }
     }
 }
