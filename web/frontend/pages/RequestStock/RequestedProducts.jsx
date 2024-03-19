@@ -126,7 +126,7 @@ export default function RequestedProducts() {
                     </Text>
                 </IndexTable.Cell>
                 
-                <IndexTable.Cell><Text>{product_quantity}</Text></IndexTable.Cell>
+                <IndexTable.Cell><Text alignment="center">{product_quantity}</Text></IndexTable.Cell>
                 
                 <IndexTable.Cell>
                     {new Date(created_at).toLocaleString("en-US", {

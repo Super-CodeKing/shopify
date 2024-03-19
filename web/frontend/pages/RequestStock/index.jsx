@@ -23,6 +23,7 @@ import { setShopName } from "../../store/reducers/PreOrder";
 import Activation from "./Activation";
 import ProductTable from "./Products";
 import RequestedProducts from "./RequestedProducts";
+import FormAndButton from "./FormNButton";
 
 export default function PreOrder() {
     const fetch = useAuthenticatedFetch();
@@ -39,8 +40,7 @@ export default function PreOrder() {
         { name: 'Activation', icon: StatusActiveIcon },
         { name: 'Product Setup', icon: ProductIcon },
         { name: 'Requested Products', icon: IncomingIcon },
-        { name: 'Colors & Text', icon: ColorIcon },
-        { name: 'Order Limit', icon: OrderIcon},
+        { name: 'Request Form & Button', icon: ColorIcon },
         { name: 'Set Schedule', icon: CalendarTimeIcon },
         { name: 'Display Message', icon: ChatIcon },
         { name: 'Badge Design', icon: DiscountIcon }
@@ -138,6 +138,7 @@ export default function PreOrder() {
                     {activeFlag === 'Activation' && <Activation />}
                     {activeFlag === 'Product Setup' && <ProductTable />}
                     {activeFlag === 'Requested Products' && <RequestedProducts />}
+                    {activeFlag === 'Request Form & Button' && <FormAndButton />}
                 </div>
             </div>
         </Page>

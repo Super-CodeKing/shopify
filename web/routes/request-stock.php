@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\RequestStock\{ActivationController, ProductsController, RequestedProductsController};
+use App\Http\Controllers\RequestStock\{ActivationController, ProductsController, RequestedProductsController, SettingsController};
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], function () {
@@ -17,4 +17,6 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
     Route::get('requested-products/count', [RequestedProductsController::class, 'product_count']);
     Route::post('requested-products/destroy', [RequestedProductsController::class, 'destroy']);
     Route::get('requested-products/export', [RequestedProductsController::class, 'export']);
+
+    Route::get('settings', [SettingsController::class, 'index']);
 });

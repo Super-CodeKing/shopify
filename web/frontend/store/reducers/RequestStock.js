@@ -7,6 +7,7 @@ const initialState = {
     requestedProducts: [],
     requestedProductsCount: 0,
     buttonSettings: {},
+    formSettings: {},
     inheritFromTheme: null,
     schedule: {},
     displayMessage: {},
@@ -35,6 +36,9 @@ export const requestStockSettingSlice = createSlice({
         setButtonSettings: (state, action) => {
             state.buttonSettings = action.payload
         },
+        setFormSettings: (state, action) => {
+            state.formSettings = action.payload
+        },
         setSchedule: (state, action) => {
             state.schedule = action.payload
         },
@@ -60,6 +64,7 @@ export const {
     setSchedule,
     setDisplayMessage,
     setBadgeDesign,
-    setInheritFromTheme
+    setInheritFromTheme,
+    setFormSettings
 } = requestStockSettingSlice.actions;
 export default requestStockSettingSlice.reducer;

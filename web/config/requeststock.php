@@ -6,9 +6,10 @@ return [
     "active_on_collection"          =>    false,
     "when_show_request_stock"       =>    2,
     "specific_inventory"            =>    0,
-    "button_settings"               =>    [
-        "inherit_from_theme"        =>    false,
-        "settings"                  =>    null
+    "settings"                      =>    [
+        "inherit_from_theme"        =>    true,
+        "button"                    =>    null,
+        "form"                      =>    null
     ],
     "schedule"                      =>    [
         "start_date"                =>    null,
