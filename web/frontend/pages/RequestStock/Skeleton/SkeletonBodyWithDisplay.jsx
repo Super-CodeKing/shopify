@@ -12,7 +12,7 @@ import React from "react";
 
 export default function SkeletonBodyWithDisplay({ title, has_button, button_title }) {
     return (
-        <div className="table-skeleton [&>div>div]:pt-0">
+        <div className="table-skeleton [&>div>div]:pt-0 [&>div]:pl-0">
             <Page fullWidth>
                 <BlockStack gap="500">
                     <div class="container mx-auto">

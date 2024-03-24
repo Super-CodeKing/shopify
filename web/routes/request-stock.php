@@ -18,5 +18,6 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
     Route::post('requested-products/destroy', [RequestedProductsController::class, 'destroy']);
     Route::get('requested-products/export', [RequestedProductsController::class, 'export']);
 
-    Route::get('settings', [SettingsController::class, 'index']);
+    Route::get('button-settings', [SettingsController::class, 'index']);
+    Route::post('button-settings', [SettingsController::class, 'storeButtonSettings']);
 });

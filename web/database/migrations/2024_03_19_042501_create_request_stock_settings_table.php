@@ -16,7 +16,8 @@ class CreateRequestStockSettingsTable extends Migration
         Schema::create('request_stock_settings', function (Blueprint $table) {
             $table->id();
             $table->string('shop');
-            $table->boolean('inherit_from_theme')->default(true);
+            $table->boolean('button_inherit_from_theme')->default(true);
+            $table->boolean('form_inherit_from_theme')->default(true);
             $table->json('button')->nullable();
             $table->json('form')->nullable();
             $table->timestamps();

@@ -7,7 +7,8 @@ return [
     "when_show_request_stock"       =>    2,
     "specific_inventory"            =>    0,
     "settings"                      =>    [
-        "inherit_from_theme"        =>    true,
+        "button_inherit_from_theme" =>    true,
+        "form_inherit_from_theme"   =>    true,
         "button"                    =>    null,
         "form"                      =>    null
     ],

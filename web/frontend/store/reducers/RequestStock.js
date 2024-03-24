@@ -8,7 +8,8 @@ const initialState = {
     requestedProductsCount: 0,
     buttonSettings: {},
     formSettings: {},
-    inheritFromTheme: null,
+    buttonInheritFromTheme: null,
+    formInheritFromTheme: null,
     schedule: {},
     displayMessage: {},
     badgeDesign: {}
@@ -48,8 +49,11 @@ export const requestStockSettingSlice = createSlice({
         setBadgeDesign: (state, action) => {
             state.badgeDesign = action.payload
         },
-        setInheritFromTheme: (state, action) => {
-            state.inheritFromTheme = action.payload;
+        setButtonInheritFromTheme: (state, action) => {
+            state.buttonInheritFromTheme = action.payload;
+        },
+        setFormInheritFromTheme: (state, action) => {
+            state.formInheritFromTheme = action.payload
         }
     },
 });
@@ -64,7 +68,8 @@ export const {
     setSchedule,
     setDisplayMessage,
     setBadgeDesign,
-    setInheritFromTheme,
+    setButtonInheritFromTheme,
+    setFormInheritFromTheme,
     setFormSettings
 } = requestStockSettingSlice.actions;
 export default requestStockSettingSlice.reducer;
