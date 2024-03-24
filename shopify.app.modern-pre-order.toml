@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://prove-lectures-ticket-webshots.trycloudflare.com"
+application_url = "https://dan-otherwise-turbo-mu.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://prove-lectures-ticket-webshots.trycloudflare.com/auth/callback",
-  "https://prove-lectures-ticket-webshots.trycloudflare.com/auth/shopify/callback",
-  "https://prove-lectures-ticket-webshots.trycloudflare.com/api/auth/callback"
+  "https://dan-otherwise-turbo-mu.trycloudflare.com/auth/callback",
+  "https://dan-otherwise-turbo-mu.trycloudflare.com/auth/shopify/callback",
+  "https://dan-otherwise-turbo-mu.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
