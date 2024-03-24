@@ -3,341 +3,25 @@ import ToggleColorActivator from "../../components/ToggleColorActivator";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
+import '../../assets/requested-stock.css'
 
 export default function FormSettings({}) {
     const dispatch = useDispatch();
     const fetch = useAuthenticatedFetch();
     
-    const formSettingsRedux = useSelector((state) => state.comingsoon.formSettings);
-    const formInheritFromThemeRedux = useSelector((state) => state.comingsoon.formInheritFromTheme);
+    const formSettingsRedux = useSelector((state) => state.requeststock.formSettings);
+    const formInheritFromThemeRedux = useSelector((state) => state.requeststock.formInheritFromTheme);
 
+    const [isLoading, setIsLoading] = useState(false);
     const [toastActive, setToastActive] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const [backgroundColor, setBackgroundColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [backgroundHexColor, setBackgroundHexColor] = useState("#121212");
-    const [backgroundHoverColor, setBackgroundHoverColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [backgroundHoverHexColor, setBackgroundHoverHexColor] = useState("#121212");
-    const [textColor, setTextColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [textHexColor, setTextHexColor] = useState("#fff");
-    const [textHoverColor, setTextHoverColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [textHoverHexColor, setTextHoverHexColor] = useState("#fff");
-    const [borderColor, setBorderColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [borderHexColor, setBorderHexColor] = useState("#fff");
-    const [borderHoverColor, setBorderHoverColor] = useState({
-        hue: 120,
-        brightness: 1,
-        saturation: 1,
-    });
-    const [borderHoverHexColor, setBorderHoverHexColor] = useState("#fff");
-    const [buttonHeight, setButtonHeight] = useState(40);
-    const [buttonWidth, setButtonWidth] = useState(420);
-    const [buttonRadiusValue, setButtonRadiusValue] = useState(32);
     const [isInheritFromTheme, setIsInheritFromTheme] = useState(true);
-    const [comingSoonButtonText, setComingSoonButtonText] = useState("Coming Soon");
-    const [buttonFontSizeValue, setButtonFontSizeValue] = useState(16);
-    const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
-    const [backgroundHoverColorPickerActive, setBackgroundHoverColorPickerActive] = useState(false);
-    const [textColorPickerActive, setTextColorPickerActive] = useState(false);
-    const [textHoverColorPickerActive, setTextHoverColorPickerActive] = useState(false);
-    const [borderColorPickerActive, setBorderColorPickerActive] = useState(false);
-    const [borderHoverColorPickerActive, setBorderHoverColorPickerActive] = useState(false);
-    const [borderWidth, setBorderWidth] = useState(0);
-    const [isHover, setIsHover] = useState(false);
-
-    const changeButtonRadius = (value) => setButtonRadiusValue(value);
-    const changeButtonFontSize = (value) => setButtonFontSizeValue(value);
-    const changeBorderWidth = (value) => setBorderWidth(value);
 
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
         []
     );
 
-    const toggleBackgroundColorPicker = () => {
-        setBackgroundColorPickerActive(!backgroundColorPickerActive);
-    };
-
-    function HexToHsb(color) {
-        const rgbColor = hexToRgb(color);
-        const hsbColor = rgbToHsb(rgbColor);
-        return hsbColor
-    }
-
-    const handleBackgroundColorChange = (newColor) => {
-        const hexColor = hsbToHex(newColor);
-        setBackgroundColor(newColor);
-        setBackgroundHexColor(hexColor);
-    };
-
-    const handleTextColorChange = (newTextColor) => {
-        const hexColor = hsbToHex(newTextColor);
-        setTextColor(newTextColor);
-        setTextHexColor(hexColor);
-    }
-
-    const handleTextHoverColorChange = (newTextHoverColor) => {
-        const hexColor = hsbToHex(newTextHoverColor);
-        setTextHoverColor(newTextHoverColor);
-        setTextHoverHexColor(hexColor);
-    }
-
-    const handleBorderColorChange = (newBorderColor) => {
-        const hexColor = hsbToHex(newBorderColor);
-        setBorderColor(newBorderColor);
-        setBorderHexColor(hexColor);
-    }
-
-    const handleBorderHoverColorChange = (newBorderHoverColor) => {
-        const hexColor = hsbToHex(newBorderHoverColor);
-        setBorderHoverColor(newBorderHoverColor);
-        setBorderHoverHexColor(hexColor);
-    }
-
-    const toggleBackgroundHoverColorPicker = () => {
-        setBackgroundHoverColorPickerActive(!backgroundHoverColorPickerActive);
-    };
-
-    const toggleTextColorPicker = () => {
-        setTextColorPickerActive(!textColorPickerActive);
-    }
-
-    const toggleTextHoverColorPicker = () => {
-        setTextHoverColorPickerActive(!textHoverColorPickerActive);
-    }
-
-    const toggleBorderColorPicker = () => {
-        setBorderColorPickerActive(!borderColorPickerActive);
-    }
-
-    const toggleBorderHoverColorPicker = () => {
-        setBorderHoverColorPickerActive(!borderHoverColorPickerActive);
-    }
-
-    const handleBackgroundHoverColorChange = (newColor) => {
-        const hexColor = hsbToHex(newColor);
-        setBackgroundHoverHexColor(hexColor);
-        setBackgroundHoverColor(newColor);
-    };
-
-    const handleBackgroundHoverColorChangeFromInput = (newColor) => {
-        const rgbColor = hexToRgb(newColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setBackgroundHoverHexColor(newColor)
-        setBackgroundHoverColor(hsbColor);
-    };
-
-    const handleBackgroundColorChangeFromInput = (newColor) => {
-        const rgbColor = hexToRgb(newColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setBackgroundHexColor(newColor)
-        setBackgroundColor(hsbColor);
-    };
-
-    const handleTextColorChangeFormInput = (newHexColor) => {
-        const rgbColor = hexToRgb(newHexColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setTextHexColor(newHexColor)
-        setTextColor(hsbColor);
-    }
-
-    const handleTextHoverColorChangeFormInput = (newTextHexColor) => {
-        const rgbColor = hexToRgb(newTextHexColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setTextHoverHexColor(newTextHexColor)
-        setTextHoverColor(hsbColor);
-    }
-
-    const handleBorderColorChangeFormInput = (newBorderHexColor) => {
-        const rgbColor = hexToRgb(newBorderHexColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setBorderHexColor(newBorderHexColor)
-        setBorderColor(hsbColor);
-    }
-
-    const handleBorderHoverColorChangeFormInput = (newBorderHoverHexColor) => {
-        const rgbColor = hexToRgb(newBorderHoverHexColor);
-        const hsbColor = rgbToHsb(rgbColor);
-        setBorderHoverHexColor(newBorderHoverHexColor)
-        setBorderHoverColor(hsbColor);
-    }
-
-    const handleMouseEnter = () => {
-        setIsHover(true);
-    }
-
-    const handleMouseLeave = () => {
-        setIsHover(false)
-    }
-
-    function makeColorNTextSettings() {
-        return JSON.stringify({
-            'button_text'                   : comingSoonButtonText,
-            'button_bg_color'               : backgroundHexColor,
-            'button_bg_hover_color'         : backgroundHoverHexColor,
-            'button_text_color'             : textHexColor,
-            'button_text_hover_color'       : textHoverHexColor,
-            'button_border_hex_color'       : borderHexColor,
-            'button_border_hover_hex_color' : borderHoverHexColor,
-            'button_border_width'           : borderWidth,
-            'button_height'                 : buttonHeight,
-            'button_width'                  : buttonWidth,
-            'button_border_radius'          : buttonRadiusValue,
-            'button_font_size'              : buttonFontSizeValue
-        })
-    }
-
-    function setColorNTextSettings(settings) {
-        if(settings != null)
-        {
-            setComingSoonButtonText(settings.button_text);
-
-            setBackgroundHexColor(settings.button_bg_color);
-            setBackgroundColor(HexToHsb(settings.button_bg_color));
-            setBackgroundHoverHexColor(settings.button_bg_hover_color);
-            setBackgroundHoverColor(HexToHsb(settings.button_bg_color));
-    
-            setTextColor(HexToHsb(settings.button_bg_color));
-            setTextHexColor(settings.button_text_color);
-            setTextHoverHexColor(settings.button_text_hover_color);
-            setTextHoverColor(HexToHsb(settings.button_bg_color));
-    
-            setBorderColor(HexToHsb(settings.button_border_hex_color));
-            setBorderHexColor(settings.button_border_hex_color);
-            setBorderHoverHexColor(settings.button_border_hover_hex_color);
-            setBorderHoverColor(HexToHsb(settings.button_border_hover_hex_color));
-    
-            setBorderWidth(settings.button_border_width);
-            setButtonHeight(settings.button_height);
-            setButtonWidth(settings.button_width);
-            setButtonRadiusValue(settings.button_border_radius);
-            setButtonFontSizeValue(settings.button_font_size);
-        }
-    }
-
-    const isDataChanged = useCallback(() => {
-        let flagInheritFromTheme = false;
-        let flagComingSoonButtonText = false;
-        let flagBackgroundHexColor = false;
-        let flagBackgroundHoverHexColor = false;
-        let flagTextHexColor = false;
-        let flagTextHoverHexColor = false;
-        let flagBorderHexColor = false;
-        let flagBorderHoverHexColor = false;
-        let flagBorderWidth = false;
-        let flagButtonHeight = false;
-        let flagButtonWidth = false;
-        let flagButtonRadiusValue = false;
-        let flagButtonFontSizeValue = false;
-
-        if(inheritFromThemeRedux !== isInheritFromTheme) {
-            flagInheritFromTheme = true;
-        }
-
-        if (buttonSettingsRedux?.button_text !== comingSoonButtonText) {
-            flagComingSoonButtonText = true;
-        }
-        
-        if (buttonSettingsRedux?.button_bg_color !== backgroundHexColor) {
-            flagBackgroundHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_bg_hover_color !== backgroundHoverHexColor) {
-            flagBackgroundHoverHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_border_hex_color !== borderHexColor) {
-            flagBorderHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_border_hover_hex_color !== borderHoverHexColor) {
-            flagBorderHoverHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_border_radius != buttonRadiusValue) {
-            flagButtonRadiusValue = true;
-        }
-        
-        if (buttonSettingsRedux?.button_border_width != borderWidth) {
-            flagBorderWidth = true;
-        }
-        
-        if (buttonSettingsRedux?.button_font_size != buttonFontSizeValue) {
-            flagButtonFontSizeValue = true;
-        }
-        
-        if (buttonSettingsRedux?.button_height != buttonHeight) {
-            flagButtonHeight = true;
-        }
-        
-        if (buttonSettingsRedux?.button_text_color !== textHexColor) {
-            flagTextHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_text_hover_color !== textHoverHexColor) {
-            flagTextHoverHexColor = true;
-        }
-        
-        if (buttonSettingsRedux?.button_width != buttonWidth) {
-            flagButtonWidth = true;
-        }
-
-        if (
-            flagComingSoonButtonText || 
-            flagBackgroundHexColor || 
-            flagBackgroundHoverHexColor || 
-            flagTextHexColor || 
-            flagTextHoverHexColor || 
-            flagBorderHexColor || 
-            flagBorderHoverHexColor || 
-            flagBorderWidth || 
-            flagButtonHeight || 
-            flagButtonWidth || 
-            flagButtonRadiusValue || 
-            flagButtonFontSizeValue ||
-            flagInheritFromTheme
-        )  {
-            return true;
-        }
-        return false;
-    }, [
-        comingSoonButtonText, 
-        backgroundHexColor, 
-        backgroundHoverHexColor, 
-        textHexColor, 
-        textHoverHexColor, 
-        borderHexColor, 
-        borderHoverHexColor,
-        borderWidth,
-        buttonHeight,
-        buttonWidth,
-        buttonRadiusValue,
-        buttonFontSizeValue,
-        buttonSettingsRedux,
-        isInheritFromTheme,
-        inheritFromThemeRedux
-    ]);
-
+    const isDataChanged = useCallback(() => {}, [])
 
     const toastMarkup = toastActive ? (
         <Toast
@@ -350,12 +34,6 @@ export default function FormSettings({}) {
         const response = await fetch("/api/coming-soon/colorntext");
         if (response.ok) {
             const preOrderButtonSettings = await response.json();
- 
-            dispatch(setButtonSettings(JSON.parse(preOrderButtonSettings.settings)));
-            dispatch(setInheritFromTheme(preOrderButtonSettings.inherit_from_theme));
-            
-            setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme);
-            setColorNTextSettings(JSON.parse(preOrderButtonSettings.settings));
             
             setLoading(false);
         } else {
@@ -365,394 +43,131 @@ export default function FormSettings({}) {
         }
     }
 
-    const savePreOrderButtonNTextColor = async () => {
-        setLoading(true);
-        let colorNTextSettings = makeColorNTextSettings();
-        const formData = new FormData();
-        
-        formData.append("inherit_from_theme", isInheritFromTheme);
-        formData.append("settings", colorNTextSettings);
-
-        const response = await fetch("/api/coming-soon/colorntext", {
-            method: "POST",
-            body: formData ? formData : JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            setLoading(false);
-            throw new Error(`HTTP error ${response.status}`);
-        }
-
-        if (response.ok) {
-            toggleToastActive(true);
-            getPreOrderButtonSettings();
-            setLoading(false);
-        }
+    const saveRequestStockFormSettings = async () => {
     };
 
     useEffect(() => {
-        console.log(inheritFromThemeRedux);
-        console.log(buttonSettingsRedux);
-        setLoading(true);
-
-        if(inheritFromThemeRedux === null && Object.keys(buttonSettingsRedux).length === 0) 
-        {
-            getPreOrderButtonSettings();
-        } 
-        else if(inheritFromThemeRedux === true && Object.keys(buttonSettingsRedux).length === 0) 
-        {
-            getPreOrderButtonSettings();
-        }
-        else 
-        {
-            setColorNTextSettings(buttonSettingsRedux);
-            setIsInheritFromTheme(inheritFromThemeRedux);
-            setLoading(false);
-        }
     }, []);
 
     return (
-        <div className="pt-3">
-            <div className="flex">
-                <div className="flex-1 mr-5">
-                    <div className="mb-3">
-                        <Card>
-                            <Checkbox
-                                label="Inherit Design from Theme"
-                                checked={isInheritFromTheme}
-                                onChange={() =>
-                                    setIsInheritFromTheme(
-                                        !isInheritFromTheme
-                                    )
-                                }
-                            />
-                            <div className="mt-1">
-                                <Banner>
-                                    <p>
-                                        If inherit from theme is activated, then others design settings will not work.
-                                    </p>
-                                </Banner>
-                            </div>
-                        </Card>
+        <>
+            {isLoading === true && <SkeletonBodyWithDisplay />}
+            {isLoading === false && <div className="pt-3">
+                <div className="flex">
+                    <div className="flex-1 mr-5">
+                        <div className="mb-3">
+                            <Card>
+                                <Checkbox
+                                    label="Inherit Design from Theme"
+                                    checked={isInheritFromTheme}
+                                    onChange={() =>
+                                        setIsInheritFromTheme(!isInheritFromTheme)
+                                    }
+                                />
+                                <div className="mt-1">
+                                    <Banner>
+                                        <Text>
+                                            If inherit from theme is activated, then others design settings will not work.
+                                        </Text>
+                                    </Banner>
+                                </div>
+                            </Card>
+                        </div>
                     </div>
-                    <Card>
-                        <TextField
-                            label="Button Text"
-                            type="text"
-                            autoComplete="off"
-                            placeholder="Pre Order"
-                            value={comingSoonButtonText}
-                            onChange={(e) => setComingSoonButtonText(e)}
-                        />
-
-                        <div className="flex">
-                            <div className="my-3 flex-1 mr-3">
-                                <div className="relative w-full">
-                                    <div
-                                        className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={backgroundColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundColorPicker()} color={backgroundHexColor}/>}
-                                            onClose={() =>toggleBackgroundColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleBackgroundColorChange(e)}
-                                                    color={backgroundColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
+                    <div className="flex-1">
+                        <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
+                            <form class="p-5 mx-auto">
+                                <div className="flex">
+                                    <div class="mb-5 flex-1 mr-3">
+                                        <label 
+                                            for="fullName" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >Your Name</label>
+                                        <input 
+                                            type="text" 
+                                            id="fullName" 
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" 
+                                            placeholder="Mike Tyson" 
+                                            required 
+                                        />
                                     </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            type="text"
-                                            autoComplete="off"
-                                            label="Background Color"
-                                            value={backgroundHexColor}
-                                            onChange={handleBackgroundColorChangeFromInput}
+                                    <div class="mb-5 flex-1">
+                                        <label 
+                                            for="email" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >Your Email</label>
+
+                                        <input 
+                                            type="email" 
+                                            id="email" 
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" 
+                                            placeholder="name@example.com" 
+                                            required 
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="my-3 flex-1">
-                                <div className="relative w-full">
-                                    <div
-                                        className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={backgroundHoverColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundHoverColorPicker()} color={backgroundHoverHexColor}/>}
-                                            onClose={() => toggleBackgroundHoverColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleBackgroundHoverColorChange(e)}
-                                                    color={backgroundHoverColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
+                                <div className="flex">
+                                    <div class="mb-5 flex-1 mr-3">
+                                        <label 
+                                            for="phone" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >Your Phone</label>
+                                        <input 
+                                            type="text" 
+                                            id="phone" 
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" 
+                                            placeholder="+1-202-555-1234"
+                                            required 
+                                        />
                                     </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            label="Background Hover Color"
-                                            value={backgroundHoverHexColor}
-                                            onChange={handleBackgroundHoverColorChangeFromInput}
+                                    <div class="mb-5 flex-1">
+                                        <label 
+                                            for="quantity" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >Product Quantity</label>
+                                        <input 
+                                            type="number" 
+                                            id="quantity" 
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" 
+                                            required 
+                                            placeholder="1"
                                         />
                                     </div>
                                 </div>
-                            </div>
+                                <div className="mb-5">
+                                    <label 
+                                        for="message" 
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    >Your Message</label>
+                                    <textarea 
+                                        id="message" 
+                                        rows="4" 
+                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        placeholder="Write notes..."></textarea>
+                                </div>
+                                <button 
+                                    type="submit" 
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                >Submit Request</button>
+                            </form>
                         </div>
-
-                        <div className="flex">
-                            <div className="flex-1 mr-3 mb-3">
-                                <div className="relative w-full">
-                                    <div className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={textColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleTextColorPicker()} color={textHexColor}/>}
-                                            onClose={() => toggleTextColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleTextColorChange(e)}
-                                                    color={textColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
-                                    </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            label="Text Color"
-                                            autoComplete="off"
-                                            value={textHexColor}
-                                            onChange={handleTextColorChangeFormInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex-1 mb-3">
-                                <div className="relative w-full">
-                                    <div className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={textHoverColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleTextHoverColorPicker()} color={textHoverHexColor}/>}
-                                            onClose={() => toggleTextHoverColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleTextHoverColorChange(e)}
-                                                    color={textHoverColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
-                                    </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            label="Text Hover Color"
-                                            autoComplete="off"
-                                            value={textHoverHexColor}
-                                            onChange={handleTextHoverColorChangeFormInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex">
-                            <div className="flex-1 mr-3">
-                                <div className="relative w-full">
-                                    <div className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={borderColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleBorderColorPicker()} color={borderHexColor}/>}
-                                            onClose={() => toggleBorderColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleBorderColorChange(e)}
-                                                    color={borderColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
-                                    </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            label="Border Color"
-                                            autoComplete="off"
-                                            value={borderHexColor}
-                                            onChange={handleBorderColorChangeFormInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex-1">
-                                <div className="relative w-full">
-                                    <div className="pr-5"
-                                        style={{
-                                            position: "absolute",
-                                            left: "5px",
-                                            bottom: "5px",
-                                            zIndex: "99",
-                                        }}
-                                    >
-                                        <Popover
-                                            active={borderHoverColorPickerActive}
-                                            activator={<ToggleColorActivator toggleColorFunction={() => toggleBorderHoverColorPicker()} color={borderHoverHexColor}/>}
-                                            onClose={() => toggleBorderHoverColorPicker()}
-                                        >
-                                            <Popover.Pane>
-                                                <ColorPicker
-                                                    onChange={(e) => handleBorderHoverColorChange(e)}
-                                                    color={borderHoverColor}
-                                                />
-                                            </Popover.Pane>
-                                        </Popover>
-                                    </div>
-                                    <div className="paddingLeftTextField">
-                                        <TextField
-                                            label="Border Hover Color"
-                                            autoComplete="off"
-                                            value={borderHoverHexColor}
-                                            onChange={handleBorderHoverColorChangeFormInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex">
-                            <div className="w-full mr-3">
-                                <div className="py-2">
-                                    <Text>Border Width</Text>
-                                </div>
-                                <RangeSlider
-                                    value={borderWidth}
-                                    onChange={changeBorderWidth}
-                                    output
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex">
-                            <div className="flex-1 mr-3">
-                                <TextField
-                                    label="Button Height"
-                                    type="number"
-                                    autoComplete="off"
-                                    suffix="px"
-                                    value={buttonHeight}
-                                    onChange={(e) => setButtonHeight(e)}
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <TextField
-                                    label="Button Width"
-                                    type="number"
-                                    autoComplete="off"
-                                    suffix="px"
-                                    value={buttonWidth}
-                                    onChange={(e) => setButtonWidth(e)}
-                                />
-                            </div>
-                        </div>
-
-
-
-                        <div className="flex">
-                            <div className="w-full mr-3">
-                                <div className="py-2">
-                                    <Text>Button Radius</Text>
-                                </div>
-                                <RangeSlider
-                                    value={buttonRadiusValue}
-                                    onChange={changeButtonRadius}
-                                    output
-                                />
-                            </div>
-
-                            <div className="w-full">
-                                <div className="py-2">
-                                    <Text>Font Size</Text>
-                                </div>
-                                <RangeSlider
-                                    value={buttonFontSizeValue}
-                                    onChange={changeButtonFontSize}
-                                    output
-                                />
-                            </div>
-                        </div>
-                    </Card>
-                </div>
-                <div className="flex-1">
-                    <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
-                        <button className={`text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
-                            backgroundColor: isHover? backgroundHoverHexColor : backgroundHexColor,
-                            height: buttonHeight + 'px',
-                            width: buttonWidth + 'px',
-                            fontSize: buttonFontSizeValue + 'px',
-                            borderRadius: buttonRadiusValue + 'px',
-                            color: isHover? textHoverHexColor: textHexColor,
-                            borderColor: isHover ? borderHoverHexColor: borderHexColor,
-                            borderWidth: borderWidth + 'px'
-                        }}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        >
-                            {comingSoonButtonText}
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <div className="mt-5">
-                <Button
-                    variant="primary"
-                    size="large"
-                    disabled={!isDataChanged()}
-                    onClick={() => savePreOrderButtonNTextColor()}
-                >
-                    Save
-                </Button>
-            </div>
+                <div className="mt-5">
+                    <Button
+                        variant="primary"
+                        size="large"
+                        disabled={!isDataChanged()}
+                        onClick={() => saveRequestStockFormSettings()}
+                    >
+                        Save
+                    </Button>
+                </div>
 
-            <Frame>{toastMarkup}</Frame>
-        </div>
+                <Frame>{toastMarkup}</Frame>
+            </div>}
+        </>
     )
 }

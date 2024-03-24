@@ -6,23 +6,14 @@ import {
 } from "@shopify/polaris";
 import { useState } from "react";
 import "../../assets/preorder.css";
-import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
-import { useSelector } from "react-redux";
 import ButtonSettings from "./ButtonSettings";
 import FormSettings from "./FormSettings";
 
 export default function FormAndButton() {
-    
-    const formSettingsRedux = useSelector((state) => state.requeststock.formSettings);
-    const formInheritFromThemeRedux = useSelector((state) => state.requeststock.formInheritFromTheme);
-
-    const [loading, setLoading] = useState(false);
     const [buttonOrFormActiveIndex, setButtonOrFormActiveIndex] = useState(0);
-
     return (
         <div  className="color-n-text [&>div>div]:pt-0">
-            {loading === true && <SkeletonBodyWithDisplay title="Request Stock Form & Button Settings"/>}
-            {loading === false && <Page fullWidth>
+            <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
                         Request Stock Form & Button Settings
@@ -56,13 +47,9 @@ export default function FormAndButton() {
                     {buttonOrFormActiveIndex == 0 && 
                         <ButtonSettings />}
                     {buttonOrFormActiveIndex == 1 && 
-                        <FormSettings
-                            buttonSettingsRedux={formSettingsRedux} 
-                            inheritFromThemeRedux={formInheritFromThemeRedux}
-                            setIsLoading={setLoading}
-                        />}
+                        <FormSettings />}
                  </div>
-            </Page>}
+            </Page>
         </div>
     );
 }
