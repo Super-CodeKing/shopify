@@ -149,8 +149,6 @@ export default function FormSettings({}) {
             setSubmitButtonText(settings?.submitButtonText);
             handleBackgroundColorChangeFromInput(settings?.submitButtonBgColor);
             handleTextColorChangeFromInput(settings?.submitButtonTextColor);
-
-            console.log(nameLabel);
         }
     }
 
@@ -158,13 +156,12 @@ export default function FormSettings({}) {
         const response = await fetch("/api/request-stock/settings");
         if (response.ok) {
             const requestStockFormSettings = await response.json();
-            console.log("Request Stock Form Settings: ");
-            console.log(JSON.parse(requestStockFormSettings?.form));
+            
             dispatch(setFormSettings(JSON.parse(requestStockFormSettings?.form)));
             dispatch(setFormInheritFromTheme(requestStockFormSettings?.form_inherit_from_theme));
 
             setIsInheritFromTheme(requestStockFormSettings?.form_inherit_from_theme);
-            setFormSettingsState(requestStockFormSettings?.form);
+            setFormSettingsState(JSON.parse(requestStockFormSettings?.form));
 
             setIsLoading(false);
         } else {
@@ -223,7 +220,7 @@ export default function FormSettings({}) {
 
         else 
         {
-            console.log(formSettingsRedux);
+            console.log("Coming from Redux: ", formSettingsRedux);
             setFormSettingsState(formSettingsRedux);
             setIsInheritFromTheme(formInheritFromThemeRedux);
             setIsLoading(false);

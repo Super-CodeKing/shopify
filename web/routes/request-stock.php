@@ -1,6 +1,11 @@
 <?php
 
-use App\Http\Controllers\RequestStock\{ActivationController, ProductsController, RequestedProductsController, SettingsController};
+use App\Http\Controllers\RequestStock\{ActivationController, 
+    ProductsController, 
+    RequestedProductsController, 
+    SettingsController,
+    ScheduleController
+};
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], function () {
@@ -21,4 +26,7 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
     Route::get('settings', [SettingsController::class, 'index']);
     Route::post('button-settings', [SettingsController::class, 'storeButtonSettings']);
     Route::post('form-settings', [SettingsController::class, 'storeFormSettings']);
+
+    Route::get('schedule', [ScheduleController::class, 'getRequestStockSchedule']);
+    Route::post('schedule', [ScheduleController::class, 'storeRequestStockSchedule']);
 });

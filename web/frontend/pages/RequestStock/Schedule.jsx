@@ -17,7 +17,7 @@ import { useAuthenticatedFetch } from "../../hooks";
 import Toaster from "../../components/Toaster";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 import { useDispatch, useSelector } from "react-redux";
-import { setSchedule } from "../../store/reducers/ComingSoon";
+import { setSchedule } from "../../store/reducers/RequestStock";
 import TextFieldWithDatePicker from "../../components/TextFieldWithDatePicker";
 
 export default function Schedule() {
@@ -25,7 +25,7 @@ export default function Schedule() {
     const today = new Date();
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
-    const scheduleRedux = useSelector((state) => state.comingsoon.schedule);
+    const scheduleRedux = useSelector((state) => state.requeststock.schedule);
 
     const [loading, setLoading] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -58,15 +58,15 @@ export default function Schedule() {
         setNoRestockDate(scheduleData?.no_restock_date);
     }
 
-    const getComingSoonSchedule = async () => {
-        const response = await fetch("/api/coming-soon/schedule");
+    const getRequestStockSchedule = async () => {
+        const response = await fetch("/api/request-stock/schedule");
 
         if (response.ok) {
-            const comingSoonSchedule = await response.json();
-            console.log("Getting Schedule Data: ");
-            console.log(comingSoonSchedule);
-            setScheduleData(comingSoonSchedule);
-            dispatch(setSchedule(comingSoonSchedule));
+            const requestStockSchedule = await response.json();
+            
+            setScheduleData(requestStockSchedule);
+            dispatch(setSchedule(requestStockSchedule));
+            
             setLoading(false);
 
         } else {
@@ -76,8 +76,8 @@ export default function Schedule() {
         }
     };
 
-    const saveComingSoonSchedule = async () => {
-        console.log("Saving Scheduled Data");
+    const saveRequestStockSchedule = async () => {
+        
         const formData = new FormData();
         
         let endDateString = dateFormatter(endDate);
@@ -96,7 +96,7 @@ export default function Schedule() {
         formData.append("restock_date", restockDateString);
         formData.append("no_restock_date", falsyValueModifier(noRestockDate));
 
-        const response = await fetch("/api/coming-soon/schedule", {
+        const response = await fetch("/api/request-stock/schedule", {
             method: "POST",
             body: formData ? formData : JSON.stringify(data),
         });
@@ -109,10 +109,10 @@ export default function Schedule() {
         }
 
         if (response.ok) {
-            setToastContent("Coming Soon Schedule Saved Successfully");
+            setToastContent("Schedule Saved Successfully");
             setIsErrorToast(false);
             setShowToast(true);
-            getComingSoonSchedule();
+            getRequestStockSchedule();
         }
     }
 
@@ -126,41 +126,32 @@ export default function Schedule() {
     }
 
     const isDataChanged = useCallback(() => {
-        let flagStartDate       = false;
-        let flagEndDate         = false;
-        let flagRestockDate     = false;
-        let flagNoEndDate       = false;
-        let flagNoRestockDate   = false;
 
         const formattedStartDate = dateFormatter(startDate ?? today);
         const formattedEndDate = dateFormatter(endDate ?? today);
         const formattedRestockDate = dateFormatter(restockDate ?? today); 
 
         if (formattedStartDate !== dateFormatter(scheduleRedux.start_date ?? today)) {
-            flagStartDate = true;
+            return true;
         }
 
         if (formattedEndDate !== dateFormatter(scheduleRedux.end_date ?? today)) {
-            flagEndDate = true;
+            return true;
         }
 
         if (formattedRestockDate !== dateFormatter(scheduleRedux.estimated_restock_date ?? today)) {
-            flagRestockDate = true;
-        }
-
-        if(scheduleRedux.no_end_date !== noEndDate) flagNoEndDate = true;
-        if(scheduleRedux.no_restock_date !== noRestockDate) flagNoRestockDate = true;
-        
-        if(flagStartDate || flagEndDate || flagRestockDate || flagNoEndDate || flagNoRestockDate) {
             return true;
         }
+
+        if(scheduleRedux.no_end_date !== noEndDate) return true;
+        if(scheduleRedux.no_restock_date !== noRestockDate) return true;
 
         return false;
     }, [startDate, endDate, restockDate, noEndDate, noRestockDate, scheduleRedux]);
 
     useEffect(() => {
         setLoading(true);
-        if(Object.keys(scheduleRedux).length === 0) getComingSoonSchedule();
+        if(Object.keys(scheduleRedux).length === 0) getRequestStockSchedule();
         else {
             setScheduleData(scheduleRedux);
             setLoading(false);
@@ -169,16 +160,16 @@ export default function Schedule() {
 
     return (
         <div className="schedule [&>div>div]:pt-0">
-            {loading === true && <SkeletonOrderLimit title="Schedule for Coming Soon" />}
+            {loading === true && <SkeletonOrderLimit title="Schedule for Request Stock" />}
             {loading === false && <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
-                        Schedule for Coming Soon
+                        Schedule for Request Stock
                     </Text>
                     <Divider borderColor="border" />
                     <Card padding={0}>
                         <div className="pb-3 pt-5 px-5">
-                            <Text variant="headingMd" as="h6">Coming Soon Start, End & Restock Date</Text>
+                            <Text variant="headingMd" as="h6">Request Stock Start, End & Restock Date</Text>
                             <Text>Best way to set a start and end date for all products. Then if you need to change then do it on product setup page.</Text>
                         </div>
                         <div className="pb-3 pt-3 px-5">
@@ -252,7 +243,7 @@ export default function Schedule() {
                         variant="primary"
                         size="large"
                         disabled={!isDataChanged()}
-                        onClick={() => saveComingSoonSchedule()}
+                        onClick={() => saveRequestStockSchedule()}
                     >
                         Save
                     </Button>
