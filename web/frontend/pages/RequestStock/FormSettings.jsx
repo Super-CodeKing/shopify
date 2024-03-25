@@ -1,9 +1,13 @@
-import { TextField, Button, Banner, Checkbox, Text, Card, Popover, ColorPicker, RangeSlider, Frame } from "@shopify/polaris";
+import { TextField, Button, Banner, Checkbox, Text, Card, Popover, ColorPicker, hsbToHex,
+    hexToRgb,
+    rgbToHsb, Frame, Toast } from "@shopify/polaris";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
-import '../../assets/requested-stock.css'
+import '../../assets/requested-stock.css';
+import { setFormInheritFromTheme, setFormSettings } from "../../store/reducers/RequestStock";
+import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 
 export default function FormSettings({}) {
     const dispatch = useDispatch();
@@ -22,6 +26,7 @@ export default function FormSettings({}) {
     const [emailLabel, setEmailLabel] = useState("Your Email");
     const [emailPlaceholder, setEmailPlaceholder] = useState("email@example.com");
 
+    const [activePhone, setActivePhone] = useState(true);
     const [phoneLabel, setPhoneLabel] = useState("Your Phone");
     const [phonePlaceholder, setPhonePlaceholder] = useState("+1-202-555-1234");
 
@@ -33,12 +38,93 @@ export default function FormSettings({}) {
 
     const [submitButtonText, setSubmitButtonText] = useState("Submit Request");
 
+    const [buttonBackgroundColor, setButtonBackgroundColor] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+
+    const [buttonBackgroundHexColor, setButtonBackgroundHexColor] = useState("#121212");
+
+    const [backgroundColorPickerActive, setBackgroundColorPickerActive] = useState(false);
+    const toggleBackgroundColorPicker = () => {
+        setBackgroundColorPickerActive(!backgroundColorPickerActive);
+    };
+
+    const handleBackgroundColorChange = (newColor) => {
+        if(newColor)
+        {
+            const hexColor = hsbToHex(newColor);
+            setButtonBackgroundColor(newColor);
+            setButtonBackgroundHexColor(hexColor);
+        }
+    };
+
+    const handleBackgroundColorChangeFromInput = (newColor) => {
+        if(newColor)
+        {
+            const rgbColor = hexToRgb(newColor);
+            const hsbColor = rgbToHsb(rgbColor);
+            setButtonBackgroundHexColor(newColor)
+            setButtonBackgroundColor(hsbColor);
+        }
+    };
+
+    const [textColor, setTextColor] = useState({
+        hue: 120,
+        brightness: 1,
+        saturation: 1,
+    });
+
+    const [textHexColor, setTextHexColor] = useState("#fff");
+
+    const [textColorPickerActive, setTextColorPickerActive] = useState(false);
+    const toggleTextColorPicker = () => {
+        setTextColorPickerActive(!backgroundColorPickerActive);
+    };
+
+    const handleTextColorChange = (newColor) => {
+        if(newColor)
+        {
+            const hexColor = hsbToHex(newColor);
+            setTextColor(newColor);
+            setTextHexColor(hexColor);
+        }
+    };
+
+    const handleTextColorChangeFromInput = (newColor) => {
+        if(newColor)
+        {
+            const rgbColor = hexToRgb(newColor);
+            const hsbColor = rgbToHsb(rgbColor);
+            setTextHexColor(newColor)
+            setTextColor(hsbColor);
+        }
+    };
+
     const toggleToastActive = useCallback(
         () => setToastActive((toastActive) => !toastActive),
         []
     );
 
-    const isDataChanged = useCallback(() => {}, [])
+    const isDataChanged = useCallback(() => {
+        if(formInheritFromThemeRedux != isInheritFromTheme) return true;
+        if(formSettingsRedux?.nameLabel != nameLabel) return true;
+        if(formSettingsRedux?.namePlaceholder != namePlaceholder) return true;
+        if(formSettingsRedux?.emailLabel != emailLabel) return true;
+        if(formSettingsRedux?.emailPlaceholder != emailPlaceholder) return true;
+        if(formSettingsRedux?.phoneLabel != phoneLabel) return true;
+        if(formSettingsRedux?.phonePlaceholder != phonePlaceholder) return true;
+        if(formSettingsRedux?.quantityLabel != quantityLabel) return true;
+        if(formSettingsRedux?.quantityPlaceholder != quantityPlaceholder) return true;
+        if(formSettingsRedux?.messageLabel != messageLabel) return true;
+        if(formSettingsRedux?.messagePlaceholder != messagePlaceholder) return true;
+        if(formSettingsRedux?.submitButtonText != submitButtonText) return true;
+        if(formSettingsRedux?.submitButtonBgColor != buttonBackgroundHexColor) return true;
+        if(formSettingsRedux?.submitButtonTextColor != textHexColor) return true;
+        return false
+    }, [formInheritFromThemeRedux, formSettingsRedux, nameLabel, namePlaceholder, emailLabel, emailPlaceholder, phoneLabel, phonePlaceholder,
+    quantityLabel, quantityPlaceholder, messageLabel, messagePlaceholder, submitButtonText, buttonBackgroundHexColor, textColor])
 
     const toastMarkup = toastActive ? (
         <Toast
@@ -47,23 +133,101 @@ export default function FormSettings({}) {
         />
     ) : null;
 
-    const getPreOrderButtonSettings = async () => {
-        const response = await fetch("/api/coming-soon/colorntext");
+    const setFormSettingsState = (settings) => {
+        if(settings !== null && settings !== 'undefined' && Object.keys(settings).length !== 0)
+        {
+            setNameLabel(settings?.nameLabel);
+            setNamePlaceholder(settings?.namePlaceholder);
+            setEmailLabel(settings?.emailLabel);
+            setEmailPlaceholder(settings?.emailPlaceholder);
+            setPhoneLabel(settings?.phoneLabel);
+            setPhonePlaceholder(settings?.phonePlaceholder);
+            setQuantityLabel(settings?.quantityLabel);
+            setQuantityPlaceholder(settings?.quantityPlaceholder);
+            setMessageLabel(settings?.messageLabel);
+            setMessagePlaceholder(settings?.messagePlaceholder);
+            setSubmitButtonText(settings?.submitButtonText);
+            handleBackgroundColorChangeFromInput(settings?.submitButtonBgColor);
+            handleTextColorChangeFromInput(settings?.submitButtonTextColor);
+
+            console.log(nameLabel);
+        }
+    }
+
+    const getRequestStockFormSettings = async () => {
+        const response = await fetch("/api/request-stock/settings");
         if (response.ok) {
-            const preOrderButtonSettings = await response.json();
-            
-            setLoading(false);
+            const requestStockFormSettings = await response.json();
+            console.log("Request Stock Form Settings: ");
+            console.log(JSON.parse(requestStockFormSettings?.form));
+            dispatch(setFormSettings(JSON.parse(requestStockFormSettings?.form)));
+            dispatch(setFormInheritFromTheme(requestStockFormSettings?.form_inherit_from_theme));
+
+            setIsInheritFromTheme(requestStockFormSettings?.form_inherit_from_theme);
+            setFormSettingsState(requestStockFormSettings?.form);
+
+            setIsLoading(false);
         } else {
-            setLoading(false);
+            setIsLoading(false);
             console.log("Error in Activaing Pre Order: ", response);
             throw new Error(`HTTP error ${response.status}`);
         }
     }
 
     const saveRequestStockFormSettings = async () => {
+        const formSettingsData = JSON.stringify({
+            'nameLabel': nameLabel,
+            'namePlaceholder': namePlaceholder,
+            'emailLabel': emailLabel,
+            'emailPlaceholder': emailPlaceholder,
+            'phoneLabel': phoneLabel,
+            'phonePlaceholder': phonePlaceholder,
+            'quantityLabel': quantityLabel,
+            'quantityPlaceholder': quantityPlaceholder,
+            'messageLabel': messageLabel,
+            'messagePlaceholder': messagePlaceholder,
+            'submitButtonText': submitButtonText,
+            'submitButtonBgColor': buttonBackgroundHexColor,
+            'submitButtonTextColor': textHexColor
+        })
+
+        const formData = new FormData();
+        formData.append("form_inherit_from_theme", isInheritFromTheme);
+        formData.append("form_settings", formSettingsData);
+
+        const response = await fetch("/api/request-stock/form-settings", {
+            method: "POST",
+            body: formData ? formData : JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            setIsLoading(false);
+            throw new Error(`HTTP error ${response.status}`);
+        }
+
+        if (response.ok) {
+            toggleToastActive(true);
+            getRequestStockFormSettings();
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
+        setIsLoading(true);
+
+        if(formInheritFromThemeRedux === null && Object.keys(formSettingsRedux).length === 0)
+        getRequestStockFormSettings();
+        
+        else if((formInheritFromThemeRedux === 1) && Object.keys(formSettingsRedux).length === 0)
+        getRequestStockFormSettings();
+
+        else 
+        {
+            console.log(formSettingsRedux);
+            setFormSettingsState(formSettingsRedux);
+            setIsInheritFromTheme(formInheritFromThemeRedux);
+            setIsLoading(false);
+        }
     }, []);
 
     return (
@@ -215,8 +379,12 @@ export default function FormSettings({}) {
                                             />
                                         </div>
                                     </div>
+                                </Card>
+                            </div>
 
-                                    <div className="flex mt-5">
+                            <div className="mt-5">
+                                <Card>
+                                    <div className="flex">
                                         <div className="flex-1">
                                             <TextField
                                                 label="Button Text"
@@ -226,6 +394,78 @@ export default function FormSettings({}) {
                                                 value={submitButtonText}
                                                 onChange={(e) => setSubmitButtonText(e)}
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex mt-5">
+                                        <div className="mb-3 flex-1 mr-3">
+                                            <div className="relative w-full">
+                                                <div
+                                                    className="pr-5"
+                                                    style={{
+                                                        position: "absolute",
+                                                        left: "5px",
+                                                        bottom: "5px",
+                                                        zIndex: "99",
+                                                    }}
+                                                >
+                                                    <Popover
+                                                        active={backgroundColorPickerActive}
+                                                        activator={<ToggleColorActivator toggleColorFunction={() => toggleBackgroundColorPicker()} color={buttonBackgroundHexColor}/>}
+                                                        onClose={() =>toggleBackgroundColorPicker()}
+                                                    >
+                                                        <Popover.Pane>
+                                                            <ColorPicker
+                                                                onChange={(e) => handleBackgroundColorChange(e)}
+                                                                color={buttonBackgroundColor}
+                                                            />
+                                                        </Popover.Pane>
+                                                    </Popover>
+                                                </div>
+                                                <div className="paddingLeftTextField">
+                                                    <TextField
+                                                        type="text"
+                                                        autoComplete="off"
+                                                        label="Background Color"
+                                                        value={buttonBackgroundHexColor}
+                                                        onChange={handleBackgroundColorChangeFromInput}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-3 flex-1">
+                                            <div className="relative w-full">
+                                                <div
+                                                    className="pr-5"
+                                                    style={{
+                                                        position: "absolute",
+                                                        left: "5px",
+                                                        bottom: "5px",
+                                                        zIndex: "99",
+                                                    }}
+                                                >
+                                                    <Popover
+                                                        active={textColorPickerActive}
+                                                        activator={<ToggleColorActivator toggleColorFunction={() => toggleTextColorPicker()} color={textHexColor}/>}
+                                                        onClose={() => toggleTextColorPicker()}
+                                                    >
+                                                        <Popover.Pane>
+                                                            <ColorPicker
+                                                                onChange={(e) => handleTextColorChange(e)}
+                                                                color={textColor}
+                                                            />
+                                                        </Popover.Pane>
+                                                    </Popover>
+                                                </div>
+                                                <div className="paddingLeftTextField">
+                                                    <TextField
+                                                        label="Text Color"
+                                                        value={textHexColor}
+                                                        onChange={handleTextColorChangeFromInput}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </Card>
@@ -304,10 +544,17 @@ export default function FormSettings({}) {
                                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                         placeholder={messagePlaceholder}></textarea>
                                 </div>
-                                <button 
-                                    type="submit" 
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                >{submitButtonText}</button>
+
+                                <div className="w-full flex">
+                                    <button
+                                        style={{
+                                            backgroundColor: buttonBackgroundHexColor,
+                                            color: textHexColor
+                                        }}
+                                        type="submit" 
+                                        class="mx-auto focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    >{submitButtonText}</button>
+                                </div>
                             </form>
                         </div>
                     </div>

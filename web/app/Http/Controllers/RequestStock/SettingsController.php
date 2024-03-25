@@ -21,6 +21,9 @@ class SettingsController extends Controller
 
         $data['button'] = json_decode($requestStockSettings->button, true);
         $data['button_inherit_from_theme'] = $requestStockSettings->button_inherit_from_theme;
+        $data['form'] = json_decode($requestStockSettings->form, true);
+        $data['form_inherit_from_theme'] = $requestStockSettings->form_inherit_from_theme;
+
         return response()->json($data);
     }
 
@@ -45,17 +48,65 @@ class SettingsController extends Controller
         }
     }
 
+    public function storeFormSettings(Request $request)
+    {
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+
+        $requestStockFormSettings = Settings::where('shop', $shop)->first();
+
+        if (!$requestStockFormSettings) 
+        {
+            $data = $this->formSettingsCreateData($request, $shop);
+            $createdFromSettings = Settings::create($data);
+            return $this->getResponse($createdFromSettings, 201);
+        } 
+        else 
+        {
+            $data = $this->formSettingsUpdateData($request);
+            $updatedFormSettings = Settings::where('shop', $shop)->update($data);
+            return $this->getResponse($updatedFormSettings, 200);
+        }
+    }
+
+    private function formSettingsCreateData($data, $shop)
+    {
+        $inheritTheme = 1;
+        
+        if($data->form_inherit_from_theme == false || $data->form_inherit_from_theme == 'false')
+        $inheritTheme = 0;
+        
+        return [
+            'shop' => $shop,
+            'form_inherit_from_theme' => $inheritTheme,
+            'form' => json_encode($data->form)
+        ];
+    }
+
     private function buttonSettingsCreateData($data, $shop)
     {
         $inheritTheme = 1;
         
-        if($data->button_inherit_from_theme == false || $data->button_inherit_from_theme == 'false')
+        if($data->button_inherit_from_theme == false || $data->button_inherit_from_theme == 'false' || $data->button_inherit_from_theme == 0)
         $inheritTheme = 0;
         
         return [
             'shop' => $shop,
             'button_inherit_from_theme' => $inheritTheme,
             'button' => json_encode($data->button)
+        ];
+    }
+
+    private function formSettingsUpdateData($data)
+    {
+        $inheritTheme = 1;
+        
+        if($data->form_inherit_from_theme == false || $data->form_inherit_from_theme == 'false' || $data->form_inherit_from_theme == 0)
+        $inheritTheme = 0;
+        
+        return [
+            'form_inherit_from_theme' => $inheritTheme,
+            'form' => json_encode($data->form_settings)
         ];
     }
 

@@ -395,7 +395,7 @@ export default function ButtonSettings() {
     ) : null;
 
     const getRequestStockButtonSettings = async () => {
-        const response = await fetch("/api/request-stock/button-settings");
+        const response = await fetch("/api/request-stock/settings");
         if (response.ok) {
             const requestStockButtonSettings = await response.json();
             
