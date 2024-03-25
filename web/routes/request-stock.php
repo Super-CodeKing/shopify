@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\RequestStock\{ActivationController, 
+use App\Http\Controllers\RequestStock\{ActivationController,
+    DisplayMessageController,
     ProductsController, 
     RequestedProductsController, 
     SettingsController,
@@ -29,4 +30,7 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
 
     Route::get('schedule', [ScheduleController::class, 'getRequestStockSchedule']);
     Route::post('schedule', [ScheduleController::class, 'storeRequestStockSchedule']);
+
+    Route::get('display-message', [DisplayMessageController::class, 'getDisplayMessage']);
+    Route::post('display-message', [DisplayMessageController::class, 'storeDisplayMessage']);
 });

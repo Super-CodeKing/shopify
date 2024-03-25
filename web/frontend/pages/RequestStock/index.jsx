@@ -25,6 +25,7 @@ import ProductTable from "./Products";
 import RequestedProducts from "./RequestedProducts";
 import FormAndButton from "./FormNButton";
 import Schedule from "./Schedule";
+import DisplayMessage from "./DisplayMessage";
 
 export default function PreOrder() {
     const fetch = useAuthenticatedFetch();
@@ -141,6 +142,7 @@ export default function PreOrder() {
                     {activeFlag === 'Requested Products' && <RequestedProducts />}
                     {activeFlag === 'Request Form & Button' && <FormAndButton />}
                     {activeFlag === 'Set Schedule' && <Schedule />}
+                    {activeFlag === 'Display Message' && <DisplayMessage />}
                 </div>
             </div>
         </Page>
