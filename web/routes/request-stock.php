@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RequestStock\{ActivationController,
     DisplayMessageController,
+    BadgeDesignController,
     ProductsController, 
     RequestedProductsController, 
     SettingsController,
@@ -33,4 +34,7 @@ Route::group(['prefix' => 'api/request-stock/','middleware' => 'shopify.auth'], 
 
     Route::get('display-message', [DisplayMessageController::class, 'getDisplayMessage']);
     Route::post('display-message', [DisplayMessageController::class, 'storeDisplayMessage']);
+
+    Route::get('badge-design', [BadgeDesignController::class, 'getBadgeDesign']);
+    Route::post('badge-design', [BadgeDesignController::class, 'storeBadgeDesign']);
 });
