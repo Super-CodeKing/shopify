@@ -21,7 +21,6 @@ export default function AppActivation() {
                 title="Setup guide"
             >
                 <div className="flex items-start justify-between">
-
                     {/* <ButtonGroup variant="segmented">
                         <Button>Enable Theme Extension</Button>
                         <Button
@@ -35,7 +34,7 @@ export default function AppActivation() {
                 </div>
                 
                 <div className="flex flex-col items-start">
-                    <div className="flex mb-2 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
+                    <div className="flex mb-2 [&>span]:min-h-5 [&>span]:min-w-5 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
                         <Icon source={CheckIcon} />
                         <p>
                             Enable the theme extension. Theme extension MUST be
@@ -43,7 +42,7 @@ export default function AppActivation() {
                         </p>
                     </div>
 
-                    <div className="flex mb-2 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
+                    <div className="flex mb-2 [&>span]:min-h-5 [&>span]:min-w-5 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
                         <Icon source={CheckIcon} />
                         <p>
                             Add products to the preorder list on the 'preorders'
@@ -51,7 +50,7 @@ export default function AppActivation() {
                         </p>
                     </div>
 
-                    <div className="flex [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
+                    <div className="flex [&>span]:min-h-5 [&>span]:min-w-5 [&>span]:text-white [&>span]:bg-black [&>span]:rounded-full [&>span]:mr-2">
                         <Icon source={CheckIcon} />
                         <p>Manage your preorders on the 'orders' page.</p>
                     </div>

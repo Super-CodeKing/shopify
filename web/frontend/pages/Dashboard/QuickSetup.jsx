@@ -1,72 +1,48 @@
-import { useNavigate, TitleBar, Loading } from "@shopify/app-bridge-react";
-import { Card, Button, Grid, Page, LegacyCard, Text } from "@shopify/polaris";
+import { useNavigate, TitleBar, Loading, useNavigationHistory } from "@shopify/app-bridge-react";
+import { Card, Button, Grid, Page, Text } from "@shopify/polaris";
+import { useState } from "react";
+import Switch from "../../components/Switch";
 
 export default function QuickSetup() {
+    const [quickStart, setQuickStart] = useState(null);
+    const { push } = useNavigationHistory();
+    const navigate = useNavigate();
+    const changeQuickSetup = (active) => {
+        setQuickStart(active);
+    }
+
+    const handleDetailSetup = (page) => {
+        push({ pathname: "/" + page });
+        navigate("/" + page);
+    };
     return (
         <>
             <div className="mb-3">
                 <Text variant="headingLg" as="h5">
                     Quick Start
                 </Text>
+                <Text>
+                    If you want to setup product wise, then you have to go every details page.
+                </Text>
             </div>
             <Grid>
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
                     <Card>
                         <div className="flex flex-col">
-                            <div className="flex w-full items-center">
+                            <div className="flex justify-between w-full items-center">
                                 <Text variant="headingMd" as="h2">
                                     Pre Order
                                 </Text>
+                                <Switch checked={quickStart === 'pre-order'}
+                                onChange={() => {
+                                    const newQuickStart = quickStart === 'pre-order' ? null : 'pre-order';
+                                    changeQuickSetup(newQuickStart);
+                                }} />
                             </div>
                             <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Active All Products
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Restock Notify to User
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Notify Me
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="flex mt-2 items-center">
-                                <div className="flex-1 ml-auto">
-                                    <Button fullWidth>
-                                        Go to Details Settings
+                                    <Button fullWidth onClick={() => handleDetailSetup('preorder')}>
+                                        Details Settings
                                     </Button>
                                 </div>
                             </div>
@@ -76,60 +52,22 @@ export default function QuickSetup() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
                     <Card>
                         <div className="flex flex-col">
-                            <div className="flex w-full items-center">
+                            <div className="flex w-full items-center justify-between">
                                 <Text variant="headingMd" as="h2">
                                     Coming Soon
                                 </Text>
+
+                                <Switch checked={quickStart === 'coming-soon' ? true: false}
+                                onChange={() => {
+                                    const newQuickStart = quickStart === 'coming-soon' ? null : 'coming-soon';
+                                    changeQuickSetup(newQuickStart);
+                                }} />
                             </div>
+                            
                             <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Active All Products
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="flex mt-2 items-center">
                                 <div className="flex-1 ml-auto">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Restock Notify to User
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Notify Me
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="flex mt-2 items-center">
-                                <div className="flex-1 ml-auto">
-                                    <Button fullWidth>
-                                        Go to Details Settings
+                                    <Button fullWidth onClick={() => handleDetailSetup('comingsoon')}>
+                                        Details Settings
                                     </Button>
                                 </div>
                             </div>
@@ -140,108 +78,28 @@ export default function QuickSetup() {
                 <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
                     <Card>
                         <div className="flex flex-col">
-                            <div className="flex w-full items-center">
+                            <div className="flex w-full items-center justify-between">
                                 <Text variant="headingMd" as="h2">
                                     Request Stock
                                 </Text>
-                                </div>
-                            <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Active All Products
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="flex mt-2 items-center">
-                                <div className="flex-1 ml-auto">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Restock Notify to User
-                                        </span>
-                                    </label>
-                                </div>
+                                <Switch checked={quickStart === 'request-stock' ? true: false}
+                                onChange={() => {
+                                    const newQuickStart = quickStart === 'request-stock' ? null : 'request-stock';
+                                    changeQuickSetup(newQuickStart);
+                                }} />
                             </div>
-                            <div className="flex mt-2 items-center">
-                                <div className="flex-1">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Notify Me
-                                        </span>
-                                    </label>
-                                </div>
-                                </div>
-                                <div className="mt-2">
+                            
+                            <div className="mt-2">
                                 <div className="flex-1 ml-auto">
-                                    <Button fullWidth>
-                                        Go to Details Settings
+                                    <Button fullWidth onClick={() => handleDetailSetup('requeststock')}>
+                                        Details Settings
                                     </Button>
                                 </div>
                             </div>
                         </div>
                     </Card>
                 </Grid.Cell>
-                {/* <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card>
-                        <div className="flex">
-                            <div className="flex w-full items-center">
-                                <Text variant="headingMd" as="h2">
-                                    Stock Counter
-                                </Text>
-                                <div className="ml-auto">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                </Grid.Cell>
-                <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
-                    <Card>
-                        <div className="flex">
-                            <div className="flex w-full items-center">
-                                <Text variant="headingMd" as="h2">
-                                    Get a Quote
-                                </Text>
-                                <div className="ml-auto">
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            value=""
-                                            className="sr-only peer"
-                                        />
-                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                </Grid.Cell> */}
+                
             </Grid>
         </>
     );

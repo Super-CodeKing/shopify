@@ -9,3 +9,26 @@
 .paddingLeftTextField .Polaris-TextField__Input {
     padding-left: 2rem;
 }
+
+.Online-Store-UI-Switch_ftoh2:after {
+    border-radius: .375rem;
+    bottom: -0.0625rem;
+    box-shadow: 0 0 0 -0.0625rem #005bd3;
+    content: "";
+    display: block;
+    left: -0.0625rem;
+    pointer-events: none;
+    position: absolute;
+    right: -0.0625rem;
+    top: -0.0625rem;
+    transition: box-shadow 100ms cubic-bezier(0.25,0.1,0.25,1);
+    z-index: 1;
+}
+
+.Online-Store-UI-Switch_ftoh2:active {
+    --osui_switch-background-color: #1a1a1a;
+}
+
+.Online-Store-UI-Switch_ftoh2:hover {
+    --osui_switch-background-color: #1a1a1a;
+}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ShopifyProductCreatorException;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PreOrderOrdersController;
 use App\Http\Controllers\PreOrderProductsController;
 use App\Http\Controllers\PreOrderSetupController;
@@ -83,6 +84,13 @@ Route::get('/api/products/count', function (Request $request) {
 
     return response($result->getDecodedBody());
 })->middleware('shopify.auth');
+
+Route::middleware('shopify.auth')->prefix('api/')->group(function(){
+    Route::get('all', [DashboardController::class, 'all']);
+    Route::get('summary', [DashboardController::class, 'getSummary']);
+    Route::post('quick-start', [DashboardController::class, 'storeQuickStart']);
+    Route::get('quick-start', [DashboardController::class, 'getQuickStart']);
+});
 
 /**
  * Pre Order API Routes
