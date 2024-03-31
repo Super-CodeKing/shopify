@@ -16,13 +16,13 @@ export default function FormAndButton() {
             <Page fullWidth>
                 <BlockStack gap="500">
                     <Text variant="headingXl" as="h4">
-                        Request Stock Form & Button Settings
+                        Form & Button Settings
                     </Text>
                     <Divider borderColor="border" />
                 </BlockStack>
                 
                  <div className="mt-5">
-                    <div className="w-1/2 pr-3">
+                    <div className="w-full md:w-1/2 pr-0 md:pr-3">
                         <nav className="flex shadow rounded-lg isolate">
                             <a 
                                 href="#" 

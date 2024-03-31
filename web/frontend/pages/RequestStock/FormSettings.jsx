@@ -231,8 +231,8 @@ export default function FormSettings({}) {
         <>
             {isLoading === true && <SkeletonBodyWithDisplay />}
             {isLoading === false && <div className="pt-3">
-                <div className="flex">
-                    <div className="flex-1 mr-5">
+                <div className="flex flex-col md:flex-row">
+                    <div className="flex-1 mr-0 md:mr-5">
                         <div className="mb-3">
                             <Card>
                                 <Checkbox
@@ -557,7 +557,7 @@ export default function FormSettings({}) {
                     </div>
                 </div>
 
-                <div className="mt-0">
+                <div className="mt-3 md:mt-0">
                     <Button
                         variant="primary"
                         size="large"

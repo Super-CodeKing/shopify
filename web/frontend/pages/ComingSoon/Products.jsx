@@ -318,30 +318,32 @@ export default function ProductTable() {
 
                                 <Divider borderColor="border" />
                                 <Card>
-                                    <IndexTable
-                                        resourceName={resourceName}
-                                        itemCount={comingSoonProducts.length}
-                                        selectedItemsCount={
-                                            allResourcesSelected
-                                                ? "All"
-                                                : selectedResources.length
-                                        }
-                                        onSelectionChange={() =>
-                                            handleSelectionChange()
-                                        }
-                                        headings={[
-                                            { title: "Title" },
-                                            { title: "Start Date" },
-                                            { title: "End Date" },
-                                            { title: "Estimated Restock Date" },
-                                            { title: "Display Message" },
-                                            { title: "Display Badge" },
-                                            { title: "Actions" },
-                                        ]}
-                                    >
-                                        {comingSoonProducts.length > 0 && rowMarkup}
-                                        {comingSoonProducts.length === 0 && <p>Empty</p>}
-                                    </IndexTable>
+                                    <div className="container overflow-x-auto max-w-xs mx-auto overflow-y-hidden md:max-w-full">
+                                        <IndexTable
+                                            resourceName={resourceName}
+                                            itemCount={comingSoonProducts.length}
+                                            selectedItemsCount={
+                                                allResourcesSelected
+                                                    ? "All"
+                                                    : selectedResources.length
+                                            }
+                                            onSelectionChange={() =>
+                                                handleSelectionChange()
+                                            }
+                                            headings={[
+                                                { title: "Title" },
+                                                { title: "Start Date" },
+                                                { title: "End Date" },
+                                                { title: "Estimated Restock Date" },
+                                                { title: "Display Message" },
+                                                { title: "Display Badge" },
+                                                { title: "Actions" },
+                                            ]}
+                                        >
+                                            {comingSoonProducts.length > 0 && rowMarkup}
+                                            {comingSoonProducts.length === 0 && <p>Empty</p>}
+                                        </IndexTable>
+                                    </div>
                                 </Card>
                             </BlockStack>
                         </Page>

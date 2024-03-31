@@ -21,6 +21,7 @@ import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 import { setButtonSettings } from "../../store/reducers/RequestStock";
 import { setButtonInheritFromTheme } from "../../store/reducers/RequestStock";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
+import "../../assets/common.css"
 
 export default function ButtonSettings() {
 
@@ -460,8 +461,8 @@ export default function ButtonSettings() {
         <>
             {isLoading === true && <SkeletonBodyWithDisplay />}
             {isLoading === false && <div className="pt-3">
-                <div className="flex">
-                    <div className="flex-1 mr-5">
+                <div className="flex flex-col md:flex-row">
+                    <div className="flex-1 mr-0 md:mr-5">
                         <div className="mb-3">
                             <Card>
                                 <Checkbox
@@ -765,9 +766,9 @@ export default function ButtonSettings() {
                             </div>
                         </Card>
                     </div>
-                    <div className="flex-1">
-                        <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
-                            <button className={`text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
+                    <div className="flex-1 mt-3 md:mt-0">
+                        <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md p-3 md:p-0">
+                            <button className={`width-for-mobile text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
                                 backgroundColor: isHover? backgroundHoverHexColor : backgroundHexColor,
                                 height: buttonHeight + 'px',
                                 width: buttonWidth + 'px',

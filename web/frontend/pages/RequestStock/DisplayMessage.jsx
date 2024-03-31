@@ -160,8 +160,8 @@ export default function DisplayMessage() {
                         </Text>
                         <Divider borderColor="border" />
                     </BlockStack>
-                    <div className="flex mt-5">
-                        <div className="flex-1 mr-5">
+                    <div className="flex flex-col md:flex-row mt-5">
+                        <div className="flex-1 mr-0 md:mr-5">
                             <BlockStack gap="500">
                                 <Card>
                                     <Text variant="headingMd" as="h6">
@@ -207,8 +207,8 @@ export default function DisplayMessage() {
                                         autoComplete="off"
                                     />
 
-                                    <div className="flex my-3">
-                                        <div className="mr-5 flex-1">
+                                    <div className="flex flex-col md:flex-row my-3">
+                                        <div className="mr-0 md:mr-5 mb-3 md:mb-0 flex-1">
                                             <Select
                                                 label="Position"
                                                 options={positionOptions}
@@ -228,7 +228,7 @@ export default function DisplayMessage() {
                                 </Card>
                             </BlockStack>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 hidden md:block">
                             <div className="border-dashed border-2 border-indigo-600 h-full rounded-md flex items-center">
                                 <div className="flex mx-auto">
                                     <img

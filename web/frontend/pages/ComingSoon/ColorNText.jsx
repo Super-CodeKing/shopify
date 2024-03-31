@@ -19,6 +19,7 @@ import {
 } from "@shopify/polaris";
 import { useCallback, useEffect, useState } from "react";
 import "../../assets/preorder.css";
+import "../../assets/common.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -445,8 +446,8 @@ export default function ColorNText() {
                 </BlockStack>
                 
                  <div className="mt-5">
-                    <div className="flex">
-                        <div className="flex-1 mr-5">
+                    <div className="flex flex-col md:flex-row">
+                        <div className="flex-1 mr-0 md:mr-5">
                             <div className="mb-3">
                                 <Card>
                                     <Checkbox
@@ -477,7 +478,7 @@ export default function ColorNText() {
                                     onChange={(e) => setComingSoonButtonText(e)}
                                 />
 
-                                <div className="flex">
+                                <div className="flex flex-col md:flex-row">
                                     <div className="my-3 flex-1 mr-3">
                                         <div className="relative w-full">
                                             <div
@@ -549,7 +550,7 @@ export default function ColorNText() {
                                     </div>
                                 </div>
 
-                                <div className="flex">
+                                <div className="flex flex-col md:flex-row">
                                     <div className="flex-1 mr-3 mb-3">
                                         <div className="relative w-full">
                                             <div className="pr-5"
@@ -619,7 +620,7 @@ export default function ColorNText() {
                                     </div>
                                 </div>
 
-                                <div className="flex">
+                                <div className="flex flex-col md:flex-row">
                                     <div className="flex-1 mr-3">
                                         <div className="relative w-full">
                                             <div className="pr-5"
@@ -727,7 +728,7 @@ export default function ColorNText() {
 
 
 
-                                <div className="flex">
+                                <div className="flex flex-col md:flex-row">
                                     <div className="w-full mr-3">
                                         <div className="py-2">
                                             <Text>Button Radius</Text>
@@ -752,9 +753,9 @@ export default function ColorNText() {
                                 </div>
                             </Card>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 mt-5 md:mt-0">
                             <div className="border-dashed border-2 border-indigo-600 h-full flex items-center justify-center rounded-md">
-                                <button className={`text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
+                                <button className={`width-for-mobile text-white font-bold py-2 px-4 rounded flex items-center justify-center`} style={{ 
                                     backgroundColor: isHover? backgroundHoverHexColor : backgroundHexColor,
                                     height: buttonHeight + 'px',
                                     width: buttonWidth + 'px',

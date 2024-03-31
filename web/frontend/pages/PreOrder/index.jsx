@@ -124,7 +124,7 @@ export default function PreOrder() {
 
     return (
         <>
-            <Navbar title="Dashboard" />
+            <Navbar title="Pre Order" />
             <Page fullWidth>
                 <div className="relative md:hidden ml-3 mb-3 mr-3">
                     <button

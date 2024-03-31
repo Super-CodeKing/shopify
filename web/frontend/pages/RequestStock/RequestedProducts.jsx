@@ -312,6 +312,7 @@ export default function RequestedProducts() {
 
                                 <Divider borderColor="border" />
                                 <Card>
+                                    <div className="container overflow-x-auto max-w-xs mx-auto overflow-y-hidden md:max-w-full">
                                     <div className="pb-3">
                                         <div className="flex pb-2">
                                             <div className="flex-1 mr-2">
@@ -323,19 +324,19 @@ export default function RequestedProducts() {
                                                     autoComplete="off"
                                                 />
                                             </div>
-                                            <Select
+                                            {/* <Select
                                                 label="Search by"
                                                 labelInline
                                                 options={searchByOptions}
                                                 onChange={handleSearchBySelectChange}
                                                 value={searchCategory}
                                             />
-                                            
+                                             */}
                                         </div>
-                                        <Divider />
+                                        {/* <Divider />
                                         <div className="py-1">
                                             <Tag>{`Selected: ${searchByOptions.find(option => option.value === searchCategory)?.label}`}</Tag>
-                                        </div>
+                                        </div> */}
                                         <Divider />
                                     </div>
                                     <IndexTable
@@ -360,7 +361,7 @@ export default function RequestedProducts() {
                                             { title: "Actions"}
                                         ]}
                                     >
-                                        {requestedProducts?.length > 0 && rowMarkup}
+                                        {( requestedProducts?.length > 0) && rowMarkup}
                                         {isLoadingRequestedProducts == false && requestedProducts?.length === 0 && (
                                             <p>Empty</p>
                                         )}
@@ -406,6 +407,7 @@ export default function RequestedProducts() {
                                             </li>
                                         </ul>
                                     </nav>
+                                    </div>
                                 </Card>
                             </BlockStack>
                         </Page>

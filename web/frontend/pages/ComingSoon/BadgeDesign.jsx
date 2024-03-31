@@ -199,8 +199,8 @@ export default function BadgeDesign() {
                         </Text>
                         <Divider borderColor="border" />
                     </BlockStack>
-                    <div className="flex mt-5">
-                        <div className="flex-1 mr-5">
+                    <div className="flex mt-5 flex-col md:flex-row">
+                        <div className="flex-1 mr-0 md:mr-5">
                             <BlockStack gap="500">
                                 <Card>
                                 <TextField
@@ -210,7 +210,7 @@ export default function BadgeDesign() {
                                     autoComplete="off"
                                 />
                                 <p className="mt-5">Badge Position</p>
-                                <div className="flex">
+                                <div className="flex flex-col md:flex-row">
                                     <div className="grow">
                                         <RadioButton
                                             label="Top Left"
@@ -243,7 +243,7 @@ export default function BadgeDesign() {
                                     </div>
                                 </div>
 
-                                <div className="flex mb-3">
+                                <div className="flex mb-3 flex-col md:flex-row">
                                     <div className="grow">
                                         <RadioButton
                                             label="Bottom Left"
