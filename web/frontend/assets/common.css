@@ -1,0 +1,7 @@
+.Polaris-Frame__Content {
+    border-inline-end: unset !important;
+}
+
+.width-for-mobile {
+    width: 100%!important;
+}

@@ -27,6 +27,7 @@ import ProductsTableSkeleton from "./Skeleton/ProductsTableSkeleton";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { setProductList } from "../../store/reducers/PreOrder";
+import "../../assets/common.css"
 
 export default function ProductTable() {
     const fetch = useAuthenticatedFetch();
@@ -527,30 +528,32 @@ export default function ProductTable() {
 
                                 <Divider borderColor="border" />
                                 <Card>
-                                    <IndexTable
-                                        resourceName={resourceName}
-                                        itemCount={preOrderProducts.length}
-                                        selectedItemsCount={
-                                            allResourcesSelected
-                                                ? "All"
-                                                : selectedResources.length
-                                        }
-                                        onSelectionChange={() =>
-                                            handleSelectionChange()
-                                        }
-                                        headings={[
-                                            { title: "Title" },
-                                            { title: "Start Date" },
-                                            { title: "End Date" },
-                                            { title: "Order Limit" },
-                                            { title: "Display Message" },
-                                            { title: "Display Badge" },
-                                            { title: "Actions" },
-                                        ]}
-                                    >
-                                        {preOrderProducts.length > 0 && rowMarkup}
-                                        {preOrderProducts.length === 0 && <p>Empty</p>}
-                                    </IndexTable>
+                                    <div className="container overflow-x-auto max-w-xs mx-auto overflow-y-hidden md:max-w-full">
+                                        <IndexTable
+                                            resourceName={resourceName}
+                                            itemCount={preOrderProducts.length}
+                                            selectedItemsCount={
+                                                allResourcesSelected
+                                                    ? "All"
+                                                    : selectedResources.length
+                                            }
+                                            onSelectionChange={() =>
+                                                handleSelectionChange()
+                                            }
+                                            headings={[
+                                                { title: "Title" },
+                                                { title: "Start Date" },
+                                                { title: "End Date" },
+                                                { title: "Order Limit" },
+                                                { title: "Display Message" },
+                                                { title: "Display Badge" },
+                                                { title: "Actions" },
+                                            ]}
+                                        >
+                                            {preOrderProducts.length > 0 && rowMarkup}
+                                            {preOrderProducts.length === 0 && <p>Empty</p>}
+                                        </IndexTable>
+                                    </div>
                                 </Card>
                             </BlockStack>
                         </Page>

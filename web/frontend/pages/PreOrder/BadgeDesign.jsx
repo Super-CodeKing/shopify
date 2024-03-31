@@ -199,7 +199,7 @@ export default function BadgeDesign() {
                         </Text>
                         <Divider borderColor="border" />
                     </BlockStack>
-                    <div className="flex mt-5">
+                    <div className="flex flex-col md:flex-row mt-5">
                         <div className="flex-1 mr-5">
                             <BlockStack gap="500">
                                 <Card>

@@ -185,10 +185,12 @@ export default function Activation()
 
             {loading === false &&<Page fullWidth>
                 <BlockStack gap="500">
-                    <Text variant="headingXl" as="h4">
-                        Activation Area
-                    </Text>
-                    <Divider borderColor="border" />
+                    <div className="hidden md:block">
+                        <Text variant="headingXl" as="h4">
+                            Activation Area
+                        </Text>
+                        <Divider borderColor="border" />
+                    </div>
                     <Card>
                         <div className="flex items-center">
                             <div className="flex flex-col">

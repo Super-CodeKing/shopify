@@ -15,7 +15,7 @@ const Navbar = ({ title }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const menuList = [
         {
-            path: "/",
+            path: "",
             title: "Home",
             header: "Dashboard",
             icon: HomeIcon,
@@ -54,6 +54,7 @@ const Navbar = ({ title }) => {
     };
 
     const handleMenuClick = (page) => {
+        console.log(page);
         // const isFreeUser = false;
         // const menus = menuList.concat(othersMenuList);
         // const isPremium = menus.find((m) => m.path == page)?.premium;
@@ -66,6 +67,8 @@ const Navbar = ({ title }) => {
         navigate("/" + page);
         // }
     };
+
+    console.log(location.pathname);
 
     return (
         <>
@@ -82,7 +85,7 @@ const Navbar = ({ title }) => {
                                     return <li
                                         key={item.path}
                                         className={`flex items-center cursor-pointer ${
-                                            location.pathname === item.path ? 'shadow px-2 bg-white py-1 rounded' : ''}`}
+                                            location.pathname === '/' + item.path ? 'shadow px-2 bg-white py-1 rounded' : ''}`}
                                         onClick={() => handleMenuClick(item.path)}
                                     >
                                         <Icon source={item.icon} />

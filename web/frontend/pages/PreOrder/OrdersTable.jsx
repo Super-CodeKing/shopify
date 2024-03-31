@@ -144,31 +144,33 @@ export default function OrdersTable() {
 
                             <Divider borderColor="border" />
                             <Card>
-                                <IndexTable
-                                    resourceName={resourceName}
-                                    itemCount={preOrderOrders.length}
-                                    selectedItemsCount={
-                                        allResourcesSelected
-                                            ? "All"
-                                            : selectedResources.length
-                                    }
-                                    onSelectionChange={() =>
-                                        handleSelectionChange()
-                                    }
-                                    headings={[
-                                        { title: "Order" },
-                                        { title: "Date" },
-                                        { title: "Customer" },
-                                        { title: "Total" },
-                                        { title: "Payment Status" },
-                                        { title: "Items" },
-                                    ]}
-                                >
-                                    {preOrderOrders.length > 0 && rowMarkup}
-                                    {preOrderOrders.length === 0 && (
-                                        <p>Empty</p>
-                                    )}
-                                </IndexTable>
+                                <div className="container overflow-x-auto max-w-xs mx-auto overflow-y-hidden md:max-w-full">
+                                    <IndexTable
+                                        resourceName={resourceName}
+                                        itemCount={preOrderOrders.length}
+                                        selectedItemsCount={
+                                            allResourcesSelected
+                                                ? "All"
+                                                : selectedResources.length
+                                        }
+                                        onSelectionChange={() =>
+                                            handleSelectionChange()
+                                        }
+                                        headings={[
+                                            { title: "Order" },
+                                            { title: "Date" },
+                                            { title: "Customer" },
+                                            { title: "Total" },
+                                            { title: "Payment Status" },
+                                            { title: "Items" },
+                                        ]}
+                                    >
+                                        {preOrderOrders.length > 0 && rowMarkup}
+                                        {preOrderOrders.length === 0 && (
+                                            <p>Empty</p>
+                                        )}
+                                    </IndexTable>
+                                </div>
                             </Card>
                         </BlockStack>
                     </Page>

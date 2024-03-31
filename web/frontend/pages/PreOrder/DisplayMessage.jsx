@@ -168,8 +168,8 @@ export default function DisplayMessage() {
                         </Text>
                         <Divider borderColor="border" />
                     </BlockStack>
-                    <div className="flex mt-5">
-                        <div className="flex-1 mr-5">
+                    <div className="flex flex-col md:flex-row mt-5">
+                        <div className="flex-1 mr-5 mb-5 md:mb-0">
                             <BlockStack gap="500">
                                 <Card>
                                     <Text variant="headingMd" as="h6">
@@ -236,11 +236,11 @@ export default function DisplayMessage() {
                                 </Card>
                             </BlockStack>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 hidden md:block">
                             <div className="border-dashed border-2 border-indigo-600 h-full rounded-md flex items-center">
-                                <div className="flex mx-auto">
+                                <div className="flex flex-col md:flex-row mx-auto">
                                     <img
-                                        className="flex-1 w-32 mr-5"
+                                        className="flex-1 w-32 mr-5 mx-auto"
                                         src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=webp&v=1530129081"
                                         alt="Placeholder Image"
                                     />

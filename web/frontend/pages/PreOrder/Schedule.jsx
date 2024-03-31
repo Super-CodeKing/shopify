@@ -192,9 +192,8 @@ export default function Schedule() {
                         <div className="pb-3 pt-3 px-5">
                             <Form>
                                 <FormLayout>
-
-                                    <div className="flex">
-                                        <div className="flex-1 mr-3">
+                                    <div className="flex flex-col md:flex-row">
+                                        <div className="flex-1 mr-3 mb-3 md:mb-0">
                                             <TextField
                                                 label="Start Date"
                                                 type="date"
