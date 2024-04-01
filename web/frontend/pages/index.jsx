@@ -85,8 +85,13 @@ export default function HomePage() {
 
     useEffect(() => {
         if(localStorage.getItem("active_activation") == 1) {
+            setCloseActivation(false);
+            setOpen(true)
+        }
+        else
+        {
             setCloseActivation(true);
-            setOpen(false)
+            setOpen(false);
         }
     }, []);
 

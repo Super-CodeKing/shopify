@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://hire-garmin-jelsoft-auburn.trycloudflare.com"
+application_url = "https://ask-equivalent-illustration-unsubscribe.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://hire-garmin-jelsoft-auburn.trycloudflare.com/auth/callback",
-  "https://hire-garmin-jelsoft-auburn.trycloudflare.com/auth/shopify/callback",
-  "https://hire-garmin-jelsoft-auburn.trycloudflare.com/api/auth/callback"
+  "https://ask-equivalent-illustration-unsubscribe.trycloudflare.com/auth/callback",
+  "https://ask-equivalent-illustration-unsubscribe.trycloudflare.com/auth/shopify/callback",
+  "https://ask-equivalent-illustration-unsubscribe.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

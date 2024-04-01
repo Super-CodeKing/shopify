@@ -28,7 +28,7 @@ export const dashboardSlice = createSlice({
         setIsAppEmbeded: (state, action) => {
             state.isAppEmbeded = action.payload
         },
-        setQuickStart: (state, action) => {
+        setQuickStartData: (state, action) => {
             state.quickStart = action.payload
         }
     },
@@ -40,6 +40,6 @@ export const {
     setCountComingSoon, 
     setCountRequestStock,
     setIsAppEmbeded,
-    setQuickStart
+    setQuickStartData
 } = dashboardSlice.actions;
 export default dashboardSlice.reducer;
