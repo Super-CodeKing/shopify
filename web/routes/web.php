@@ -24,6 +24,7 @@ use Shopify\Webhooks\Registry;
 use Shopify\Webhooks\Topics;
 require base_path('routes/coming-soon.php');
 require base_path('routes/request-stock.php');
+require base_path('routes/store-front.php');
 
 Route::fallback(function (Request $request) {
     if (Context::$IS_EMBEDDED_APP &&  $request->query("embedded", false) === "1") {

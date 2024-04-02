@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://columns-languages-cadillac-licking.trycloudflare.com"
+application_url = "https://adipex-precipitation-establish-polls.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://columns-languages-cadillac-licking.trycloudflare.com/auth/callback",
-  "https://columns-languages-cadillac-licking.trycloudflare.com/auth/shopify/callback",
-  "https://columns-languages-cadillac-licking.trycloudflare.com/api/auth/callback"
+  "https://adipex-precipitation-establish-polls.trycloudflare.com/auth/callback",
+  "https://adipex-precipitation-establish-polls.trycloudflare.com/auth/shopify/callback",
+  "https://adipex-precipitation-establish-polls.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
