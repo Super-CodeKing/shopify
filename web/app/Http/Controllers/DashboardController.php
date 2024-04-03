@@ -65,8 +65,8 @@ class DashboardController extends Controller
 
     public function getQuickStart(Request $request)
     {
-        // $session = $request->get('shopifySession');
-        // $shop = $session->getShop();
-        return response()->json(QuickStart::where('shop', $request->shop)->first());
+        $session = $request->get('shopifySession');
+        $shop = $session->getShop();
+        return response()->json(QuickStart::where('shop', $shop)->first());
     }
 }

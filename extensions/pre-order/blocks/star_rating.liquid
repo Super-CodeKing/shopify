@@ -1,15 +1,19 @@
 <script>
-  var script = document.createElement('script');
-  script.src = 'https://stock-manager.xyz/cdn/config.js?v='+ Date.now();
-  script.defer = true;
-  document.head.appendChild(script);
+  if (window.location.pathname.includes('/products/')) {
+    var script = document.createElement('script');
+    script.src = 'https://stock-manager.xyz/cdn/config.js?v='+ Date.now();
+    script.defer = true;
+    document.head.appendChild(script);
+  }
 </script>
 
 <script>
-  var script = document.createElement('script');
-  script.src = 'https://stock-manager.xyz/cdn/app.js?v='+ Date.now();
-  script.defer = true;
-  document.head.appendChild(script);
+  if (window.location.pathname.includes('/products/')) {
+    var script = document.createElement('script');
+    script.src = 'https://stock-manager.xyz/cdn/app.js?v='+ Date.now();
+    script.defer = true;
+    document.head.appendChild(script);
+  }
 </script>
 
 {% schema %}
