@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PreOrder\BadgeDesign;
+use App\Models\PreOrder\Settings;
 use App\Models\PreOrderColorsNText;
 use App\Models\PreOrderDisplayMessage;
 use App\Models\PreOrderLimit;
@@ -33,42 +34,25 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $activation = $request->active == 'true' ? 1 : 0;
-        $activation_product = $request->active_on_product == 'true' ? 1 : 0;
-        $activation_collection = $request->active_on_collection == 'true' ? 1 : 0;
-        $whenToShowPreOrderButton = 2;
-        $specificInventoryToShowPreOrderButton = 0;
-        if($request->when_show_preorder == 'always') {
-            $whenToShowPreOrderButton = 1;
-        } else if($request->when_show_preorder == 'specific-inventory') {
-            $whenToShowPreOrderButton = 3;
-            $specificInventoryToShowPreOrderButton = (int)$request->specific_inventory;
-        }
+        $activationJSON = $this->makePreOrderActivationData($request);
 
-        $preOrderInitSettings = PreOrderSetup::where(['shop' => $shop])->first();
+        $preOrderInitSettings = Settings::where(['shop' => $shop])->first();
+
         if (!$preOrderInitSettings) {
-            $createdPreOrderSetup = PreOrderSetup::create([
+            $createdPreOrderSetup = Settings::create([
                 'shop'                  => $shop,
-                'active'                => $activation,
-                'active_on_product'     => $activation_product,
-                'active_on_collection'  => $activation_collection,
-                'when_show_pre_order'   => $whenToShowPreOrderButton,
-                'specific_inventory'    => $specificInventoryToShowPreOrderButton  
+                'activation'            => $activationJSON
             ]);
             return response()->json([
-                'message' => 'Pre Order Initial Data Saved Successfully.',
+                'message' => 'Pre Order Data Saved Successfully.',
                 'data' => $createdPreOrderSetup
             ], 201);
         } else {
             $updatedPreOrderSetup = PreOrderSetup::where('shop', $shop)->update([
-                'active'                => $activation,
-                'active_on_product'     => $activation_product,
-                'active_on_collection'  => $activation_collection,
-                'when_show_pre_order'   => $whenToShowPreOrderButton,
-                'specific_inventory'    => $specificInventoryToShowPreOrderButton
+                'activation' => $activationJSON
             ]);
             return response()->json([
-                'message' => 'Pre Order Initial Data Updated Successfully.',
+                'message' => 'Pre Order Data Updated Successfully.',
                 'data' => $updatedPreOrderSetup
             ], 200);
         }
@@ -79,32 +63,21 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $settings = $request->settings;
-
-        $preOrderColorsSettings = PreOrderColorsNText::where(['shop' => $shop])->first();
-
-        $inheritTheme = 0;
-        if($request->inherit_from_theme == false || $request->inherit_from_theme == 'false') {
-            $inheritTheme = 0;
-        }
-        else if($request->inherit_from_theme == true || $request->inherit_from_theme == 'true') {
-            $inheritTheme = 1;
-        }
+        $preOrderColorsSettings = Settings::where(['shop' => $shop])->first();
+        $settings = $this->makePreOrderColors($request);
 
         if (!$preOrderColorsSettings) {
-            $createdPreOrderSetup = PreOrderColorsNText::create([
+            $createdPreOrderSetup = Settings::create([
                 'shop' => $shop,
-                'inherit_from_theme' => $inheritTheme,
-                'settings' => json_encode($settings)
+                'colors' => json_encode($settings)
             ]);
             return response()->json([
                 'message' => 'Button Colors and Text Settings Saved Successfully.',
                 'data' => $createdPreOrderSetup
             ], 201);
         } else {
-            $updatedPreOrderColorsSettings = PreOrderColorsNText::where('shop', $shop)->update([
-                'inherit_from_theme' => $inheritTheme,
-                'settings' => json_encode($settings)
+            $updatedPreOrderColorsSettings = Settings::where('shop', $shop)->update([
+                'colors' => json_encode($settings)
             ]);
             return response()->json([
                 'message' => 'Button Colors and Text Settings Updated Successfully.',
@@ -312,6 +285,48 @@ class PreOrderSetupController extends Controller
             'message' => 'Pre Order Badge Design Saved Successfully.',
             'data'    => $badgeDesign
         ], 200);
+    }
+
+    private function makePreOrderActivationData($request)
+    {
+        $activation = $request->active == 'true' ? 1 : 0;
+        $activation_product = $request->active_on_product == 'true' ? 1 : 0;
+        $activation_collection = $request->active_on_collection == 'true' ? 1 : 0;
+        $whenToShowPreOrderButton = 2;
+        $specificInventoryToShowPreOrderButton = 0;
+
+        if($request->when_show_preorder == 'always') {
+            $whenToShowPreOrderButton = 1;
+        } else if($request->when_show_preorder == 'specific-inventory') {
+            $whenToShowPreOrderButton = 3;
+            $specificInventoryToShowPreOrderButton = (int)$request->specific_inventory;
+        }
+
+        $activationJSON = json_encode([
+            "active" => $activation,
+            "active_on_product" => $activation_product,
+            "active_on_collection" => $activation_collection,
+            "when_show_pre_order" => $whenToShowPreOrderButton,
+            "specific_inventory" => $specificInventoryToShowPreOrderButton
+        ]);
+
+        return $activationJSON;
+    }
+
+    private function makePreOrderColors($request)
+    {
+        $inheritTheme = 0;
+        if($request->inherit_from_theme == false || $request->inherit_from_theme == 'false') {
+            $inheritTheme = 0;
+        }
+        else if($request->inherit_from_theme == true || $request->inherit_from_theme == 'true') {
+            $inheritTheme = 1;
+        }
+
+        $settings = json_decode($request->settings, true);
+        $settings['inherit_from_theme'] = $inheritTheme;
+
+        return $settings;
     }
 
     private function dateFormatToStore($requestDate)
