@@ -9,9 +9,7 @@ use App\Models\PreOrderDisplayMessage;
 use App\Models\PreOrderLimit;
 use App\Models\PreOrderSchedule;
 use App\Models\PreOrderSetup;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 
 class PreOrderSetupController extends Controller
 {
@@ -48,7 +46,7 @@ class PreOrderSetupController extends Controller
                 'data' => $createdPreOrderSetup
             ], 201);
         } else {
-            $updatedPreOrderSetup = PreOrderSetup::where('shop', $shop)->update([
+            $updatedPreOrderSetup = Settings::where('shop', $shop)->update([
                 'activation' => $activationJSON
             ]);
             return response()->json([
@@ -123,19 +121,19 @@ class PreOrderSetupController extends Controller
 
         $limit = $request->limit;
 
-        $preOrderLimitSettings = PreOrderLimit::where(['shop' => $shop])->first();
+        $preOrderLimitSettings = Settings::where(['shop' => $shop])->first();
         if (!$preOrderLimitSettings) {
-            $createdPreOrderLimit = PreOrderLimit::create([
+            $createdPreOrderLimit = Settings::create([
                 'shop' => $shop,
-                'limit' => json_encode($limit),
+                'order_limit' => json_encode($limit),
             ]);
             return response()->json([
                 'message' => 'Pre Order Limit Data Saved Successfully.',
                 'data' => $createdPreOrderLimit
             ], 201);
         } else {
-            $updatedPreOrderLimit = PreOrderLimit::where('shop', $shop)->update([
-                'limit' => json_encode($limit),
+            $updatedPreOrderLimit = Settings::where('shop', $shop)->update([
+                'order_limit' => json_encode($limit),
             ]);
             return response()->json([
                 'message' => 'Pre Order Limit Data Updated Successfully.',
@@ -149,30 +147,16 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $startDate = $this->dateFormatToStore($request->start_date);
-        $endDate = $this->dateFormatToStore($request->end_date);
-        $noEndDate = $this->boolFormatToStore($request->no_end_date);
-        $restockDate = $this->dateFormatToStore($request->restock_date);
-        $noRestokDate = $this->boolFormatToStore($request->no_restock_date);
-
-        $schedule = PreOrderSchedule::where('shop', $shop)->first();
+        $schedule = Settings::where('shop', $shop)->first();
 
         if ($schedule) {
-            $preOrderSchedule = PreOrderSchedule::where('shop', $shop)->update([
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'no_end_date' => $noEndDate,
-                'estimated_restock_date' => $restockDate,
-                'no_restock_date' => $noRestokDate
+            $preOrderSchedule = Settings::where('shop', $shop)->update([
+                'schedule' => $this->makePreOrderScheduleData($request)
             ]);
         } else {
-            $preOrderSchedule = PreOrderSchedule::create([
+            $preOrderSchedule = Settings::create([
                 'shop' => $shop,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'no_end_date' => $noEndDate,
-                'estimated_restock_date' => $restockDate,
-                'no_restock_date' => $noRestokDate
+                'schedule' => $this->makePreOrderScheduleData($request)
             ]);
         }
 
@@ -202,20 +186,16 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $displayMessage = PreOrderDisplayMessage::where('shop', $shop)->first();
+        $displayMessage = Settings::where('shop', $shop)->first();
 
         if ($displayMessage) {
-            $preOrderMessage = PreOrderDisplayMessage::where('shop', $shop)->update([
-                'message' => $request->message,
-                'position' => $request->position,
-                'alignment' => $request->alignment
+            $preOrderMessage = Settings::where('shop', $shop)->update([
+                'display_message' => $this->makeDisplayMessage($request)
             ]);
         } else {
-            $preOrderMessage = PreOrderDisplayMessage::create([
+            $preOrderMessage = Settings::create([
                 'shop' => $shop,
-                'message' => $request->message,
-                'position' => $request->position,
-                'alignment' => $request->alignment
+                'display_message' => $this->makeDisplayMessage($request)
             ]);
         }
 
@@ -260,24 +240,16 @@ class PreOrderSetupController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
 
-        $badgeDesign = BadgeDesign::where('shop', $shop)->first();
+        $badgeDesign = Settings::where('shop', $shop)->first();
 
         if ($badgeDesign) {
-            $badgeDesign = BadgeDesign::where('shop', $shop)->update([
-                'text'          => $request->text,
-                'position'      => $request->position,
-                'bg_color'      => $request->bg_color,
-                'text_color'    => $request->text_color,
-                'font_size'     => $request->font_size
+            $badgeDesign = Settings::where('shop', $shop)->update([
+                'badge_design' => $this->makeBadgeDesign($request)
             ]);
         } else {
-            $badgeDesign = BadgeDesign::create([
+            $badgeDesign = Settings::create([
                 'shop'          => $shop,
-                'text'          => $request->text,
-                'position'      => $request->position,
-                'bg_color'      => $request->bg_color,
-                'text_color'    => $request->text_color,
-                'font_size'     => $request->font_size
+                'badge_design' => $this->makeBadgeDesign($request)
             ]);
         }
 
@@ -313,8 +285,49 @@ class PreOrderSetupController extends Controller
         return $activationJSON;
     }
 
-    private function makePreOrderColors($request)
+    private function makePreOrderScheduleData($request)
     {
+        $startDate = $this->dateFormatToStore($request->start_date);
+        $endDate = $this->dateFormatToStore($request->end_date);
+        $noEndDate = $this->boolFormatToStore($request->no_end_date);
+        $restockDate = $this->dateFormatToStore($request->restock_date);
+        $noRestokDate = $this->boolFormatToStore($request->no_restock_date);
+
+        $scheduleJSON = json_encode([
+            "start_date" => $startDate,
+            "end_date" => $endDate,
+            "no_end_date" => $noEndDate,
+            "estimated_restock_date" => $restockDate,
+            "no_restock_date" => $noRestokDate
+        ]);
+
+        return $scheduleJSON;
+    }
+
+    private function makeBadgeDesign($request)
+    {
+        $activationJSON = json_encode([
+            'text'          => $request->text,
+            'position'      => $request->position,
+            'bg_color'      => $request->bg_color,
+            'text_color'    => $request->text_color,
+            'font_size'     => $request->font_size
+        ]);
+        return $activationJSON;
+    }
+
+    private function makeDisplayMessage($request)
+    {
+        $activationJSON = json_encode([
+            'message' => $request->message,
+            'position' => $request->position,
+            'alignment' => $request->alignment
+        ]);
+        return $activationJSON;
+    }
+
+    private function makePreOrderColors($request)
+    {   
         $inheritTheme = 0;
         if($request->inherit_from_theme == false || $request->inherit_from_theme == 'false') {
             $inheritTheme = 0;

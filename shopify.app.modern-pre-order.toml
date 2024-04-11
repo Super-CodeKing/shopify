@@ -2,7 +2,7 @@
 
 name = "Modern Pre Order"
 client_id = "c9b5419c167ce3a4f419924fe140e200"
-application_url = "https://wedding-retirement-sandy-syndication.trycloudflare.com"
+application_url = "https://literary-t-prices-paul.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_themes,write_themes,read_discounts,write_discounts
 
 [auth]
 redirect_urls = [
-  "https://wedding-retirement-sandy-syndication.trycloudflare.com/auth/callback",
-  "https://wedding-retirement-sandy-syndication.trycloudflare.com/auth/shopify/callback",
-  "https://wedding-retirement-sandy-syndication.trycloudflare.com/api/auth/callback"
+  "https://literary-t-prices-paul.trycloudflare.com/auth/callback",
+  "https://literary-t-prices-paul.trycloudflare.com/auth/shopify/callback",
+  "https://literary-t-prices-paul.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

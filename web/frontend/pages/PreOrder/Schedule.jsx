@@ -18,6 +18,7 @@ import Toaster from "../../components/Toaster";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 import { useDispatch, useSelector } from "react-redux";
 import { setPreOrderSchedule } from "../../store/reducers/PreOrder";
+import TextFieldWithDatePicker from "../../components/TextFieldWithDatePicker";
 
 export default function Schedule() {
     
@@ -32,8 +33,9 @@ export default function Schedule() {
     const [isErrorToast, setIsErrorToast] = useState(false);
 
     const [startDate, setStartDate] = useState(today);
-    const [endDate, setEndDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
-    const [restockDate, setRestockDate] = useState(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+    const [endDate, setEndDate] = useState('');
+    const [restockDate, setRestockDate] = useState('');
+    
     const [noEndDate, setNoEndDate] = useState(true);
     const [noRestockDate, setNoRestockDate] = useState(true);
 
@@ -194,20 +196,18 @@ export default function Schedule() {
                                 <FormLayout>
                                     <div className="flex flex-col md:flex-row">
                                         <div className="flex-1 mr-3 mb-3 md:mb-0">
-                                            <TextField
-                                                label="Start Date"
-                                                type="date"
-                                                value={startDate}
-                                                onChange={(e) => changeStartDate(e)}
+                                            <TextFieldWithDatePicker 
+                                                label={"Start Date"}
+                                                initialDate={startDate}
+                                                setDate={setStartDate}
                                             />
                                         </div>
                                         <div className="flex-1">
-                                            <TextField
-                                                label="End Date"
-                                                type="date"
-                                                value={endDate}
-                                                onChange={(e) => changeEndDate(e)}
-                                                disabled={noEndDate}
+                                            <TextFieldWithDatePicker
+                                                label={"End Date"}
+                                                initialDate={endDate}
+                                                setDate={setEndDate}
+                                                isDisabled={noEndDate}
                                             />
                                             <Checkbox
                                                 label="No End Date"
@@ -218,12 +218,11 @@ export default function Schedule() {
                                     </div>
                                     <div className="flex">
                                         <div className="flex-1 mr-3">
-                                            <TextField
-                                                label="Estimated Restock Date"
-                                                type="date"
-                                                value={restockDate}
-                                                onChange={(e) => changeRestockDate(e)}
-                                                disabled={noRestockDate}
+                                            <TextFieldWithDatePicker
+                                                label={"Estimated Restock Date"}
+                                                initialDate={restockDate}
+                                                setDate={setRestockDate}
+                                                isDisabled={noRestockDate}
                                             />
                                             <Checkbox
                                                 label="No Restock Date"
