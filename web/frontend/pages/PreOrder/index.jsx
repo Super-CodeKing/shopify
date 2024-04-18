@@ -24,15 +24,14 @@ import OrdersTable from "./OrdersTable";
 import ColorNText from "./ColorNText";
 import BadgeDesign from "./BadgeDesign";
 import { useDispatch, useSelector } from "react-redux";
-import { setActivation, setShopName } from "../../store/reducers/PreOrder";
+import { setSettings, setShopName } from "../../store/reducers/PreOrder";
 
 export default function PreOrder() {
     const fetch = useAuthenticatedFetch();
     const dispatch = useDispatch();
 
     const shopName = useSelector((state) => state.preorder?.shopName);
-
-    const [storeName, setStoreName] = useState("");
+    const preOrderSettings = useSelector((state) => state.preorder.settings);
     const [storeMainPart, setStoreMainPart] = useState("");
 
     const flags = [
@@ -117,7 +116,21 @@ export default function PreOrder() {
         setActiveFlag(activatedSection.name)
     };
 
+    const getPreOrderSettings = async () => {
+        const response = await fetch("/api/preorder/settings");
+        if (response.ok) {
+            const settings = await response.json();
+            dispatch(setSettings(settings));
+            console.log("Pre Order Settings: ");
+            console.log(settings);
+        } else {
+            setLoading(false);
+            throw new Error(`HTTP error ${response.status}`);
+        }
+    };
+
     useEffect(() => {
+        if(preOrderSettings === null) getPreOrderSettings();
         if (shopName.length === 0) getShopName();
         else setStoreWithoutShopifySubDomain(shopName);
     }, []);

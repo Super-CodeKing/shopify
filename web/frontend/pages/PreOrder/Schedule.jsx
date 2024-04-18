@@ -17,7 +17,7 @@ import { useAuthenticatedFetch } from "../../hooks";
 import Toaster from "../../components/Toaster";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 import { useDispatch, useSelector } from "react-redux";
-import { setPreOrderSchedule } from "../../store/reducers/PreOrder";
+import { setSettings } from "../../store/reducers/PreOrder";
 import TextFieldWithDatePicker from "../../components/TextFieldWithDatePicker";
 
 export default function Schedule() {
@@ -90,7 +90,7 @@ export default function Schedule() {
             console.log("Getting Schedule Data: ");
             console.log(preOrderSchedule);
             setScheduleData(preOrderSchedule);
-            dispatch(setPreOrderSchedule(preOrderSchedule));
+            dispatch(setSettings(preOrderSchedule));
             setLoading(false);
 
         } else {

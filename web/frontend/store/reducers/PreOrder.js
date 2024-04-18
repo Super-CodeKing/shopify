@@ -2,15 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     shopName: '',
-    activation: {},
     productList: [],
     orderList: [],
-    buttonSettings: {},
-    inheritFromTheme: null,
-    preOrderLimit: {},
-    schedule: {},
-    displayMessage: {},
-    badgeDesign: {}
+    settings: null
 }
 
 export const preOrderSettingSlice = createSlice({
@@ -20,46 +14,22 @@ export const preOrderSettingSlice = createSlice({
         setShopName: (state, action) => {
             state.shopName = action.payload
         },
-        setActivation: (state, action) => {
-            state.activation = action.payload
-        },
         setProductList: (state, action) => {
             state.productList = action.payload
         },
         setOrderList: (state, action) => {
             state.orderList = action.payload
         },
-        setButtonSettings: (state, action) => {
-            state.buttonSettings = action.payload
-        },
-        setPreOrderLimit: (state, action) => {
-            state.preOrderLimit = action.payload
-        },
-        setPreOrderSchedule: (state, action) => {
-            state.schedule = action.payload
-        },
-        setDisplayMessage: (state, action) => {
-            state.displayMessage = action.payload
-        },
-        setBadgeDesign: (state, action) => {
-            state.badgeDesign = action.payload
-        },
-        setInheritFromTheme: (state, action) => {
-            state.inheritFromTheme = action.payload;
+        setSettings: (state, action) => {
+            state.settings = action.payload
         }
     },
 });
 
 export const { 
     setShopName, 
-    setActivation, 
+    setSettings, 
     setProductList, 
-    setOrderList,
-    setButtonSettings,
-    setPreOrderLimit,
-    setPreOrderSchedule,
-    setDisplayMessage,
-    setBadgeDesign,
-    setInheritFromTheme
+    setOrderList
 } = preOrderSettingSlice.actions;
 export default preOrderSettingSlice.reducer;

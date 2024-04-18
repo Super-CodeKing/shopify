@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppQuery, useAuthenticatedFetch } from "../../hooks";
 import SkeletonActivation from "./Skeleton/Activation";
 import { useDispatch, useSelector } from "react-redux";
-import { setShopName, setActivation } from "../../store/reducers/PreOrder";
+import { setShopName, setSettings } from "../../store/reducers/PreOrder";
 
 export default function Activation() 
 {
@@ -95,7 +95,7 @@ export default function Activation()
                 'when_show_pre_order': preOrderActivation.when_show_pre_order,
                 'specific_inventory': preOrderActivation.specific_inventory
             }
-            dispatch(setActivation(activationObj))
+            dispatch(setSettings(activationObj))
             setActivationData(activationObj);
             setLoading(false);
         } else {

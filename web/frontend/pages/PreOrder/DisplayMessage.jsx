@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { setDisplayMessage } from "../../store/reducers/PreOrder";
+import { setSettings } from "../../store/reducers/PreOrder";
 
 export default function DisplayMessage() {
     const fetch = useAuthenticatedFetch();
@@ -114,7 +114,7 @@ export default function DisplayMessage() {
         const response = await fetch("/api/preorder/display-message");
         if (response.ok) {
             const preOrderDisplayMessage = await response.json();
-            dispatch(setDisplayMessage(preOrderDisplayMessage));
+            dispatch(setSettings(preOrderDisplayMessage));
             setPreOrderDisplayMessage(preOrderDisplayMessage);
             setLoading(false)
         } else {

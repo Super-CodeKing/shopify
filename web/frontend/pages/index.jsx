@@ -1,13 +1,8 @@
 import { Page, Layout, Text, Collapsible, Card, Icon, Popover, ActionList, Button, Banner } from "@shopify/polaris";
-import { TitleBar, useAuthenticatedFetch, useAppBridge } from "@shopify/app-bridge-react";
-import { useTranslation, Trans } from "react-i18next";
+import { useAuthenticatedFetch } from "@shopify/app-bridge-react";
 import Analytics from "./Dashboard/Analytics.jsx";
 import QuickSetup from "./Dashboard/QuickSetup";
-import AppActivation from "./Dashboard/AppActivation";
 import Plan from "./Dashboard/Plan";
-import { setShopName, setActivation } from "../store/reducers/PreOrder";
-import { useDispatch, useSelector } from "react-redux";
-import { useAppQuery } from "../hooks/useAppQuery.js";
 import { useEffect, useCallback, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import '../assets/preorder.css'
@@ -19,13 +14,9 @@ export default function HomePage() {
 
     const fetch = useAuthenticatedFetch();
 
-    const activation = useSelector((state) => state.preorder.activation);
-    const shopName = useSelector((state) => state.preorder.shopName);
-
     const [appActivated, setAppActivated] = useState(true);
     const [open, setOpen] = useState(true);
     const [closeActivation, setCloseActivation] = useState(false);
-    const handleToggle = useCallback(() => setOpen((open) => !open), []);
 
     const [popoverActive, setPopoverActive] = useState(false);
 

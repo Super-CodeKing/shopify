@@ -23,7 +23,7 @@ import '../../assets/preorder.css'
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { setBadgeDesign } from "../../store/reducers/PreOrder";
+import { setSettings } from "../../store/reducers/PreOrder";
 
 export default function BadgeDesign() {
     const emptyToastProps = { content: null };

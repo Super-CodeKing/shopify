@@ -19,7 +19,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useAuthenticatedFetch } from "../../hooks";
 import SkeletonOrderLimit from "./Skeleton/OrderLimit";
 import { useDispatch, useSelector } from "react-redux";
-import { setPreOrderLimit } from "../../store/reducers/PreOrder";
+import { setSettings } from "../../store/reducers/PreOrder";
 export default function OrderLimit() {
 
     const fetch = useAuthenticatedFetch();
@@ -115,11 +115,7 @@ export default function OrderLimit() {
         if (response.ok) {
             const preOrderLimitSettings = await response.json();
             const settings = JSON.parse(preOrderLimitSettings?.limit);
-            dispatch(setPreOrderLimit({
-                'type': settings.type,
-                'daily_limit': settings.daily_limit,
-                'total_limit': settings.total_limit
-            }));
+            dispatch(setSettings(settings));
             setOrderLimitData(settings);
             setLoading(false)
         } else {

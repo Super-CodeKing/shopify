@@ -24,7 +24,7 @@ import "../../assets/common.css";
 import ToggleColorActivator from "../../components/ToggleColorActivator";
 import SkeletonBodyWithDisplay from "./Skeleton/SkeletonBodyWithDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { setButtonSettings, setInheritFromTheme } from "../../store/reducers/PreOrder";
+import { setSettings } from "../../store/reducers/PreOrder";
 
 export default function ColorNText() {
     
@@ -371,8 +371,8 @@ export default function ColorNText() {
         if (response.ok) {
             const preOrderButtonSettings = await response.json();
             
-            dispatch(setButtonSettings(JSON.parse(preOrderButtonSettings.settings)));
-            dispatch(setInheritFromTheme(preOrderButtonSettings.inherit_from_theme));
+            dispatch(setSettings(JSON.parse(preOrderButtonSettings.settings)));
+            dispatch(setSettings(preOrderButtonSettings.inherit_from_theme));
             
             setIsInheritFromTheme(preOrderButtonSettings.inherit_from_theme);
             setColorNTextSettings(JSON.parse(preOrderButtonSettings.settings));

@@ -1,4 +1,4 @@
-const BASE_URL = "https://wedding-retirement-sandy-syndication.trycloudflare.com/api/";
+const BASE_URL = "https://orbit-jumping-external-televisions.trycloudflare.com/api/";
 
 async function fetchXHR(
     {
