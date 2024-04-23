@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
-    public function appActivationDetect(Request $request)
-    {
-
-    }
-
     public function getSummary(Request $request)
     {
         $session = $request->get('shopifySession');
@@ -36,30 +31,21 @@ class DashboardController extends Controller
     {
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
+        $quickStartData = $request->all();
+        $convertedQuickStartData = array_map('intval', $quickStartData);
 
-        $data = $request->all();
-        $convertedData = array_map('intval', $data);
-
-        $convertedData['shop'] = $shop;
-
-        $validator = Validator::make($convertedData, [
-            'pre_order' => 'required|integer',
-            'coming_soon' => 'required|integer',
-            'request_stock' => 'required|integer',
-            'shop' => 'required|string',
-        ]);
+        $convertedQuickStartData['shop'] = $shop;
+        $validator = $this->validateQuickStartData($convertedQuickStartData);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $existingEntry = QuickStart::where('shop', $convertedData['shop'])->first();
+        $existingEntry = QuickStart::where('shop', $convertedQuickStartData['shop'])->first();
 
-        if ($existingEntry) {
-            $existingEntry->update($convertedData);
-        } else {
-            QuickStart::create($convertedData);
-        }
+        if ($existingEntry) $existingEntry->update($convertedQuickStartData);
+        else QuickStart::create($convertedQuickStartData);
+
         return response()->json(['message' => 'Entry created or updated successfully'], 201);
     }
 
@@ -68,5 +54,15 @@ class DashboardController extends Controller
         $session = $request->get('shopifySession');
         $shop = $session->getShop();
         return response()->json(QuickStart::where('shop', $shop)->first());
+    }
+
+    private function validateQuickStartData($data)
+    {
+        return Validator::make($data, [
+            'pre_order' => 'required|integer',
+            'coming_soon' => 'required|integer',
+            'request_stock' => 'required|integer',
+            'shop' => 'required|string',
+        ]);
     }
 }

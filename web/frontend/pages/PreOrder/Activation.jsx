@@ -138,24 +138,24 @@ export default function Activation()
         let flagWhenToShow = false;
         let flagSpecificInventory = false;
 
-        let activeRedux = activation.active === 0 ? false : true;
+        let activeRedux = activation?.active === 0 ? false : true;
         if(activeRedux !== isPreOrderActive) {
             flagActivation = true;
         }
 
-        let whereToShowProductRedux = activation.active_on_product === 0 ? false: true;
-        let whereToShowCollectionRedux = activation.active_on_collection === 0 ? false: true;
+        let whereToShowProductRedux = activation?.active_on_product === 0 ? false: true;
+        let whereToShowCollectionRedux = activation?.active_on_collection === 0 ? false: true;
 
         if(whereToShowProductRedux !== checkedProductPage || whereToShowCollectionRedux !== checkedCollectionPage) {
             flagWhereToShow = true;
         }
 
         let whenToShowRedux = ''; 
-        if(activation.when_show_pre_order == 1) {
+        if(activation?.when_show_pre_order == 1) {
             whenToShowRedux = 'always'
-        } else if(activation.when_show_pre_order == 2) {
+        } else if(activation?.when_show_pre_order == 2) {
             whenToShowRedux = 'sold-out';
-        } else if(activation.when_show_pre_order == 3) {
+        } else if(activation?.when_show_pre_order == 3) {
             whenToShowRedux = 'specific-inventory';
         }
 
@@ -163,7 +163,7 @@ export default function Activation()
             flagWhenToShow = true;
         }
 
-        if(specicInventory !== activation.specific_inventory) {
+        if(specicInventory !== activation?.specific_inventory) {
             flagSpecificInventory = true;
         }
 
@@ -175,7 +175,7 @@ export default function Activation()
 
     useEffect( () => {
         setLoading(true);
-        if(Object.keys(activation).length === 0) getPreOrderActivation();
+        if(!activation) getPreOrderActivation();
         else setActivationData();
     }, [])
 

@@ -1,4 +1,4 @@
-const BASE_URL = "https://orbit-jumping-external-televisions.trycloudflare.com/api/";
+const BASE_URL = "https://mf-surround-capture-decorating.trycloudflare.com/api/";
 
 async function fetchXHR(
     {
