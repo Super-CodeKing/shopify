@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ComingSoon;
 
+use App\Http\Controllers\Controller;
 use App\Models\ComingSoon\Products;
 use Illuminate\Http\Request;
 

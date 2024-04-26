@@ -128,15 +128,15 @@ export default function DisplayMessage() {
         let flagMessagePosition = false;
         let flagMessageAllignment = false;
 
-        if(message !== displayMessageRedux.message){
+        if(message !== displayMessageRedux?.message){
             flagDisplayMessage = true;
         }
 
-        if(selectPosition !== displayMessageRedux.position) {
+        if(selectPosition !== displayMessageRedux?.position) {
             flagMessagePosition = true;
         }
 
-        if(selectAlignment !== displayMessageRedux.alignment) {
+        if(selectAlignment !== displayMessageRedux?.alignment) {
             flagMessageAllignment = true;
         }
 
@@ -148,10 +148,9 @@ export default function DisplayMessage() {
 
     useEffect(() => {
         setLoading(true);
-        if(Object.keys(displayMessageRedux).length === 0) getPreOrderDisplayMessage();
+        if(!displayMessageRedux) getPreOrderDisplayMessage();
         else {
             setPreOrderDisplayMessage(displayMessageRedux);
-            console.log(displayMessageRedux);
             setLoading(false);
         };
     }, []);

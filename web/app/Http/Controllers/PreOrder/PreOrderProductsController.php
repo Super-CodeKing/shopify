@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\PreOrder;
 
+use App\Http\Controllers\Controller;
 use App\Models\PreOrderProducts;
 use Illuminate\Http\Request;
 use SebastianBergmann\Type\NullType;

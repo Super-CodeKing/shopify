@@ -152,11 +152,11 @@ export default function BadgeDesign() {
         let flagBadgeTextHexColor     = false;
         let flagBadgeFontSizeValue    = false;
 
-        if(displayBadgeRedux.text !== ribbonBadgeText) flagRibbonBadgeText = true;
-        if(displayBadgeRedux.position !== ribbonBadgePosition) flagRibbonBadgePosition = true;
-        if(displayBadgeRedux.bg_color !== backgroundHexColor) flagBackgroundHexColor = true;
-        if(displayBadgeRedux.text_color !== badgeTextHexColor) flagBadgeTextHexColor = true;
-        if(displayBadgeRedux.font_size !== badgeFontSizeValue) flagBadgeFontSizeValue = true;
+        if(displayBadgeRedux?.text !== ribbonBadgeText) flagRibbonBadgeText = true;
+        if(displayBadgeRedux?.position !== ribbonBadgePosition) flagRibbonBadgePosition = true;
+        if(displayBadgeRedux?.bg_color !== backgroundHexColor) flagBackgroundHexColor = true;
+        if(displayBadgeRedux?.text_color !== badgeTextHexColor) flagBadgeTextHexColor = true;
+        if(displayBadgeRedux?.font_size !== badgeFontSizeValue) flagBadgeFontSizeValue = true;
         
         if(flagRibbonBadgeText || flagRibbonBadgePosition || flagBackgroundHexColor || flagBadgeTextHexColor || flagBadgeFontSizeValue) {
             return true;
@@ -179,7 +179,7 @@ export default function BadgeDesign() {
 
     useEffect(() => {
         setLoading(true);
-        if(Object.keys(displayBadgeRedux).length === 0) getPreOrderBadgeDesign();
+        if(!displayBadgeRedux) getPreOrderBadgeDesign();
         else {
             console.log(displayBadgeRedux);
             setPreOrderBadgeDesign(displayBadgeRedux);

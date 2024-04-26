@@ -5,7 +5,7 @@ const initialState = {
     countPreOrder:     null,
     countComingSoon:   null,
     countRequestStock: null,
-    isAppEmbeded:      false,
+    isAppEmbeded:      null,
     quickStart:        null
 }
 

@@ -98,11 +98,11 @@ export default function OrderLimit() {
         let flagDailyLimit = false;
         let flagTotalLimit = false;
 
-        if(Object.keys(preOrderLimitRedux).length !== 0)
+        if(preOrderLimitRedux)
         {
-            if(limitSelected[0] != preOrderLimitRedux.type[0]) flagLimitSelected = true;
-            if(preOrderDailyLimit != preOrderLimitRedux.daily_limit) flagDailyLimit = true;
-            if(preOrderTotalLimit != preOrderLimitRedux.total_limit) flagTotalLimit = true;
+            if(limitSelected[0] != preOrderLimitRedux?.type[0]) flagLimitSelected = true;
+            if(preOrderDailyLimit != preOrderLimitRedux?.daily_limit) flagDailyLimit = true;
+            if(preOrderTotalLimit != preOrderLimitRedux?.total_limit) flagTotalLimit = true;
         }
         if(flagLimitSelected || flagDailyLimit || flagTotalLimit) {
             return true;
@@ -175,7 +175,7 @@ export default function OrderLimit() {
 
     useEffect(() => {
         setLoading(true)
-        if(Object.keys(preOrderLimitRedux).length === 0) getPreOrderLimitSettings();
+        if(!preOrderLimitRedux) getPreOrderLimitSettings();
         else {
             setOrderLimitData(preOrderLimitRedux);
             setLoading(false);

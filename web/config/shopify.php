@@ -3,7 +3,7 @@
 use App\Lib\EnsureBilling;
 
 return [
-    "app_id" => env('APP_ID', '174755655437027101'),
+    "app_id" => env('APP_ID', '4718250481763184000'),
     "billing" => [
         "required" => false,
         "chargeName" => "My Shopify App One-Time Billing",

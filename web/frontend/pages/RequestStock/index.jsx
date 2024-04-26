@@ -191,10 +191,10 @@ export default function PreOrder() {
                                     <img width="40" height="40" src="https://img.icons8.com/emoji/40/convenience-store.png" alt="convenience-store"/>
                                 </div>
                                 <div>
-                                    <h3 className="BHLa_">{storeMainPart}</h3>
+                                    <h3 className="BHLa_">starterdq.myshopify.com</h3>
                                     <p className="MIA9A">
                                         <span className="Polaris-Text--root_yj4ah Polaris-Text--bodySm_nvqxj Polaris-Text--subdued_17vaa">
-                                            {shopName}
+                                            StarterDQ
                                         </span>
                                     </p>
                                 </div>

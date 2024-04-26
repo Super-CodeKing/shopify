@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ComingSoon;
 
+use App\Http\Controllers\Controller;
 use App\Models\ComingSoon\Badge;
 use App\Models\ComingSoon\ColorsNText;
 use App\Models\ComingSoon\DisplayMessage;

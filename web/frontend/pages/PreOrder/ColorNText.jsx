@@ -274,51 +274,51 @@ export default function ColorNText() {
             flagInheritFromTheme = true;
         }
 
-        if (buttonSettingsRedux.button_text !== preOrderButtonText) {
+        if (buttonSettingsRedux?.button_text !== preOrderButtonText) {
             flagPreOrderButtonText = true;
         }
         
-        if (buttonSettingsRedux.button_bg_color !== backgroundHexColor) {
+        if (buttonSettingsRedux?.button_bg_color !== backgroundHexColor) {
             flagBackgroundHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_bg_hover_color !== backgroundHoverHexColor) {
+        if (buttonSettingsRedux?.button_bg_hover_color !== backgroundHoverHexColor) {
             flagBackgroundHoverHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_border_hex_color !== borderHexColor) {
+        if (buttonSettingsRedux?.button_border_hex_color !== borderHexColor) {
             flagBorderHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_border_hover_hex_color !== borderHoverHexColor) {
+        if (buttonSettingsRedux?.button_border_hover_hex_color !== borderHoverHexColor) {
             flagBorderHoverHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_border_radius != buttonRadiusValue) {
+        if (buttonSettingsRedux?.button_border_radius != buttonRadiusValue) {
             flagButtonRadiusValue = true;
         }
         
-        if (buttonSettingsRedux.button_border_width != borderWidth) {
+        if (buttonSettingsRedux?.button_border_width != borderWidth) {
             flagBorderWidth = true;
         }
         
-        if (buttonSettingsRedux.button_font_size != buttonFontSizeValue) {
+        if (buttonSettingsRedux?.button_font_size != buttonFontSizeValue) {
             flagButtonFontSizeValue = true;
         }
         
-        if (buttonSettingsRedux.button_height != buttonHeight) {
+        if (buttonSettingsRedux?.button_height != buttonHeight) {
             flagButtonHeight = true;
         }
         
-        if (buttonSettingsRedux.button_text_color !== textHexColor) {
+        if (buttonSettingsRedux?.button_text_color !== textHexColor) {
             flagTextHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_text_hover_color !== textHoverHexColor) {
+        if (buttonSettingsRedux?.button_text_hover_color !== textHoverHexColor) {
             flagTextHoverHexColor = true;
         }
         
-        if (buttonSettingsRedux.button_width != buttonWidth) {
+        if (buttonSettingsRedux?.button_width != buttonWidth) {
             flagButtonWidth = true;
         }
 
@@ -412,7 +412,7 @@ export default function ColorNText() {
 
     useEffect(() => {
         setLoading(true);
-        if(Object.keys(buttonSettingsRedux).length === 0) getPreOrderButtonSettings();
+        if(!buttonSettingsRedux) getPreOrderButtonSettings();
         else {
             setColorNTextSettings(buttonSettingsRedux);
             setIsInheritFromTheme(inheritFromThemeRedux);

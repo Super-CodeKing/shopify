@@ -9,6 +9,7 @@ import {
     ActionList,
     Button,
     Banner,
+    Spinner
 } from "@shopify/polaris";
 import Analytics from "./Dashboard/Analytics.jsx";
 import QuickSetup from "./Dashboard/QuickSetup";
@@ -20,14 +21,19 @@ import { MenuHorizontalIcon } from "@shopify/polaris-icons";
 import Switch from "../components/Switch.jsx";
 import Welcome from "./Dashboard/Welcome.jsx";
 import { useAuthenticatedFetch } from "../hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsAppEmbeded, setShopName } from "../store/reducers/Dashboard.js";
 
 export default function HomePage() {
     const fetch = useAuthenticatedFetch();
+    const dispatch = useDispatch();
 
-    const [appActivated, setAppActivated] = useState(true);
+    const appEmbededStatusRedux = useSelector((state) => state.dashboard.isAppEmbeded);
+
     const [open, setOpen] = useState(true);
     const [closeActivation, setCloseActivation] = useState(false);
 
+    const [shop, setShop] = useState('');
     const [appStatusLoading, setAppStatusLoading] = useState(false);
     const [themeId, setThemeId] = useState(null);
     const [isAppDisabled, setIsAppDisabled] = useState(true);
@@ -61,30 +67,39 @@ export default function HomePage() {
         let response = await fetch("/api/theme");
         if (response.ok) {
             response = await response.json();
-            console.log(response);
+         
             setThemeId(response.theme_id);
-            setIsAppDisabled(response.status);
-            setAppStatusMessage(response.message);
+            setIsAppDisabled(!response.status);
+            setAppStatusMessage('('+response.message+')');
+            setAppStatusLoading(false);
+            setShop(response.shop);
+            dispatch(setIsAppEmbeded(!response.status));
+            dispatch(setShopName(response.shop));
         } else {
+            setAppStatusLoading(false);
             show("Cannot find theme! Please try again.", { isError: true });
         }
     };
 
     const openThemeSetting = () => {
-        let shopName = shop?.shop;
+        let shopName = shop !== '' ? shop : null;
         if (!shopName || !themeId) return;
         shopName = shopName.split(".")[0];
-        console.log(
-            `https://admin.shopify.com/store/${shopName}/themes/${themeId}/editor?context=apps`
-        );
         window.open(
             `https://admin.shopify.com/store/${shopName}/themes/${themeId}/editor?context=apps`
         );
     };
 
     useEffect(() => {
-        getMainThemeAppStatus();
         setAppStatusLoading(true);
+        if(appEmbededStatusRedux !== null)
+        {
+            setIsAppDisabled(appEmbededStatusRedux);
+            if(appEmbededStatusRedux == true) setAppStatusMessage("(App Enabled)")
+            else setAppStatusMessage("(App Disabled)")
+            setAppStatusLoading(false);
+        }
+        else getMainThemeAppStatus();
 
         if (localStorage.getItem("active_activation") == 1) {
             setCloseActivation(false);
@@ -93,7 +108,7 @@ export default function HomePage() {
             setCloseActivation(true);
             setOpen(false);
         }
-    }, []);
+    }, [appEmbededStatusRedux]);
 
     return (
         <>
@@ -112,7 +127,8 @@ export default function HomePage() {
                                                     variant="headingLg"
                                                     as="h3"
                                                 >
-                                                    App embeds
+                                                    App embeds {isAppDisabled === false && <span className="text-red-300 text-sm">{appStatusMessage}</span>}
+                                                    {isAppDisabled === true && <span className="text-green-300 text-sm">{appStatusMessage}</span>}
                                                 </Text>
                                                 <Text>
                                                     If our app is installed but
@@ -136,32 +152,22 @@ export default function HomePage() {
                                                             actionRole="menuitem"
                                                             items={[
                                                                 {
-                                                                    content:
-                                                                        "Manual Setup",
-                                                                    onAction:
-                                                                        () =>
-                                                                            OpenManualGuideline(),
+                                                                    content: "Manual Setup",
+                                                                    onAction: () => OpenManualGuideline(),
                                                                 },
                                                                 {
-                                                                    content:
-                                                                        "Dismiss",
-                                                                    onAction:
-                                                                        () =>
-                                                                            closeActivationDiv(),
+                                                                    content: "Dismiss",
+                                                                    onAction: () => closeActivationDiv(),
                                                                 },
                                                             ]}
                                                         />
                                                     </Popover>
                                                 </div>
-                                                <Switch
-                                                    checked={appActivated}
-                                                    onClick={openThemeSetting}
-                                                    onChange={() =>
-                                                        setAppActivated(
-                                                            !appActivated
-                                                        )
-                                                    }
-                                                />
+                                                {appStatusLoading === true && <Spinner size="small" />}
+                                                {appStatusLoading === false && <Switch
+                                                    checked={isAppDisabled}
+                                                    onChange={() => openThemeSetting()}
+                                                />}
                                             </div>
                                         </div>
                                     </div>

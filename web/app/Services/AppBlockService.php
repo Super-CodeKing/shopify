@@ -19,6 +19,7 @@ class AppBlockService
     public function getAppStatusOnActiveTheme()
     {
         $themeId = $this->getCurrentThemeId($this->session);
+        $shop = $this->session->getShop();
         try {
             $appId = Config::get('shopify.app_id');
             $asset = Asset::all($this->session, ["theme_id" => $themeId], ["asset" => ["key" => "config/settings_data.json"]]);
@@ -34,6 +35,7 @@ class AppBlockService
             }
         
             $disabledStatus = false;
+
             if(isset($decodedData['current']['blocks'][$appId]['disabled'])) 
             $disabledStatus = $decodedData['current']['blocks'][$appId]['disabled'];
 
@@ -42,6 +44,7 @@ class AppBlockService
             if($disabledStatus == false)
             {
                 $response = [
+                    "shop"      => $shop,
                     "status"    => $disabledStatus,
                     "message"   => 'App Enabled',
                     "theme_id"  => $themeId,
@@ -50,6 +53,7 @@ class AppBlockService
             else
             {
                 $response = [
+                    "shop"      => $shop,
                     "status"    => $disabledStatus,
                     "message"   => 'App Disabled',
                     "theme_id"  => $themeId,
@@ -61,9 +65,10 @@ class AppBlockService
         } catch (\Throwable $th) {
             $errorMessage = 'App status unavailable: ' . $th->getMessage();
             $response = [
-                "status" => false,
-                "message" => $errorMessage,
-                "theme_id" => $themeId,
+                "shop"      => $shop,
+                "status"    => false,
+                "message"   => $errorMessage,
+                "theme_id"  => $themeId,
             ];
         
             return response()->json($response);

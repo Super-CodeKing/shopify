@@ -52,32 +52,32 @@ export default function Schedule() {
     }
 
     const setScheduleData = (scheduleData) => {
-        if(!scheduleData.start_date) {
+        if(!scheduleData?.start_date) {
             setStartDate(startDate);
         } else {
             setStartDate(dateFormatter(scheduleData.start_date));
         }
 
-        if(!scheduleData.end_date) {
+        if(!scheduleData?.end_date) {
             setEndDate(endDate);
         } else {
             setEndDate(dateFormatter(scheduleData.end_date));
         }
 
-        if(!scheduleData.estimated_restock_date) {
+        if(!scheduleData?.estimated_restock_date) {
             setRestockDate(restockDate);
         } else {
             setRestockDate(dateFormatter(scheduleData.estimated_restock_date));
         }
 
-        setNoEndDate(scheduleData.no_end_date);
-        setNoRestockDate(scheduleData.no_restock_date);
+        setNoEndDate(scheduleData?.no_end_date);
+        setNoRestockDate(scheduleData?.no_restock_date);
 
-        if(scheduleData.no_end_date) {
+        if(scheduleData?.no_end_date) {
             setEndDate(null);
         }
 
-        if(scheduleData.no_restock_date) {
+        if(scheduleData?.no_restock_date) {
             setRestockDate(null);
         }
     }
@@ -156,11 +156,11 @@ export default function Schedule() {
         let flagNoEndDate       = false;
         let flagNoRestockDate   = false;
 
-        if(dateFormatter(scheduleRedux.start_date) !== dateFormatter(startDate)) flagStartDate = true;
-        if(dateFormatter(scheduleRedux.end_date) !== dateFormatter(endDate)) flagEndDate = true;
-        if(dateFormatter(scheduleRedux.estimated_restock_date) !== dateFormatter(restockDate)) flagRestockDate = true;
-        if(scheduleRedux.no_end_date !== noEndDate) flagNoEndDate = true;
-        if(scheduleRedux.no_restock_date !== noRestockDate) flagNoRestockDate = true;
+        if(dateFormatter(scheduleRedux?.start_date) !== dateFormatter(startDate)) flagStartDate = true;
+        if(dateFormatter(scheduleRedux?.end_date) !== dateFormatter(endDate)) flagEndDate = true;
+        if(dateFormatter(scheduleRedux?.estimated_restock_date) !== dateFormatter(restockDate)) flagRestockDate = true;
+        if(scheduleRedux?.no_end_date !== noEndDate) flagNoEndDate = true;
+        if(scheduleRedux?.no_restock_date !== noRestockDate) flagNoRestockDate = true;
         
         if(flagStartDate || flagEndDate || flagRestockDate || flagNoEndDate || flagNoRestockDate) {
             return true;
@@ -170,7 +170,7 @@ export default function Schedule() {
 
     useEffect(() => {
         setLoading(true);
-        if(Object.keys(scheduleRedux).length === 0) getPreOrderSchedule();
+        if(!scheduleRedux) getPreOrderSchedule();
         else {
             setScheduleData(scheduleRedux);
             setLoading(false);
